@@ -93,7 +93,7 @@
 <meta property="og:site_name" content="Malped">
 <meta property="og:description" content="对拉格朗日对偶性的理解">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-04T08:01:02.442Z">
+<meta property="og:updated_time" content="2018-03-04T08:02:36.784Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拉格朗日对偶性">
 <meta name="twitter:description" content="对拉格朗日对偶性的理解">
@@ -407,7 +407,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  645
+                  687
                 </span>
               
 
@@ -445,13 +445,9 @@
 <p>​    下面通过$x$是否绵竹约束条件两方面来分析这个函数：</p>
 <p>​        1.考虑某个$x$违反了原始的约束，即$c_i\gt0$或者$h_j\neq0$，那么：</p>
 <script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)]=\infty</script><p>​        2.考虑$x$满足原始的约束，则：</p>
-<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)]=f(x)$$    ,
-
-​    注意最大化确定$\alpha,\beta$的过程，$f(x)$就是个常量，常量的最大值显然是本身
-
-​    通过上面两条分析可以得出：
-
-$$\Theta_P(x)=\begin{cases}f(x),\ {x满足原始问题约束}\\+\infty,\ {其他}\\\end{cases}</script><p>​    那么<strong>在满足约束的条件下：</strong></p>
+<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)]=f(x)</script><p>​    注意最大化确定$\alpha,\beta$的过程，$f(x)$就是个常量，常量的最大值显然是本身</p>
+<p>​    通过上面两条分析可以得出：</p>
+<script type="math/tex; mode=display">\Theta_P(x)=\begin{cases}f(x),\ {x满足原始问题约束}\\+\infty,\ {其他}\\\end{cases}</script><p>​    那么<strong>在满足约束的条件下：</strong></p>
 <script type="math/tex; mode=display">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script><p>​    即$\min_x\Theta_P(x)$与原始优化问题等价，所以常用$\min_x\Theta_P(x)$来代表原始问题，定义原始问题的最优值：</p>
 <script type="math/tex; mode=display">p^*=\min_x\Theta_P(x)</script><p>​    原始问题讨论到这里，总结：重新定义一个无约束问题，这个无约束问题等价于原来的约束优化问题。</p>
 <h2 id="对偶问题"><a href="#对偶问题" class="headerlink" title="对偶问题"></a>对偶问题</h2><p>​    定义<strong>关于$\alpha,\beta$的函数</strong>：</p>
