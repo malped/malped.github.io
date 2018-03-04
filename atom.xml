@@ -32,7 +32,7 @@
     <link href="http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/"/>
     <id>http://yoursite.com/2018/03/03/拉格朗日对偶性/</id>
     <published>2018-03-03T14:49:03.000Z</published>
-    <updated>2018-03-03T16:55:41.195Z</updated>
+    <updated>2018-03-04T07:00:58.207Z</updated>
     <content type="html"><![CDATA[<h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微函数，考虑约束最优化问题</p>
 <p>​                    <script type="math/tex">\min_{x\in R^n}f(x)</script></p>
 <p>​                    <script type="math/tex">s.t.\ c_i(x)\le0,\ i=1,2,…,k</script></p>
@@ -76,7 +76,13 @@
     <![CDATA[<h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微]]>
     </summary>
     
-      <category term="机器学习,数学,拉格朗日" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%95%B0%E5%AD%A6-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5/"/>
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
@@ -85,7 +91,7 @@
     <link href="http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/"/>
     <id>http://yoursite.com/2018/02/27/剑指offer/</id>
     <published>2018-02-27T00:32:16.000Z</published>
-    <updated>2018-03-01T02:48:58.952Z</updated>
+    <updated>2018-03-04T06:56:28.130Z</updated>
     <content type="html"><![CDATA[<h1 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h1><h2 id="二维数组中的查找"><a href="#二维数组中的查找" class="headerlink" title="二维数组中的查找"></a>二维数组中的查找</h2><p><strong>Q:</strong>在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
 <p><strong>思路：</strong>思路从右上开始，右上为一行最大，一列最小。target&lt;右上，删一列;  target&gt;右上,删一行</p>
 <p><strong>Code</strong></p>
@@ -358,7 +364,11 @@
     <![CDATA[<h1 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h1><h2 id="二维数组中的查找"><a href="#二维数组中的查找" class="headerli]]>
     </summary>
     
-      <category term="编程,算法" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A8%8B-%E7%AE%97%E6%B3%95/"/>
+      <category term="编程" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="代码" scheme="http://yoursite.com/tags/%E4%BB%A3%E7%A0%81/"/>
+    
+      <category term="编程" scheme="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -367,7 +377,7 @@
     <link href="http://yoursite.com/2018/02/26/LeetCode/"/>
     <id>http://yoursite.com/2018/02/26/LeetCode/</id>
     <published>2018-02-26T01:13:07.000Z</published>
-    <updated>2018-02-26T16:17:55.528Z</updated>
+    <updated>2018-03-04T06:55:28.980Z</updated>
     <content type="html"><![CDATA[<h1 id="LeetCode"><a href="#LeetCode" class="headerlink" title="LeetCode"></a>LeetCode</h1><h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1.Two Sum"></a>1.Two Sum</h2><p><strong>Q:</strong>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
 <p>You may assume that each input would have <strong>exactly</strong> one solution, and you may not use the <em>same</em> element twice.</p>
 <p><strong>Example:</strong></p>
@@ -630,7 +640,9 @@
     <![CDATA[<h1 id="LeetCode"><a href="#LeetCode" class="headerlink" title="LeetCode"></a>LeetCode</h1><h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="he]]>
     </summary>
     
-      <category term="编程,代码" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A8%8B-%E4%BB%A3%E7%A0%81/"/>
+      <category term="编程" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="代码" scheme="http://yoursite.com/tags/%E4%BB%A3%E7%A0%81/"/>
     
       <category term="编程" scheme="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
     
