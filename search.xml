@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[KKT条件的理解]]></title>
-    <url>%2F2018%2F03%2F04%2FKKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E7%90%86%E8%A7%A3%2F</url>
+    <title><![CDATA[KTT条件]]></title>
+    <url>%2F2018%2F03%2F04%2FKTT%E6%9D%A1%E4%BB%B6%E7%9A%84%E7%90%86%E8%A7%A3%2F</url>
     <content type="text"></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>数学</tag>
+        <tag>机器学习</tag>
+        <tag>KKT</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[拉格朗日对偶性]]></title>
@@ -13,9 +21,9 @@
         <category>机器学习</category>
       </categories>
       <tags>
+        <tag>数学</tag>
         <tag>机器学习</tag>
         <tag>拉格朗日对偶</tag>
-        <tag>数学</tag>
       </tags>
   </entry>
   <entry>

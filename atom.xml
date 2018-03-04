@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-04T06:03:50.970Z</updated>
+  <updated>2018-03-04T07:41:43.925Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,15 +15,24 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title><![CDATA[KKT条件的理解]]></title>
-    <link href="http://yoursite.com/2018/03/04/KKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E7%90%86%E8%A7%A3/"/>
-    <id>http://yoursite.com/2018/03/04/KKT条件的理解/</id>
-    <published>2018-03-04T06:03:50.000Z</published>
-    <updated>2018-03-04T06:03:50.970Z</updated>
+    <title><![CDATA[KTT条件]]></title>
+    <link href="http://yoursite.com/2018/03/04/KTT%E6%9D%A1%E4%BB%B6%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    <id>http://yoursite.com/2018/03/04/KTT条件的理解/</id>
+    <published>2018-03-04T07:31:31.000Z</published>
+    <updated>2018-03-04T07:41:43.925Z</updated>
     <content type="html"></content>
     <summary type="html">
+    <![CDATA[<center>对拉格朗日对偶中KKT条件的理解</center>]]>
     
     </summary>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="KKT" scheme="http://yoursite.com/tags/KKT/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
@@ -32,7 +41,7 @@
     <link href="http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/"/>
     <id>http://yoursite.com/2018/03/03/拉格朗日对偶性/</id>
     <published>2018-03-03T14:49:03.000Z</published>
-    <updated>2018-03-04T07:13:10.201Z</updated>
+    <updated>2018-03-04T07:40:06.829Z</updated>
     <content type="html"><![CDATA[<h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微函数，考虑约束最优化问题</p>
 <script type="math/tex; mode=display">\min_{x\in R^n}f(x)</script><script type="math/tex; mode=display">s.t.\ c_i(x)\le0,\ i=1,2,…,k</script><p>​<script type="math/tex">h_j(x)=0,\ j=1,2,…,l ​</script></p>
 <p>​    称此约束最优化问题为原始最优化问题或原始问题。</p>
@@ -70,14 +79,15 @@
 <p>​    证明：一个式子的最大值永远大于等于这个式子的最小值，哪怕是这个式子最小的最大值与最大的最小值相比（瘦死的骆驼比马大）。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微]]>
+    <![CDATA[<center>对拉格朗日对偶性的理解</center>]]>
+    
     </summary>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
-    
-      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -88,7 +98,7 @@
     <link href="http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/"/>
     <id>http://yoursite.com/2018/02/27/剑指offer/</id>
     <published>2018-02-27T00:32:16.000Z</published>
-    <updated>2018-03-04T06:56:28.130Z</updated>
+    <updated>2018-03-04T07:39:21.444Z</updated>
     <content type="html"><![CDATA[<h1 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h1><h2 id="二维数组中的查找"><a href="#二维数组中的查找" class="headerlink" title="二维数组中的查找"></a>二维数组中的查找</h2><p><strong>Q:</strong>在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
 <p><strong>思路：</strong>思路从右上开始，右上为一行最大，一列最小。target&lt;右上，删一列;  target&gt;右上,删一行</p>
 <p><strong>Code</strong></p>
@@ -358,7 +368,8 @@
 <hr>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h1><h2 id="二维数组中的查找"><a href="#二维数组中的查找" class="headerli]]>
+    <![CDATA[<center>剑指offer刷题记录</center>]]>
+    
     </summary>
     
       <category term="编程" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A8%8B/"/>
@@ -374,7 +385,7 @@
     <link href="http://yoursite.com/2018/02/26/LeetCode/"/>
     <id>http://yoursite.com/2018/02/26/LeetCode/</id>
     <published>2018-02-26T01:13:07.000Z</published>
-    <updated>2018-03-04T06:55:28.980Z</updated>
+    <updated>2018-03-04T07:38:45.617Z</updated>
     <content type="html"><![CDATA[<h1 id="LeetCode"><a href="#LeetCode" class="headerlink" title="LeetCode"></a>LeetCode</h1><h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1.Two Sum"></a>1.Two Sum</h2><p><strong>Q:</strong>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
 <p>You may assume that each input would have <strong>exactly</strong> one solution, and you may not use the <em>same</em> element twice.</p>
 <p><strong>Example:</strong></p>
@@ -634,7 +645,8 @@
 <p>**</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="LeetCode"><a href="#LeetCode" class="headerlink" title="LeetCode"></a>LeetCode</h1><h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="he]]>
+    <![CDATA[<center>LeetCode刷题记录</center>]]>
+    
     </summary>
     
       <category term="编程" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A8%8B/"/>
