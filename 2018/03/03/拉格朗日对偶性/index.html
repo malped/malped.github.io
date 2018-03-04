@@ -85,18 +85,18 @@
 
 
 
-<meta name="description" content="##原始问题 ​    假设$f(x), c_i(x), h_j(x)$是定义在$R^n$上面的连续可微函数，考虑约束最优化问题 ​                    $$\min_{x\in R^n}f(x)$$ ​                    $$s.t.\ c_i(x)\le0,\ i=1,2,…,">
+<meta name="description" content="原始问题​    假设$f(x), c_i(x), h_j(x)$是定义在$R^n$上面的连续可微函数，考虑约束最优化问题 ​                    \min_{x\in R^n}f(x) ​                    s.t.\ c_i(x)\le0,\ i=1,2,…,k ​      ">
 <meta name="keywords" content="机器学习,数学,拉格朗日">
 <meta property="og:type" content="article">
 <meta property="og:title" content="拉格朗日对偶性">
 <meta property="og:url" content="http://yoursite.com/2018/03/03/拉格朗日对偶性/index.html">
 <meta property="og:site_name" content="Malped">
-<meta property="og:description" content="##原始问题 ​    假设$f(x), c_i(x), h_j(x)$是定义在$R^n$上面的连续可微函数，考虑约束最优化问题 ​                    $$\min_{x\in R^n}f(x)$$ ​                    $$s.t.\ c_i(x)\le0,\ i=1,2,…,k$$ ​                         $$h_j(x)=0">
+<meta property="og:description" content="原始问题​    假设$f(x), c_i(x), h_j(x)$是定义在$R^n$上面的连续可微函数，考虑约束最优化问题 ​                    \min_{x\in R^n}f(x) ​                    s.t.\ c_i(x)\le0,\ i=1,2,…,k ​                         h_j(x)=0,\ j=1,2,…,l">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-03-03T16:55:41.195Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拉格朗日对偶性">
-<meta name="twitter:description" content="##原始问题 ​    假设$f(x), c_i(x), h_j(x)$是定义在$R^n$上面的连续可微函数，考虑约束最优化问题 ​                    $$\min_{x\in R^n}f(x)$$ ​                    $$s.t.\ c_i(x)\le0,\ i=1,2,…,k$$ ​                         $$h_j(x)=0">
+<meta name="twitter:description" content="原始问题​    假设$f(x), c_i(x), h_j(x)$是定义在$R^n$上面的连续可微函数，考虑约束最优化问题 ​                    \min_{x\in R^n}f(x) ​                    s.t.\ c_i(x)\le0,\ i=1,2,…,k ​                         h_j(x)=0,\ j=1,2,…,l">
 
 
 
@@ -385,7 +385,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  892
+                  687
                 </span>
               
 
@@ -410,44 +410,42 @@
       
 
       
-        <p>##原始问题</p>
-<p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微函数，考虑约束最优化问题</p>
-<p>​                    $$\min_{x\in R^n}f(x)$$</p>
-<p>​                    $$s.t.\ c_i(x)\le0,\ i=1,2,…,k$$</p>
-<p>​                         $$h_j(x)=0,\ j=1,2,…,l$$</p>
+        <h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微函数，考虑约束最优化问题</p>
+<p>​                    <script type="math/tex">\min_{x\in R^n}f(x)</script></p>
+<p>​                    <script type="math/tex">s.t.\ c_i(x)\le0,\ i=1,2,…,k</script></p>
+<p>​                         <script type="math/tex">h_j(x)=0,\ j=1,2,…,l</script></p>
 <p>​    称此约束最优化问题为原始最优化问题或原始问题。</p>
 <p>​    首先，引进广义拉格朗日函数</p>
-<p>​                $$L(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ic<em>i(x)+\sum</em>{j=1}^l\beta_jh_j(x)$$</p>
+<p>​                <script type="math/tex">L(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)</script></p>
 <p>​    这里，$\alpha_i,\beta_j$是拉格朗日乘子，$\alpha_i\ge0$.</p>
 <p>​    考虑函数(<strong><em>注意：此时$L(x,\alpha,\beta)$的变量是$\alpha_i\beta_j$</em></strong>)：</p>
-<p>​                    $$\Theta<em>P(x)=\max</em>{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)$$</p>
-<p>​    这里下标$P(Primal)$表示原始问题.对于此函数（关于$\alpha,\beta$的函数，$x$是常量），经过我们优化（不管什么方法），确定$\alpha,\beta$的值，就可以得到$L(x,\alpha,\beta)$的最大值，因为此时$\alpha,\beta$已经确定，显然最大值$$\Theta<em>P(x)=\max</em>{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)$$就是<strong><em>只和$x$有关的函数</em></strong></p>
+<p>​                    <script type="math/tex">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)</script></p>
+<p>​    这里下标$P(Primal)$表示原始问题.对于此函数（关于$\alpha,\beta$的函数，$x$是常量），经过我们优化（不管什么方法），确定$\alpha,\beta$的值，就可以得到$L(x,\alpha,\beta)$的最大值，因为此时$\alpha,\beta$已经确定，显然最大值<script type="math/tex">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)</script>就是<strong><em>只和$x$有关的函数</em></strong></p>
 <p>​    下面通过$x$是否绵竹约束条件两方面来分析这个函数：</p>
 <p>​        1.考虑某个$x$违反了原始的约束，即$c_i\gt0$或者$h_j\neq0$，那么：</p>
-<p>​                $$\Theta<em>P(x)=\max</em>{\alpha,\beta:\alpha<em>i\ge0}[f(x)+\sum</em>{i=1}^k\alpha_ic<em>i(x)+\sum</em>{j=1}^l\beta_jh_j(x)]=\infty$$</p>
+<p>​                <script type="math/tex">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)]=\infty</script></p>
 <p>​        2.考虑$x$满足原始的约束，则：</p>
-<p>​                $$\Theta<em>P(x)=\max</em>{\alpha,\beta:\alpha_i\ge0}[f(x)]=f(x)$$    ,</p>
+<p>​                <script type="math/tex">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)]=f(x)</script>    ,</p>
 <p>​            注意最大化确定$\alpha,\beta$的过程，$f(x)$就是个常量，敞亮的最大值显然是本身</p>
 <p>​    通过上面两条分析可以得出：</p>
-<p>​                    $$\Theta_P(x)=\begin{cases}f(x),\ {x满足原始问题约束}\+\infty,\ {其他}\\end{cases}$$ </p>
+<p>​                    <script type="math/tex">\Theta_P(x)=\begin{cases}f(x),\ {x满足原始问题约束}\\+\infty,\ {其他}\\\end{cases}</script> </p>
 <p>​    那么<strong>在满足约束的条件下：</strong></p>
-<p>​                $$\min_x\Theta_P(x)=\min<em>x\max</em>{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)$$</p>
+<p>​                <script type="math/tex">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script></p>
 <p>​    即$\min_x\Theta_P(x)$与原始优化问题等价，所以常用$\min_x\Theta_P(x)$来代表原始问题，定义原始问题的最优值：</p>
-<p>​                    $$p^*=\min_x\Theta_P(x)$$</p>
+<p>​                    <script type="math/tex">p^*=\min_x\Theta_P(x)</script></p>
 <p>​    原始问题讨论到这里，总结：重新定义一个无约束问题，这个无约束问题等价于原来的约束优化问题。</p>
-<p>##对偶问题</p>
-<p>​    定义<strong>关于$\alpha,\beta$的函数</strong>：</p>
-<p>​                    $$\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)$$</p>
+<h2 id="对偶问题"><a href="#对偶问题" class="headerlink" title="对偶问题"></a>对偶问题</h2><p>​    定义<strong>关于$\alpha,\beta$的函数</strong>：</p>
+<p>​                    <script type="math/tex">\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)</script></p>
 <p>​    注意上面等式<strong>右边是关于$x$的函数最小化,$x$确定之后，最小值就只与$\alpha,\beta$有关，所以此时是一个关于$\alpha,\beta$的函数</strong></p>
 <p>​    再考虑极大化$\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)$，即：</p>
-<p>​                    $$\max_{\alpha,\beta:\alpha_i\ge0}\Theta<em>D(\alpha,\beta)=\max</em>{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)$$</p>
+<p>​                    <script type="math/tex">\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)</script></p>
 <p>​    这就是原始问题的对偶问题，再将原始问题写出来：</p>
-<p>​                    $$\min_x\Theta_P(x)=\min<em>x\max</em>{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)$$</p>
+<p>​                    <script type="math/tex">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script></p>
 <p>​    从形式上可以看出堆成，只不过<strong>原始问题先固定$L(x,\alpha,\beta)$中的$x$,优化参数$\alpha,\beta$，再优化$x$；而对偶问题是先固定$\alpha,\beta$，再优化$x$，然后再确定参数$\alpha,\beta$</strong></p>
 <p>​    定义对偶问题的最优值：</p>
-<p>​                    $$d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)$$</p>
+<p>​                    <script type="math/tex">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)</script></p>
 <h2 id="原始问题与对偶问题之间的关系"><a href="#原始问题与对偶问题之间的关系" class="headerlink" title="原始问题与对偶问题之间的关系"></a>原始问题与对偶问题之间的关系</h2><p>​    若原始问题和对偶问题都有最优值，则有$Min-Max$不等式：</p>
-<p>​    $$d^<em>=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)\le\min<em>x\max</em>{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=p^</em>$$</p>
+<p>​    <script type="math/tex">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)\le\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=p^*</script></p>
 <p>​    当$L(x,\alpha,\beta)$对$x$为凸函数，对$\alpha,\beta$为凹函数，以上等号成立。而$L(x,\alpha,\beta)$对$\alpha,\beta$为天然凹函数，因此只要$L(x,\alpha,\beta)$对$x$为凸函数，等号便成立</p>
 <p>​    证明：一个式子的最大值永远大于等于这个式子的最小值，哪怕是这个式子最小的最大值与最大的最小值相比（瘦死的骆驼比马大）。</p>
 
@@ -676,7 +674,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原始问题与对偶问题之间的关系"><span class="nav-number">1.</span> <span class="nav-text">原始问题与对偶问题之间的关系</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原始问题"><span class="nav-number">1.</span> <span class="nav-text">原始问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对偶问题"><span class="nav-number">2.</span> <span class="nav-text">对偶问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原始问题与对偶问题之间的关系"><span class="nav-number">3.</span> <span class="nav-text">原始问题与对偶问题之间的关系</span></a></li></ol></div>
             
 
           </div>
@@ -1312,24 +1310,7 @@
         showTime(Counter);
       }
     });
-  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+  </script>
 
 
 
@@ -1341,6 +1322,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
 
   
 
