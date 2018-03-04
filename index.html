@@ -624,7 +624,8 @@
 <p>​<script type="math/tex">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script></p>
 <p>​    从形式上可以看出堆成，只不过<strong>原始问题先固定$L(x,\alpha,\beta)$中的$x$,优化参数$\alpha,\beta$，再优化$x$；而对偶问题是先固定$\alpha,\beta$，再优化$x$，然后再确定参数$\alpha,\beta$</strong></p>
 <p>​    定义对偶问题的最优值：</p>
-<h2 id="​d-max-alpha-beta-alpha-i-ge0-Theta-D-alpha-beta"><a href="#​d-max-alpha-beta-alpha-i-ge0-Theta-D-alpha-beta" class="headerlink" title="​d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)"></a>​<script type="math/tex">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)</script></h2><h2 id="原始问题与对偶问题之间的关系"><a href="#原始问题与对偶问题之间的关系" class="headerlink" title="原始问题与对偶问题之间的关系"></a>原始问题与对偶问题之间的关系</h2><p>​    若原始问题和对偶问题都有最优值，则有$Min-Max$不等式：</p>
+<p>​<script type="math/tex">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)</script></p>
+<h2 id="原始问题与对偶问题之间的关系"><a href="#原始问题与对偶问题之间的关系" class="headerlink" title="原始问题与对偶问题之间的关系"></a>原始问题与对偶问题之间的关系</h2><p>​    若原始问题和对偶问题都有最优值，则有$Min-Max$不等式：</p>
 <p>​<script type="math/tex">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)\le\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=p^*</script></p>
 <p>​    当$L(x,\alpha,\beta)$对$x$为凸函数，对$\alpha,\beta$为凹函数，以上等号成立。而$L(x,\alpha,\beta)$对$\alpha,\beta$为天然凹函数，因此只要$L(x,\alpha,\beta)$对$x$为凸函数，等号便成立</p>
 <p>​    证明：一个式子的最大值永远大于等于这个式子的最小值，哪怕是这个式子最小的最大值与最大的最小值相比（瘦死的骆驼比马大）。</p>
