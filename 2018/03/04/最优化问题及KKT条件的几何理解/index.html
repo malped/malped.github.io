@@ -72,7 +72,7 @@
 
 
 
-  <meta name="keywords" content="machine learning,data mining" />
+  <meta name="keywords" content="数学,机器学习,KKT,最优化," />
 
 
 
@@ -85,16 +85,25 @@
 
 
 
-<meta name="description" content="私は毎日少し進歩を望む">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Malped">
-<meta property="og:url" content="http://yoursite.com/archives/2018/03/index.html">
+<meta name="description" content="从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解">
+<meta name="keywords" content="数学,机器学习,KKT,最优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最优化问题及KKT条件的几何理解">
+<meta property="og:url" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/index.html">
 <meta property="og:site_name" content="Malped">
-<meta property="og:description" content="私は毎日少し進歩を望む">
+<meta property="og:description" content="从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/无约束优化.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/等式约束优化.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化1.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化2.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/箭头中间.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化3.jpg">
+<meta property="og:updated_time" content="2018-03-06T00:19:58.989Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Malped">
-<meta name="twitter:description" content="私は毎日少し進歩を望む">
+<meta name="twitter:title" content="最优化问题及KKT条件的几何理解">
+<meta name="twitter:description" content="从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/无约束优化.jpg">
 
 
 
@@ -124,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2018/03/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/"/>
 
 
 
 
 
-  <title>归档 | Malped</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>最优化问题及KKT条件的几何理解 | Malped</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -149,7 +158,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-archive">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -287,111 +296,269 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
-
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 4 篇日志。 继续努力。
-      </span>
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
-
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Malped">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/hmbb.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Malped">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/03/04/最优化问题及KKT条件的几何理解/" itemprop="url">
-              
-                <span itemprop="name">最优化问题及KKT条件的几何理解</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">最优化问题及KKT条件的几何理解</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-04T15:31:31+08:00"
-              content="2018-03-04" >
-          03-04
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T15:31:31+08:00">
+                2018-03-04
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/04/最优化问题及KKT条件的几何理解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/04/最优化问题及KKT条件的几何理解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/03/04/最优化问题及KKT条件的几何理解/" class="leancloud_visitors" data-flag-title="最优化问题及KKT条件的几何理解">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,682
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/03/拉格朗日对偶性/" itemprop="url">
-              
-                <span itemprop="name">拉格朗日对偶性</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-03T22:49:03+08:00"
-              content="2018-03-03" >
-          03-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
+      
+        <p>以二维空间$R^2$举例，从简单的无约束优化（0梯度条件），到等式约束优化（拉格朗日条件），再到不等式约束优化（KKT条件）解析优化问题解法的几何意义。</p>
+<h2 id="无约束优化问题"><a href="#无约束优化问题" class="headerlink" title="无约束优化问题"></a>无约束优化问题</h2><p>$\min f(x)$，其中，<strong>$x=(x_1,x_2)$</strong></p>
+<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/无约束优化.jpg" alt=""></p>
+<p>此时，对于$f(x)$的局部极小值点（红点）处梯度必然为0.因此优化问题可以转化为求解梯度为0的点。</p>
+<h2 id="带等式约束的优化问题"><a href="#带等式约束的优化问题" class="headerlink" title="带等式约束的优化问题"></a>带等式约束的优化问题</h2><p>$\min f(x)$，其中，<strong>$x=(x_1,x_2)$</strong></p>
+<p>$s.t. h(x)=0$</p>
+<p>与无约束问题不同，此时极小值点被限制在曲线$h(x)=0$上，我们因此将$\{x|h(x)=0\}$成为<strong>可行域</strong>，解只能在这个可行域里面取。如下图所示，曲线$h(x)=0$（黑色实线）便是可行域，现在要求在可行域上面的极小点。可以想象从无约束问题的极小点（黑点）靠等高线向外扩展，当扩展等高线第一次接触可行域时候（相切，<strong>梯度方向相反</strong>）的交点便是可行域的极小点。所以，相切，梯度方向相反，是取得极小值点的必要条件。</p>
+<p>补充：能够碰到极大极小值点的必要条件是：梯度场与切空间垂直，也就是梯度场不能够有任何流形切空间上的分量，否则在切空间方向有分量，在流形上沿分量方向走，函数值会增加，沿反方向走，函数值会减少，不可能为局部极小或者极大值点。</p>
+<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/等式约束优化.jpg" alt=""></p>
+<p>两条曲线相切，梯度方向相反，即梯度差一个任意的常数乘子（取为$-\lambda$）：$\nabla f(x)=-\lambda \nabla h(x)$，调整后即可得到拉格朗日条件$\nabla (f(x)+\lambda h(x))=0$.</p>
+<p>如此，带等式约束的优化问题转化为了无约束的优化问题，只需要对拉格朗日条件解方程组即可。这里$\lambda$便是拉格朗日乘子，有多少个等式约束就有多少个拉格朗日乘子。</p>
+<h2 id="带不等式约束的优化问题"><a href="#带不等式约束的优化问题" class="headerlink" title="带不等式约束的优化问题"></a>带不等式约束的优化问题</h2><h3 id="只有一个不等式起作用时"><a href="#只有一个不等式起作用时" class="headerlink" title="只有一个不等式起作用时"></a>只有一个不等式起作用时</h3><p>$\min f(x)$</p>
+<p>$s.t.  h(x)\le0$</p>
+<p>当只有一个不等式起作用时，如下图所示，可行域变成了阴影部分，最小值点还是切点，跟等式约束条件完全一样，只需要把不等号当做等号去求解即可。</p>
+<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化1.jpg" alt=""></p>
+<h3 id="两个及以上不等式起作用时"><a href="#两个及以上不等式起作用时" class="headerlink" title="两个及以上不等式起作用时"></a>两个及以上不等式起作用时</h3><p>$\min f(x)$</p>
+<p>$s.t.$</p>
+<p>$g_1(x)\le0$</p>
+<p>$g_2(x)\le0$</p>
+<p>如下图，当$f(x)$等高线慢慢扩大时，等高线与可行域（阴影部分）第一次相遇的点是个顶点，2个不等式同时起作用。满足最小值点从原来黑点的位置（切点）移动到了红点的位置，现在跟哪条约束函数都不相切了。这时候就需要用到KKt条件了。这里的条件是指：某一个点它如果是最小值点的话，就必须满足这个条件（在含不等式约束的优化问题里）。这是个<strong>必要条件</strong>，前面说的也全部是<strong>必要条件</strong>。</p>
+<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化2.jpg" alt=""></p>
+<p>这个问题的解$x^*$应满足的KKT（卡罗需-库恩-塔克）条件为：</p>
+<p>$1. \mu_1\ge0, \mu_2\ge0;$</p>
+<p>$2. \nabla f(x^<em>)+\mu_1\nabla g_1(x^</em>)+\mu_2\nabla g_2(x^*)=0;$</p>
+<p>$3. \mu_1g_1(x^<em>)+\mu_2g_2(x^</em>)=0$</p>
+<p>其中，$\mu$叫做KKT乘子，有多少个不等式约束就有多少个KKT乘子。加上本问题中的约束不封，就是完整版的KKT条件。<strong>对于有等式的情况：把其中一个不等式约束换成等式，可行域变成了半条曲线，最小值还是小红点，情况是一样的。</strong></p>
+<p>接下来看看KKT条件的几何意义。上图中<strong>绿色箭头</strong>为两条曲线的<strong>负梯度</strong>方向，<strong>红色箭头</strong>为等高线的<strong>梯度</strong>方向。如果这个顶点为满足约束的最小值点，那么该点处等高线梯度（红色箭头）一定在两个绿色箭头之间（$-\nabla g(x)$方向（绿色箭头）一定指向$g(x)$减小方向，即$g(x)\lt0$一边）</p>
+<p>$\mu_1\ge0,\mu_2\ge0$(红色箭头一定在绿色箭头之间)的解释：若三个向量的位置如下图所示，即$-\nabla f(x)$落在$\nabla g_1,\nabla g_2$所形成的锥形区域外侧。此时，作等高线（等值线）在点$x^k$处的切平面，可以发现：<strong>沿着与扶梯度$-\nabla f(x)$成锐角方向移动</strong>，只要能在红色阴影（阴影左界为当前等高线）取值，$f(x)$总能减小，而红色阴影区域为可行域，因此既可以建系哦啊目标函数值，又不破坏约束条件，所以当前$x^k$不是最优点。</p>
+<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/箭头中间.jpg" alt=""></p>
+<h2 id="有些不等式约束不起作用时"><a href="#有些不等式约束不起作用时" class="headerlink" title="有些不等式约束不起作用时"></a>有些不等式约束不起作用时</h2><p>如下面这个优化问题：</p>
+<p>$\min f(x)$</p>
+<p>$s.t.$</p>
+<p>$g_1(x)\le0$</p>
+<p>$g_2(x)\le0$</p>
+<p>$g_3(x)\le0$</p>
+<p>如下图$g_3(x)\le0$是不起作用的</p>
+<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化3.jpg" alt=""></p>
+<p>对于最小值点$x^*$，三个不等式约束的不同在于：</p>
+<p>$g_1(x^*)=0$（起作用）</p>
+<p>$g_2(x^*)=0$（起作用）</p>
+<p>$g_3(x^*)\lt0$（不起作用，最小值点不在$g_3(x)=0$上）</p>
+<p>此时KKT条件1，2变为：</p>
+<p>$1. \mu_1\ge0, \mu_2\ge0, \mu_3\ge0, $</p>
+<p>$2. \nabla f(x^<em>)+\mu_1\nabla g_1(x^</em>)+\mu_2\nabla g_2(x^<em>)+\mu_3\nabla g_3(x^</em>)=0$</p>
+<p>条件2中的$\mu_3\nabla g_3(x^<em>)$让我们很苦恼，$g_3(x^</em>)$约束根本不起作用，要是能令$\mu_3=0$就好了。加上条件3：</p>
+<p>$3. \mu_1g_1(x^<em>)+\mu_2g_2(x^</em>)+\mu_3g_3(x^*)=0$</p>
+<p>恰好能使$\mu_3=0$。由于$g_1(x^<em>)=0, g_2(x^</em>)=0$，所以前两项等于0，第三项$g_3(x^*)\lt0$,在条件3的作用下使得$\mu_3=0$。正好满足哟啊求。如果再多几项不起作用的不等式约束，条件2都能在条件3的作用下实现：目标函数$f(x)$的梯度$\nabla f(x)$被起作用的不等式约束函数$g(x)$的负梯度$-\nabla g(x)$线性标出且系数$\mu$全部非负（红色箭头被绿色箭头夹在中间）。这样，优化问题的求解就变成了对所有KKT条件解方程组。</p>
+<p>如果再定义一个拉格朗日函数：</p>
+<p>$L(x,\mu)=f(x)+\mu_1g_1(x)+\mu_2g_2(x)+…$</p>
+<p>令它对<strong>$x$</strong>的偏导为0，就是KKT条件中的条件2了。</p>
+<p>注意：以上所有都是局部极小值的点<strong>必要条件</strong>。据此求得的解不一定是局部极小值点（更别提全局），原因是上图中所画的等高线也许根本就不闭合，也急速实说我们一直想靠近的等高线和中间的黑点可能压根就是个鞍点或者近似鞍点。</p>
+
+      
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数学/" rel="tag"># 数学</a>
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/KKT/" rel="tag"># KKT</a>
+          
+            <a href="/tags/最优化/" rel="tag"># 最优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/03/拉格朗日对偶性/" rel="next" title="拉格朗日对偶性">
+                <i class="fa fa-chevron-left"></i> 拉格朗日对偶性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -399,6 +566,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -421,8 +595,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -529,6 +712,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#无约束优化问题"><span class="nav-number">1.</span> <span class="nav-text">无约束优化问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#带等式约束的优化问题"><span class="nav-number">2.</span> <span class="nav-text">带等式约束的优化问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#带不等式约束的优化问题"><span class="nav-number">3.</span> <span class="nav-text">带不等式约束的优化问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#只有一个不等式起作用时"><span class="nav-number">3.1.</span> <span class="nav-text">只有一个不等式起作用时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两个及以上不等式起作用时"><span class="nav-number">3.2.</span> <span class="nav-text">两个及以上不等式起作用时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有些不等式约束不起作用时"><span class="nav-number">4.</span> <span class="nav-text">有些不等式约束不起作用时</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -664,6 +863,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
