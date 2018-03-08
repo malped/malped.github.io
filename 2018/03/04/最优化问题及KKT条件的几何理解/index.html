@@ -72,7 +72,7 @@
 
 
 
-  <meta name="keywords" content="数学,机器学习,KKT,最优化," />
+  <meta name="keywords" content="机器学习,数学,KKT,最优化," />
 
 
 
@@ -86,7 +86,7 @@
 
 
 <meta name="description" content="从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解">
-<meta name="keywords" content="数学,机器学习,KKT,最优化">
+<meta name="keywords" content="机器学习,数学,KKT,最优化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="最优化问题及KKT条件的几何理解">
 <meta property="og:url" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/index.html">
@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化2.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/箭头中间.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化3.jpg">
-<meta property="og:updated_time" content="2018-03-06T00:19:58.989Z">
+<meta property="og:updated_time" content="2018-03-08T02:40:53.234Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="最优化问题及KKT条件的几何理解">
 <meta name="twitter:description" content="从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解">
@@ -466,8 +466,8 @@
 <p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化2.jpg" alt=""></p>
 <p>这个问题的解$x^*$应满足的KKT（卡罗需-库恩-塔克）条件为：</p>
 <p>$1. \mu_1\ge0, \mu_2\ge0;$</p>
-<p>$2. \nabla f(x^<em>)+\mu_1\nabla g_1(x^</em>)+\mu_2\nabla g_2(x^*)=0;$</p>
-<p>$3. \mu_1g_1(x^<em>)+\mu_2g_2(x^</em>)=0$</p>
+<p>$2. \nabla f(x^￥)+\mu_1\nabla g_1(x^￥)+\mu_2\nabla g_2(x^￥)=0;$</p>
+<p>$3. \mu_1g_1(x^￥)+\mu_2g_2(x^￥)=0$</p>
 <p>其中，$\mu$叫做KKT乘子，有多少个不等式约束就有多少个KKT乘子。加上本问题中的约束不封，就是完整版的KKT条件。<strong>对于有等式的情况：把其中一个不等式约束换成等式，可行域变成了半条曲线，最小值还是小红点，情况是一样的。</strong></p>
 <p>接下来看看KKT条件的几何意义。上图中<strong>绿色箭头</strong>为两条曲线的<strong>负梯度</strong>方向，<strong>红色箭头</strong>为等高线的<strong>梯度</strong>方向。如果这个顶点为满足约束的最小值点，那么该点处等高线梯度（红色箭头）一定在两个绿色箭头之间（$-\nabla g(x)$方向（绿色箭头）一定指向$g(x)$减小方向，即$g(x)\lt0$一边）</p>
 <p>$\mu_1\ge0,\mu_2\ge0$(红色箭头一定在绿色箭头之间)的解释：若三个向量的位置如下图所示，即$-\nabla f(x)$落在$\nabla g_1,\nabla g_2$所形成的锥形区域外侧。此时，作等高线（等值线）在点$x^k$处的切平面，可以发现：<strong>沿着与扶梯度$-\nabla f(x)$成锐角方向移动</strong>，只要能在红色阴影（阴影左界为当前等高线）取值，$f(x)$总能减小，而红色阴影区域为可行域，因此既可以建系哦啊目标函数值，又不破坏约束条件，所以当前$x^k$不是最优点。</p>
@@ -481,15 +481,15 @@
 <p>如下图$g_3(x)\le0$是不起作用的</p>
 <p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化3.jpg" alt=""></p>
 <p>对于最小值点$x^*$，三个不等式约束的不同在于：</p>
-<p>$g_1(x^*)=0$（起作用）</p>
-<p>$g_2(x^*)=0$（起作用）</p>
-<p>$g_3(x^*)\lt0$（不起作用，最小值点不在$g_3(x)=0$上）</p>
+<p>$g_1(x^￥)=0$（起作用）</p>
+<p>$g_2(x^￥)=0$（起作用）</p>
+<p>$g_3(x^￥)\lt0$（不起作用，最小值点不在$g_3(x)=0$上）</p>
 <p>此时KKT条件1，2变为：</p>
 <p>$1. \mu_1\ge0, \mu_2\ge0, \mu_3\ge0, $</p>
-<p>$2. \nabla f(x^<em>)+\mu_1\nabla g_1(x^</em>)+\mu_2\nabla g_2(x^<em>)+\mu_3\nabla g_3(x^</em>)=0$</p>
-<p>条件2中的$\mu_3\nabla g_3(x^<em>)$让我们很苦恼，$g_3(x^</em>)$约束根本不起作用，要是能令$\mu_3=0$就好了。加上条件3：</p>
-<p>$3. \mu_1g_1(x^<em>)+\mu_2g_2(x^</em>)+\mu_3g_3(x^*)=0$</p>
-<p>恰好能使$\mu_3=0$。由于$g_1(x^<em>)=0, g_2(x^</em>)=0$，所以前两项等于0，第三项$g_3(x^*)\lt0$,在条件3的作用下使得$\mu_3=0$。正好满足哟啊求。如果再多几项不起作用的不等式约束，条件2都能在条件3的作用下实现：目标函数$f(x)$的梯度$\nabla f(x)$被起作用的不等式约束函数$g(x)$的负梯度$-\nabla g(x)$线性标出且系数$\mu$全部非负（红色箭头被绿色箭头夹在中间）。这样，优化问题的求解就变成了对所有KKT条件解方程组。</p>
+<p>$2. \nabla f(x^￥)+\mu_1\nabla g_1(x^￥)+\mu_2\nabla g_2(x^￥)+\mu_3\nabla g_3(x^￥)=0$</p>
+<p>条件2中的$\mu_3\nabla g_3(x^￥)$让我们很苦恼，$g_3(x￥)$约束根本不起作用，要是能令$\mu_3=0$就好了。加上条件3：</p>
+<p>$3. \mu_1g_1(x^￥)+\mu_2g_2(x^￥)+\mu_3g_3(x^￥)=0$</p>
+<p>恰好能使$\mu_3=0​$。由于$g_1(x^￥)=0, g_2(x^￥)=0​$，所以前两项等于0，第三项$g_3(x^￥)\lt0​$,在条件3的作用下使得$\mu_3=0​$。正好满足哟啊求。如果再多几项不起作用的不等式约束，条件2都能在条件3的作用下实现：目标函数$f(x)​$的梯度$\nabla f(x)​$被起作用的不等式约束函数$g(x)​$的负梯度$-\nabla g(x)​$线性标出且系数$\mu​$全部非负（红色箭头被绿色箭头夹在中间）。这样，优化问题的求解就变成了对所有KKT条件解方程组。</p>
 <p>如果再定义一个拉格朗日函数：</p>
 <p>$L(x,\mu)=f(x)+\mu_1g_1(x)+\mu_2g_2(x)+…$</p>
 <p>令它对<strong>$x$</strong>的偏导为0，就是KKT条件中的条件2了。</p>
@@ -511,9 +511,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/数学/" rel="tag"># 数学</a>
-          
             <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/数学/" rel="tag"># 数学</a>
           
             <a href="/tags/KKT/" rel="tag"># KKT</a>
           
@@ -539,6 +539,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/06/Logistic-Regression的理解/" rel="prev" title="Logistic Regression的理解">
+                Logistic Regression的理解 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -624,7 +628,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -646,7 +650,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -695,12 +699,12 @@
             <div class="links-of-blogroll motion-element links-of-blogroll-block">
               <div class="links-of-blogroll-title">
                 <i class="fa  fa-fw fa-link"></i>
-                友情链接
+                再来看看
               </div>
               <ul class="links-of-blogroll-list">
                 
                   <li class="links-of-blogroll-item">
-                    <a href="https://yangyiqing.cn/" title="宽肩膀的Blog" target="_blank">宽肩膀的Blog</a>
+                    <a href="http://yangyiqing.cn/" title="宽肩膀的Blog" target="_blank">宽肩膀的Blog</a>
                   </li>
                 
               </ul>
