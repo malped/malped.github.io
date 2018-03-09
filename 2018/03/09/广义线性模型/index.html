@@ -72,7 +72,7 @@
 
 
 
-  <meta name="keywords" content="LR,理论,广义线性模型,机器学习,GLM," />
+  <meta name="keywords" content="理论,广义线性模型,LR,机器学习,GLM," />
 
 
 
@@ -86,7 +86,7 @@
 
 
 <meta name="description" content="广义线性模型简析以及与LR的联系">
-<meta name="keywords" content="LR,理论,广义线性模型,机器学习,GLM">
+<meta name="keywords" content="理论,广义线性模型,LR,机器学习,GLM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="广义线性模型">
 <meta property="og:url" content="http://yoursite.com/2018/03/09/广义线性模型/index.html">
@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/09/广义线性模型/伯努利1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/09/广义线性模型/伯努利2.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/09/广义线性模型/伯努利3.jpg">
-<meta property="og:updated_time" content="2018-03-09T05:07:30.757Z">
+<meta property="og:updated_time" content="2018-03-09T13:56:58.927Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="广义线性模型">
 <meta name="twitter:description" content="广义线性模型简析以及与LR的联系">
@@ -414,7 +414,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  331
+                  415
                 </span>
               
 
@@ -456,6 +456,10 @@
 <p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
 <p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
 <p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
+<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
+<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
+<p>3.$\eta=\theta^Tx$</p>
 <h2 id="高斯分布的另一种看法"><a href="#高斯分布的另一种看法" class="headerlink" title="高斯分布的另一种看法"></a>高斯分布的另一种看法</h2><p><img src="/2018/03/09/广义线性模型/高斯1.jpg" alt=""></p>
 <p><img src="/2018/03/09/广义线性模型/高斯2.jpg" alt=""></p>
 <p><img src="/2018/03/09/广义线性模型/高斯3.jpg" alt=""></p>
@@ -479,11 +483,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/LR/" rel="tag"># LR</a>
-          
             <a href="/tags/理论/" rel="tag"># 理论</a>
           
             <a href="/tags/广义线性模型/" rel="tag"># 广义线性模型</a>
+          
+            <a href="/tags/LR/" rel="tag"># LR</a>
           
             <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
           
@@ -509,6 +513,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/09/说说生成模型与判别模型/" rel="prev" title="说说生成模型与判别模型">
+                说说生成模型与判别模型 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -594,7 +602,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -616,7 +624,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -692,7 +700,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#广义线性模型"><span class="nav-number">1.</span> <span class="nav-text">广义线性模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概要"><span class="nav-number">1.0.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自己的理解"><span class="nav-number">1.0.2.</span> <span class="nav-text">自己的理解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指数分布族（-The-exponential-family-）"><span class="nav-number">1.1.</span> <span class="nav-text">指数分布族（$The exponential family$）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯分布的另一种看法"><span class="nav-number">1.2.</span> <span class="nav-text">高斯分布的另一种看法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#伯努利分布-LR回归的含义"><span class="nav-number">1.3.</span> <span class="nav-text">伯努利分布-LR回归的含义</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#广义线性模型"><span class="nav-number">1.</span> <span class="nav-text">广义线性模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概要"><span class="nav-number">1.0.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自己的理解"><span class="nav-number">1.0.2.</span> <span class="nav-text">自己的理解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指数分布族（-The-exponential-family-）"><span class="nav-number">1.1.</span> <span class="nav-text">指数分布族（$The exponential family$）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#广义线性模型的形式化定义"><span class="nav-number">1.2.</span> <span class="nav-text">广义线性模型的形式化定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯分布的另一种看法"><span class="nav-number">1.3.</span> <span class="nav-text">高斯分布的另一种看法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#伯努利分布-LR回归的含义"><span class="nav-number">1.4.</span> <span class="nav-text">伯努利分布-LR回归的含义</span></a></li></ol></li></ol></div>
             
 
           </div>

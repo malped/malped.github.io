@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-09T05:07:30.757Z</updated>
+  <updated>2018-03-09T16:27:16.612Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,11 +15,52 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[说说生成模型与判别模型]]></title>
+    <link href="http://yoursite.com/2018/03/09/%E8%AF%B4%E8%AF%B4%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://yoursite.com/2018/03/09/说说生成模型与判别模型/</id>
+    <published>2018-03-09T14:16:06.000Z</published>
+    <updated>2018-03-09T16:27:16.612Z</updated>
+    <content type="html"><![CDATA[<p>本文主要是对<a href="https://www.zhihu.com/question/20446337" target="_blank" rel="noopener">知乎相关问题</a>的总结</p>
+<h2 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h2><p>监督学习的任务就是学习一个模型，应用这一个模型，对给定的输入预测相应的输出。这个模型的一般形式为决策函数：$Y=f(X)$或者条件概率分布：$P(Y|X)$</p>
+<p>监督学习方法又可以氛围生成方法和判别方法。所学到的模型分别称为生成模型和判别模型。</p>
+<h3 id="生成模型"><a href="#生成模型" class="headerlink" title="生成模型"></a>生成模型</h3><p>书上的话：生成方法由数据学习<strong>联合概率分布P(X,Y)</strong>，<strong>然后</strong>求出<strong>条件概率分布$P(Y|X)$</strong>作为预测模型，即生成模型：$P(Y|X)={P(X,Y)\over P(X)}$</p>
+<p>这样的方法称为生成方法，是因为<strong>模型表示了$X,Y$的生成关系</strong>。典型的<strong>生成模型</strong>有：<em>朴素贝叶斯法</em>、<em>隐马尔科夫模型、混合高斯模型、AODE、Latent Dirichlet allocation（unsup）、Restricted Boltzmann Machine</em></p>
+<p>生成模型，就是生成（<strong>数据de分布</strong>）的模型，关注的是抓取样本的分布特征，通过建立每个类别的特征分布，最终建立很多类别模型（一般有多少类就有多少个），最后比较结果选择最优。生成模型输入$X$与输出$Y$之间<strong>没有因果关系</strong>。</p>
+<h3 id="判定模型"><a href="#判定模型" class="headerlink" title="判定模型"></a>判定模型</h3><p>书上的话：判别方法由数据直接学习决策函数$f(x)$或者条件概率分布$P(Y|X)$作为预测的模型，即判别模型。判别方法关心的是对给定的输入$X$应该预测什么样的输出$Y$。典型的判别方法包括：<em>kNN，感知机，决策树，逻辑回归，最大熵模型，SVM，提升方法，条件随机场，神经网络等</em>。</p>
+<p>判别模型，就是判别（<strong>数据输出量</strong>）的模型，直接采用<strong>输入特征</strong>去预测输出，或者说条件概率。判定模型只有一个模型，$X$往里面丢，$label$就出来了。判别模型输入$X$与输出$Y$之间<strong>有因果关系</strong></p>
+<h2 id="用起来？"><a href="#用起来？" class="headerlink" title="用起来？"></a>用起来？</h2><h3 id="生成模型-1"><a href="#生成模型-1" class="headerlink" title="生成模型"></a>生成模型</h3><p>优点：</p>
+<p>1.生成模型给出的是<strong>联合分布$P(\hat x,\hat c)$</strong>，不仅能够由联合分布计算条件分布$P(\hat c|\hat x)$（反之不行），还可以给出其他信息，比如可以使用$P(\hat x)=\sum^k_{i=1}P(\hat x|\hat c_i)P(\hat c_i)$来计算边缘分布$P(\hat x)$。如果一个输入样本的边缘分布$P(\hat x)$很小的话，那么可以认为学处的这个模型可能不太适合对这个样本进行分类，分类效果可能会不好，这技术里所谓的$outlier detection$。</p>
+<p>2.生成模型收敛速度比较快，即当样本数量较多时，生成模型能更快地收敛于真实模型。<br>3.生成模型能够应付存在隐变量的情况，比如混合高斯模型就是含有隐变量的生成方法。</p>
+<p>4.生成模型所需计算资源是更少的，大部分情况下只要做统计计数就可以获得模型</p>
+<p>缺点：</p>
+<p>1.实践中多数情况下判别模型效果更好</p>
+<h3 id="判别模型"><a href="#判别模型" class="headerlink" title="判别模型"></a>判别模型</h3><p>优点：</p>
+<p>1.直接面对预测，准确率往往较生成模型高</p>
+<p>2.由于直接学习$P(\hat c|\hat x)$而不需要求解类别条件概率，所以<strong>允许我们对输入进行抽象</strong>（比如降维、构造等），从而能够<strong>简化学习问题</strong>。</p>
+<p>缺点：</p>
+<p>1.判别模型所需资源更多，因为判别模型必须靠误差梯度下降法来获得模型，训练所需时间要多很多。</p>
+<script type="math/tex; mode=display">H(D|A)=\sum_{i=1}^n\frac{|D_i|}{|D|}H(D_i)=-\sum_{i=1}^n\frac{|D_i|}{|D|}\sum_{k=1}^K\frac{|D_ik|}{|D_i|}log_2\frac{|D_ik|}{|D_i|}</script>]]></content>
+    <summary type="html">
+    <![CDATA[说道说道生成模型与判别模型在定义与特点上的不同]]>
+    
+    </summary>
+    
+      <category term="生成模型" scheme="http://yoursite.com/tags/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="判别模型" scheme="http://yoursite.com/tags/%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="模型" scheme="http://yoursite.com/tags/%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[广义线性模型]]></title>
     <link href="http://yoursite.com/2018/03/09/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
     <id>http://yoursite.com/2018/03/09/广义线性模型/</id>
     <published>2018-03-09T05:02:21.000Z</published>
-    <updated>2018-03-09T05:07:30.757Z</updated>
+    <updated>2018-03-09T13:56:58.927Z</updated>
     <content type="html"><![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>本文将会说明线性回归和$LR$都是广义线性模型的一种特殊形式，介绍广义线性模型的一般求解步骤。</p>
 <p>线性回归中我们假设：</p>
 <script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
@@ -33,6 +74,10 @@
 <p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
 <p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
 <p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
+<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
+<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
+<p>3.$\eta=\theta^Tx$</p>
 <h2 id="高斯分布的另一种看法"><a href="#高斯分布的另一种看法" class="headerlink" title="高斯分布的另一种看法"></a>高斯分布的另一种看法</h2><p><img src="/2018/03/09/广义线性模型/高斯1.jpg" alt=""></p>
 <p><img src="/2018/03/09/广义线性模型/高斯2.jpg" alt=""></p>
 <p><img src="/2018/03/09/广义线性模型/高斯3.jpg" alt=""></p>
@@ -45,11 +90,11 @@
     
     </summary>
     
-      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
-    
       <category term="理论" scheme="http://yoursite.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="广义线性模型" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -171,7 +216,7 @@
     <link href="http://yoursite.com/2018/03/06/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/"/>
     <id>http://yoursite.com/2018/03/06/Logistic-Regression的理解/</id>
     <published>2018-03-06T12:52:28.000Z</published>
-    <updated>2018-03-09T04:13:54.837Z</updated>
+    <updated>2018-03-09T13:57:30.484Z</updated>
     <content type="html"><![CDATA[<h2 id="逻辑斯地回归模型"><a href="#逻辑斯地回归模型" class="headerlink" title="逻辑斯地回归模型"></a>逻辑斯地回归模型</h2><h3 id="逻辑斯谛分布"><a href="#逻辑斯谛分布" class="headerlink" title="逻辑斯谛分布"></a>逻辑斯谛分布</h3><p>设$X$是连续随机变量，$X$服从逻辑斯谛分布是指$X$具有下列分布函数和密度函数：</p>
 <script type="math/tex; mode=display">F(x)=P(X\le x)= {1 \over 1+e^{-(x-\mu )/\gamma}}</script><script type="math/tex; mode=display">f(x)=F'(x)={e^{-(x-\mu)/y} \over \gamma(1+e^{-(x-\mu)}/\gamma)^2}</script><p>式中，$\mu$为位置参数，$\gamma\gt0$为形状参数。密度函数与分布函数如下图所示。</p>
 <p><img src="/2018/03/06/Logistic-Regression的理解/分布.jpg" alt=""></p>
@@ -188,7 +233,7 @@
 <script type="math/tex; mode=display">L(w)=\sum^N_{i=1}[y_i\log \pi(x_i)+(1-y_i)\log (1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ \ =\sum^N_{i=1}[y_i\log{\pi(x) \over 1-\pi(x_i)}+\log(1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ =\sum^N_{i=1}[y_i(wx)-\log(1+exp(wx))]\ \ \ \ \</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
 <p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
 <script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
-<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
+<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}​</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
 <script type="math/tex; mode=display">P(y=1)={\exp (\sum^n_{i=1}w_{1i}x_i)\over \exp (\sum^n_{i=1}w_{1i}x_i)+\exp (\sum^n_{i=1}w_{0i}x_i)}</script><p>分子、分母同时除以分子，则有：</p>
 <script type="math/tex; mode=display">P(y=1)={1\over 1+\exp(-\sum^n_{i=1}w_ix_i)}</script><p>这就变成了$logistic$函数。</p>
 <h2 id="从广义线性模型角度理解LR"><a href="#从广义线性模型角度理解LR" class="headerlink" title="从广义线性模型角度理解LR"></a>从广义线性模型角度理解LR</h2><p>线性回归中我们假设：</p>
@@ -203,6 +248,10 @@
 <p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
 <p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
 <p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
+<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
+<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
+<p>3.$\eta=\theta^Tx$</p>
 <h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p><img src="/2018/03/06/Logistic-Regression的理解/伯努利1.jpg" alt=""></p>
 <p><img src="/2018/03/06/Logistic-Regression的理解/伯努利2.jpg" alt=""></p>
 <p><img src="/2018/03/06/Logistic-Regression的理解/伯努利3.jpg" alt=""></p>

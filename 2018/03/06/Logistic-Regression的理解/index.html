@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Logistic-Regression的理解/伯努利1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Logistic-Regression的理解/伯努利2.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Logistic-Regression的理解/伯努利3.jpg">
-<meta property="og:updated_time" content="2018-03-09T04:13:54.837Z">
+<meta property="og:updated_time" content="2018-03-09T13:57:30.484Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression的理解">
 <meta name="twitter:description" content="LR的推导以及从广义线性模型、最大熵模型角度的理解">
@@ -412,7 +412,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  866
+                  950
                 </span>
               
 
@@ -457,7 +457,7 @@
 <script type="math/tex; mode=display">L(w)=\sum^N_{i=1}[y_i\log \pi(x_i)+(1-y_i)\log (1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ \ =\sum^N_{i=1}[y_i\log{\pi(x) \over 1-\pi(x_i)}+\log(1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ =\sum^N_{i=1}[y_i(wx)-\log(1+exp(wx))]\ \ \ \ \</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
 <p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
 <script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
-<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
+<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}​</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
 <script type="math/tex; mode=display">P(y=1)={\exp (\sum^n_{i=1}w_{1i}x_i)\over \exp (\sum^n_{i=1}w_{1i}x_i)+\exp (\sum^n_{i=1}w_{0i}x_i)}</script><p>分子、分母同时除以分子，则有：</p>
 <script type="math/tex; mode=display">P(y=1)={1\over 1+\exp(-\sum^n_{i=1}w_ix_i)}</script><p>这就变成了$logistic$函数。</p>
 <h2 id="从广义线性模型角度理解LR"><a href="#从广义线性模型角度理解LR" class="headerlink" title="从广义线性模型角度理解LR"></a>从广义线性模型角度理解LR</h2><p>线性回归中我们假设：</p>
@@ -472,6 +472,10 @@
 <p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
 <p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
 <p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
+<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
+<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
+<p>3.$\eta=\theta^Tx$</p>
 <h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p><img src="/2018/03/06/Logistic-Regression的理解/伯努利1.jpg" alt=""></p>
 <p><img src="/2018/03/06/Logistic-Regression的理解/伯努利2.jpg" alt=""></p>
 <p><img src="/2018/03/06/Logistic-Regression的理解/伯努利3.jpg" alt=""></p>
@@ -609,7 +613,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -631,7 +635,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -707,7 +711,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑斯地回归模型"><span class="nav-number">1.</span> <span class="nav-text">逻辑斯地回归模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑斯谛分布"><span class="nav-number">1.1.</span> <span class="nav-text">逻辑斯谛分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二项逻辑斯谛回归模型"><span class="nav-number">1.2.</span> <span class="nav-text">二项逻辑斯谛回归模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型参数估计"><span class="nav-number">1.3.</span> <span class="nav-text">模型参数估计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从最大熵模型角度理解LR"><span class="nav-number">2.</span> <span class="nav-text">从最大熵模型角度理解LR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从广义线性模型角度理解LR"><span class="nav-number">3.</span> <span class="nav-text">从广义线性模型角度理解LR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自己的理解"><span class="nav-number">3.1.</span> <span class="nav-text">自己的理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指数分布族（-The-exponential-family-）"><span class="nav-number">3.2.</span> <span class="nav-text">指数分布族（$The exponential family$）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推导过程"><span class="nav-number">3.3.</span> <span class="nav-text">推导过程</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑斯地回归模型"><span class="nav-number">1.</span> <span class="nav-text">逻辑斯地回归模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑斯谛分布"><span class="nav-number">1.1.</span> <span class="nav-text">逻辑斯谛分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二项逻辑斯谛回归模型"><span class="nav-number">1.2.</span> <span class="nav-text">二项逻辑斯谛回归模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型参数估计"><span class="nav-number">1.3.</span> <span class="nav-text">模型参数估计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从最大熵模型角度理解LR"><span class="nav-number">2.</span> <span class="nav-text">从最大熵模型角度理解LR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从广义线性模型角度理解LR"><span class="nav-number">3.</span> <span class="nav-text">从广义线性模型角度理解LR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自己的理解"><span class="nav-number">3.1.</span> <span class="nav-text">自己的理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指数分布族（-The-exponential-family-）"><span class="nav-number">3.2.</span> <span class="nav-text">指数分布族（$The exponential family$）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#广义线性模型的形式化定义"><span class="nav-number">4.</span> <span class="nav-text">广义线性模型的形式化定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推导过程"><span class="nav-number">4.1.</span> <span class="nav-text">推导过程</span></a></li></ol></li></ol></div>
             
 
           </div>
