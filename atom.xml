@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-09T05:02:47.021Z</updated>
+  <updated>2018-03-09T05:05:44.355Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2018/03/09/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
     <id>http://yoursite.com/2018/03/09/广义线性模型/</id>
     <published>2018-03-09T05:02:21.000Z</published>
-    <updated>2018-03-09T05:02:47.021Z</updated>
+    <updated>2018-03-09T05:05:44.355Z</updated>
     <content type="html"><![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>本文将会说明线性回归和$LR$都是广义线性模型的一种特殊形式，介绍广义线性模型的一般求解步骤。</p>
 <p>线性回归中我们假设：</p>
 <script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
@@ -41,8 +41,21 @@
 <p><img src="/2018/03/09/广义线性模型/伯努利3.jpg" alt=""></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"><]]>
+    <![CDATA[广义线性模型简析以及与LR的联系]]>
+    
     </summary>
+    
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
+    
+      <category term="理论" scheme="http://yoursite.com/tags/%E7%90%86%E8%AE%BA/"/>
+    
+      <category term="广义线性模型" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="GLM" scheme="http://yoursite.com/tags/GLM/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   

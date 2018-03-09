@@ -4,6 +4,16 @@
     <title><![CDATA[广义线性模型]]></title>
     <url>%2F2018%2F03%2F09%2F%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%2F</url>
     <content type="text"><![CDATA[广义线性模型概要本文将会说明线性回归和$LR$都是广义线性模型的一种特殊形式，介绍广义线性模型的一般求解步骤。 线性回归中我们假设： y(x;\theta) 服从N(\mu,\sigma^2)分布$LR$中我们假设： y(x;\theta)服从Bernoulli(\phi)分布其实他们只是广义线性模型($GlMs$)的特例。 自己的理解广义线性模型是通过链接函数（$LR$中为$logit$函数），把自变量的线性组合（$\eta$ 自然参数/标准参数）与因变量（$T(y)$)的期望联系起来。 注：$LR$也可以说与因变量的概率分布结合起来，因为二项伯努利分布$E=P$ 指数分布族（$The exponential family$）首先我们定义一下什么是指数分布族，它有如下形式($\eta$自变量，$y$因变量)： p(y;\eta)=b(y)\exp(\eta^TT(y)-a(\eta))简单介绍一下其中的参数： 1.$\eta $是自然参数 2.$T(y)$是充分统计量(一般情况下$T(y)=y$) 3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $) 也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。 选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布 高斯分布的另一种看法 伯努利分布-LR回归的含义]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>LR</tag>
+        <tag>理论</tag>
+        <tag>广义线性模型</tag>
+        <tag>机器学习</tag>
+        <tag>GLM</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[最大熵模型]]></title>
