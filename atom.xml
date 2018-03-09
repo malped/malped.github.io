@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-08T15:34:18.630Z</updated>
+  <updated>2018-03-09T05:02:47.021Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[广义线性模型]]></title>
+    <link href="http://yoursite.com/2018/03/09/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://yoursite.com/2018/03/09/广义线性模型/</id>
+    <published>2018-03-09T05:02:21.000Z</published>
+    <updated>2018-03-09T05:02:47.021Z</updated>
+    <content type="html"><![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>本文将会说明线性回归和$LR$都是广义线性模型的一种特殊形式，介绍广义线性模型的一般求解步骤。</p>
+<p>线性回归中我们假设：</p>
+<script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
+<script type="math/tex; mode=display">y(x;\theta)服从Bernoulli(\phi)分布</script><p>其实他们只是广义线性模型($GlMs$)的特例。</p>
+<h3 id="自己的理解"><a href="#自己的理解" class="headerlink" title="自己的理解"></a>自己的理解</h3><p><strong>广义线性模型是通过链接函数（$LR$中为$logit$函数），把自变量的线性组合（$\eta$ 自然参数/标准参数）与因变量（$T(y)$)的期望联系起来。</strong></p>
+<p>注：$LR$也可以说与因变量的概率分布结合起来，因为二项伯努利分布$E=P$</p>
+<h2 id="指数分布族（-The-exponential-family-）"><a href="#指数分布族（-The-exponential-family-）" class="headerlink" title="指数分布族（$The exponential family$）"></a>指数分布族（$The exponential family$）</h2><p>首先我们定义一下什么是指数分布族，它有如下形式($\eta$自变量，$y$因变量)：</p>
+<script type="math/tex; mode=display">p(y;\eta)=b(y)\exp(\eta^TT(y)-a(\eta))</script><p>简单介绍一下其中的参数：</p>
+<p>1.$\eta $是自然参数</p>
+<p>2.$T(y)$是充分统计量(一般情况下$T(y)=y$)</p>
+<p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
+<p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
+<p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="高斯分布的另一种看法"><a href="#高斯分布的另一种看法" class="headerlink" title="高斯分布的另一种看法"></a>高斯分布的另一种看法</h2><p><img src="/2018/03/09/广义线性模型/高斯1.jpg" alt=""></p>
+<p><img src="/2018/03/09/广义线性模型/高斯2.jpg" alt=""></p>
+<p><img src="/2018/03/09/广义线性模型/高斯3.jpg" alt=""></p>
+<h2 id="伯努利分布-LR回归的含义"><a href="#伯努利分布-LR回归的含义" class="headerlink" title="伯努利分布-LR回归的含义"></a>伯努利分布-LR回归的含义</h2><p><img src="/2018/03/09/广义线性模型/伯努利1.jpg" alt=""></p>
+<p><img src="/2018/03/09/广义线性模型/伯努利2.jpg" alt=""></p>
+<p><img src="/2018/03/09/广义线性模型/伯努利3.jpg" alt=""></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"><]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[最大熵模型]]></title>
