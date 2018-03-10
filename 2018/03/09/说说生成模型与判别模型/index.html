@@ -93,7 +93,7 @@
 <meta property="og:site_name" content="Malped">
 <meta property="og:description" content="说道说道生成模型与判别模型在定义与特点上的不同">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-10T02:24:31.659Z">
+<meta property="og:updated_time" content="2018-03-10T05:32:46.367Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="说说生成模型与判别模型">
 <meta name="twitter:description" content="说道说道生成模型与判别模型在定义与特点上的不同">
@@ -407,7 +407,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  926
+                  1,377
                 </span>
               
 
@@ -437,7 +437,7 @@
 
       
         <p>本文主要是对<a href="https://www.zhihu.com/question/20446337" target="_blank" rel="noopener">知乎相关问题</a>的总结</p>
-<h1 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h1><hr>
+<h2 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h2><hr>
 <p>监督学习的任务就是学习一个模型，应用这一个模型，对给定的输入预测相应的输出。这个模型的一般形式为决策函数：$Y=f(X)$或者条件概率分布：$P(Y|X)$</p>
 <p>监督学习方法又可以氛围生成方法和判别方法。所学到的模型分别称为生成模型和判别模型。</p>
 <h3 id="生成模型"><a href="#生成模型" class="headerlink" title="生成模型"></a>生成模型</h3><p>书上的话：生成方法由数据学习<strong>联合概率分布P(X,Y)</strong>，<strong>然后</strong>求出<strong>条件概率分布$P(Y|X)$</strong>作为预测模型，即生成模型：$P(Y|X)={P(X,Y)\over P(X)}$</p>
@@ -445,7 +445,7 @@
 <p>生成模型，就是生成（<strong>数据de分布</strong>）的模型，关注的是抓取样本的分布特征，通过建立每个类别的特征分布，最终建立很多类别模型（一般有多少类就有多少个），最后比较结果选择最优。生成模型输入$X$与输出$Y$之间<strong>没有因果关系</strong>。</p>
 <h3 id="判定模型"><a href="#判定模型" class="headerlink" title="判定模型"></a>判定模型</h3><p>书上的话：判别方法由数据直接学习决策函数$f(x)$或者条件概率分布$P(Y|X)$作为预测的模型，即判别模型。判别方法关心的是对给定的输入$X$应该预测什么样的输出$Y$。典型的判别方法包括：<em>kNN，感知机，决策树，逻辑回归，最大熵模型，SVM，提升方法，条件随机场，神经网络等</em>。</p>
 <p>判别模型，就是判别（<strong>数据输出量</strong>）的模型，直接采用<strong>输入特征</strong>去预测输出，或者说条件概率。判定模型只有一个模型，$X$往里面丢，$label$就出来了。判别模型输入$X$与输出$Y$之间<strong>有因果关系</strong></p>
-<h1 id="用起来？"><a href="#用起来？" class="headerlink" title="用起来？"></a>用起来？</h1><hr>
+<h2 id="用起来？"><a href="#用起来？" class="headerlink" title="用起来？"></a>用起来？</h2><hr>
 <h3 id="生成模型-1"><a href="#生成模型-1" class="headerlink" title="生成模型"></a>生成模型</h3><p>优点：</p>
 <p>1.生成模型给出的是<strong>联合分布$P(\hat x,\hat c)$</strong>，不仅能够由联合分布计算条件分布$P(\hat c|\hat x)$（反之不行），还可以给出其他信息，比如可以使用$P(\hat x)=\sum^k_{i=1}P(\hat x|\hat c_i)P(\hat c_i)$来计算边缘分布$P(\hat x)$。如果一个输入样本的边缘分布$P(\hat x)$很小的话，那么可以认为学处的这个模型可能不太适合对这个样本进行分类，分类效果可能会不好，这技术里所谓的$outlier detection$。</p>
 <p>2.生成模型收敛速度比较快，即当样本数量较多时，生成模型能更快地收敛于真实模型。<br>3.生成模型能够应付存在隐变量的情况，比如混合高斯模型就是含有隐变量的生成方法。</p>
@@ -457,6 +457,14 @@
 <p>2.由于直接学习$P(\hat c|\hat x)$而不需要求解类别条件概率，所以<strong>允许我们对输入进行抽象</strong>（比如降维、构造等），从而能够<strong>简化学习问题</strong>。</p>
 <p>缺点：</p>
 <p>1.判别模型所需资源更多，因为判别模型必须靠误差梯度下降法来获得模型，训练所需时间要多很多。</p>
+<h2 id="过拟合："><a href="#过拟合：" class="headerlink" title="过拟合："></a>过拟合：</h2><hr>
+<h3 id="生成模型-2"><a href="#生成模型-2" class="headerlink" title="生成模型"></a>生成模型</h3><p>‘‘没有考虑正则化很简单，因为他们<strong>很少过拟合</strong>’’。生成模型学习$X,Y$的联合概率分布$P(X,Y)$，直接学习的就是数据的分布，从整个数据的整体着手，<strong>很少会出现过拟合</strong>。</p>
+<p>基本上属于<strong>高偏差/低方差</strong>分类器，<strong>当样本数量小于特征数量或样本数量不足时</strong>，应选用这种模型</p>
+<h3 id="判别模型-1"><a href="#判别模型-1" class="headerlink" title="判别模型"></a>判别模型</h3><p>判别模型应当有<strong>正则化过程</strong>，因为是直接生成$f(x)$或者$p(y|x)$，所以很容易比较$y$跟$f(x)$的关系，按照现有数据照葫芦画瓢来判别，<strong>容易过拟合</strong>，所以正则化便有存在的意义。</p>
+<p>基本上属于<strong>低偏差/高方差</strong>分类器，容易过拟合，需要正则项。<strong>数据量充足时</strong>选用判别模型</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>随着训练集的增大，<strong>低偏差/高方差</strong>分类器（判别模型）相对于<strong>高偏差/低方差</strong>分类器（生成模型）准确率高，因为随着数据量的增大，现有训练集数据的分布更接近于真实分布，此时生成模型优势变小，同时生成模型不能提高足够的准确率，此时，判别模型优势更大。</p>
+<p>举个例子：</p>
+<p>当一份分类数据的特征维度大于样本数量时。如果采用判别模型，极端情况下每条样本都有唯一的特征（或特征组合），此时如果正则化不够给力，那么该判别模型将极大限度拟合<strong>当前</strong>数据，训练集AUC可能将近1，那么就可能得到训练数据上准确率100%，测试数据准确率不如XJB猜的模型。</p>
 
       
     </div>
@@ -500,6 +508,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/10/线性模型的判断/" rel="prev" title="线性模型的判断">
+                线性模型的判断 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -585,7 +597,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -607,7 +619,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -683,7 +695,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#是什么？"><span class="nav-number">1.</span> <span class="nav-text">是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成模型"><span class="nav-number">1.0.1.</span> <span class="nav-text">生成模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判定模型"><span class="nav-number">1.0.2.</span> <span class="nav-text">判定模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用起来？"><span class="nav-number">2.</span> <span class="nav-text">用起来？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成模型-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">生成模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判别模型"><span class="nav-number">2.0.2.</span> <span class="nav-text">判别模型</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#是什么？"><span class="nav-number">1.</span> <span class="nav-text">是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成模型"><span class="nav-number">1.1.</span> <span class="nav-text">生成模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判定模型"><span class="nav-number">1.2.</span> <span class="nav-text">判定模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用起来？"><span class="nav-number">2.</span> <span class="nav-text">用起来？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成模型-1"><span class="nav-number">2.1.</span> <span class="nav-text">生成模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判别模型"><span class="nav-number">2.2.</span> <span class="nav-text">判别模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过拟合："><span class="nav-number">3.</span> <span class="nav-text">过拟合：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成模型-2"><span class="nav-number">3.1.</span> <span class="nav-text">生成模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判别模型-1"><span class="nav-number">3.2.</span> <span class="nav-text">判别模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">3.3.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></div>
             
 
           </div>

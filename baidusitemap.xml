@@ -4,8 +4,32 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/03/10/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%88%A4%E6%96%AD/</loc>
+    <lastmod>2018-03-10T07:57:05.416Z</lastmod>
+    <data>
+        <display>
+        <title>线性模型的判断</title>
+        <pubTime>2018-03-10T07:03:08.000Z</pubTime>
+        
+        <tag>线性模型</tag>
+         
+        <tag>非线性模型</tag>
+         
+        <tag>朴素贝叶斯</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/09/%E8%AF%B4%E8%AF%B4%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/</loc>
-    <lastmod>2018-03-10T02:24:31.659Z</lastmod>
+    <lastmod>2018-03-10T05:32:46.367Z</lastmod>
     <data>
         <display>
         <title>说说生成模型与判别模型</title>
@@ -61,11 +85,11 @@
         <title>广义线性模型</title>
         <pubTime>2018-03-09T05:02:21.000Z</pubTime>
         
+        <tag>LR</tag>
+         
         <tag>理论</tag>
          
         <tag>广义线性模型</tag>
-         
-        <tag>LR</tag>
          
         <tag>机器学习</tag>
          
