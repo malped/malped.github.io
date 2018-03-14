@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-14T16:28:28.796Z</updated>
+  <updated>2018-03-14T16:30:55.734Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
     <id>http://yoursite.com/2018/03/13/2017-CCF-大数据竞赛Top4/</id>
     <published>2018-03-13T14:58:29.000Z</published>
-    <updated>2018-03-14T16:28:28.796Z</updated>
+    <updated>2018-03-14T16:30:55.734Z</updated>
     <content type="html"><![CDATA[<h1 id="2017-CCF-大数据比赛记录（首赛）"><a href="#2017-CCF-大数据比赛记录（首赛）" class="headerlink" title="2017 CCF 大数据比赛记录（首赛）"></a>2017 CCF 大数据比赛记录（首赛）</h1><p>此次是在CCF平台与天池平台联合举办的大数据比赛，题目是：商场中精确定位用户所在店铺，主办方是蚂蚁金服。我和朋友两个人都是第一次参加这种大数据比赛，也算一步一个坑走了过来…线下赛最终经过反作弊筛选后是前100，共有2845支队伍。最后因为我俩临近期末考试，比赛也就就此结束了。</p>
 <h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>给出用户在商场使用手机支付时所采集到的信息，包括用户信息，店铺信息，商场信息等，要求预测给出上述信息后精准预测用户所在店铺。具体给出的数据表可以点击<a href="https://tianchi.aliyun.com/competition/information.htm?spm=5176.100067.5678.2.3bb01226n9sWID&amp;raceId=231620" target="_blank" rel="noopener">这里</a>来看。</p>
 <h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ol>
@@ -83,7 +83,6 @@
 <h3 id="候选集的欠缺"><a href="#候选集的欠缺" class="headerlink" title="候选集的欠缺"></a>候选集的欠缺</h3><ul>
 <li>无法构造联合特征，商店-WiFi，商店-经纬度等等</li>
 <li>完全丢弃了任何商店特征，包括特别重要的统计特征</li>
-<li>训练成本过高，或者要下采样</li>
 </ul>
 <p>总之，这两种的欠缺也早早为我们的特征工程确定了天花板，也大大限制了我们特征的提取，少了这两项能够造的有效特征数量至少少了70%</p>
 <h1 id="数据集的划分"><a href="#数据集的划分" class="headerlink" title="数据集的划分"></a>数据集的划分</h1><p>这里说一下我们实际的数据集划分，在最后给出可能的改进。</p>
@@ -568,9 +567,9 @@
     
       <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
-    
       <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
