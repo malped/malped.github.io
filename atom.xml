@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-14T14:33:11.536Z</updated>
+  <updated>2018-03-14T16:28:28.796Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
     <id>http://yoursite.com/2018/03/13/2017-CCF-大数据竞赛Top4/</id>
     <published>2018-03-13T14:58:29.000Z</published>
-    <updated>2018-03-14T14:33:11.536Z</updated>
+    <updated>2018-03-14T16:28:28.796Z</updated>
     <content type="html"><![CDATA[<h1 id="2017-CCF-大数据比赛记录（首赛）"><a href="#2017-CCF-大数据比赛记录（首赛）" class="headerlink" title="2017 CCF 大数据比赛记录（首赛）"></a>2017 CCF 大数据比赛记录（首赛）</h1><p>此次是在CCF平台与天池平台联合举办的大数据比赛，题目是：商场中精确定位用户所在店铺，主办方是蚂蚁金服。我和朋友两个人都是第一次参加这种大数据比赛，也算一步一个坑走了过来…线下赛最终经过反作弊筛选后是前100，共有2845支队伍。最后因为我俩临近期末考试，比赛也就就此结束了。</p>
 <h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>给出用户在商场使用手机支付时所采集到的信息，包括用户信息，店铺信息，商场信息等，要求预测给出上述信息后精准预测用户所在店铺。具体给出的数据表可以点击<a href="https://tianchi.aliyun.com/competition/information.htm?spm=5176.100067.5678.2.3bb01226n9sWID&amp;raceId=231620" target="_blank" rel="noopener">这里</a>来看。</p>
 <h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ol>
@@ -53,7 +53,7 @@
 <li>饭点指示器（万分位的提升）</li>
 <li>早晨深夜指示器，因为这两种店铺可能比较固定</li>
 </ul>
-<h2 id="用户特征"><a href="#用户特征" class="headerlink" title="用户特征"></a>用户特征</h2><p>实验过户所有的用户特征在我们这都是坑，一是因为训练集、预测集用户交集只有$1/3$左右，我们尝试过空值填充、空值保留、只保留交集部分用户特征、对交集部分用户单独训练预测…均是强力的反向上分特征。另一个原因可能是，每个用户在数据统计量均不足，没有统计意义，所以这就类似于$ID$类特征，妥妥没有现实意义的过拟合特征。</p>
+<h2 id="用户特征"><a href="#用户特征" class="headerlink" title="用户特征"></a>用户特征</h2><p>构造的所有的用户特征在我们这都是坑，一是因为训练集、预测集用户交集只有$1/3$左右，我们尝试过空值填充、空值保留、只保留交集部分用户特征、对交集部分用户单独训练预测…均是强力的反向上分特征。另一个原因可能是，每个用户在数据统计量均不足，没有统计意义，所以这就类似于$ID$类特征，妥妥没有现实意义的过拟合特征。</p>
 <ul>
 <li><del>用户购买力</del></li>
 <li><del>用户常去商店</del></li>
@@ -90,7 +90,7 @@
 <p>这是个时间相关的问题，而且数据量比较大，就放弃了分层$k$折交叉，我们选取一个周作为本地验证集</p>
 <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h2><p>最开始我们用的是$xgboost$的多分类模型，分商场进行预测，效果一般。然后转向使用二分类实现多分类，提升显著。具体为每次将一个$label$作为正例，其他作为反例，每次输出每条记录是该正例的概率，最后以最大概率的$label$作为预测结果</p>
 <h2 id="样本不均衡"><a href="#样本不均衡" class="headerlink" title="样本不均衡"></a>样本不均衡</h2><p>每次有将近100个$label$每次只将一个当做正例，正负样本比会非常小，会导致时间成本过长，精度下降，需要靠采样解决。</p>
-<p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度。</p>
+<p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度，但是精度略有损失，可能因为评价指标是$AUC$所以对样本不均衡不敏感。我们最后还是放弃了采样。</p>
 <h2 id="模型参数"><a href="#模型参数" class="headerlink" title="模型参数"></a>模型参数</h2><p>xgb的模型参数就常用的那几个：</p>
 <p><img src="/2018/03/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
 <h3 id="1、eta-默认0-3"><a href="#1、eta-默认0-3" class="headerlink" title="1、eta[默认0.3]"></a>1、eta[默认0.3]</h3><p>和GBM中的 learning rate 参数类似。 通过减少每一步的权重，可以提高模型的鲁棒性。 典型值为0.01-0.2。</p>
@@ -273,11 +273,11 @@
     
     </summary>
     
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
+    
       <category term="理论" scheme="http://yoursite.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="广义线性模型" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -568,9 +568,9 @@
     
       <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-      <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
-    
       <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
+    
+      <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
