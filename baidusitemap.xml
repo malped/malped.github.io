@@ -4,6 +4,58 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/</loc>
+    <lastmod>2018-03-14T14:33:11.536Z</lastmod>
+    <data>
+        <display>
+        <title>2017 CCF 大数据竞赛Top4%</title>
+        <pubTime>2018-03-13T14:58:29.000Z</pubTime>
+        
+        <tag>大数据竞赛</tag>
+         
+        <tag>天池</tag>
+         
+        <tag>CCF</tag>
+         
+        <tag>wifi定位</tag>
+         
+         
+           
+             
+              <breadCrumb title="比赛" url="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/06/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
+    <lastmod>2018-03-14T08:06:16.810Z</lastmod>
+    <data>
+        <display>
+        <title>Logistic Regression的理解</title>
+        <pubTime>2018-03-06T12:52:28.000Z</pubTime>
+        
+        <tag>LR</tag>
+         
+        <tag>最大熵模型</tag>
+         
+        <tag>广义线性回归</tag>
+         
+        <tag>逻辑斯谛回归</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/10/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%88%A4%E6%96%AD/</loc>
     <lastmod>2018-03-10T07:57:05.416Z</lastmod>
     <data>
@@ -52,32 +104,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/06/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
-    <lastmod>2018-03-09T13:57:30.484Z</lastmod>
-    <data>
-        <display>
-        <title>Logistic Regression的理解</title>
-        <pubTime>2018-03-06T12:52:28.000Z</pubTime>
-        
-        <tag>LR</tag>
-         
-        <tag>最大熵模型</tag>
-         
-        <tag>广义线性回归</tag>
-         
-        <tag>逻辑斯谛回归</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/03/09/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/</loc>
     <lastmod>2018-03-09T13:56:58.927Z</lastmod>
     <data>
@@ -85,11 +111,11 @@
         <title>广义线性模型</title>
         <pubTime>2018-03-09T05:02:21.000Z</pubTime>
         
-        <tag>LR</tag>
-         
         <tag>理论</tag>
          
         <tag>广义线性模型</tag>
+         
+        <tag>LR</tag>
          
         <tag>机器学习</tag>
          

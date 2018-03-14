@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Logistic-Regression的理解/伯努利1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Logistic-Regression的理解/伯努利2.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Logistic-Regression的理解/伯努利3.jpg">
-<meta property="og:updated_time" content="2018-03-09T13:57:30.484Z">
+<meta property="og:updated_time" content="2018-03-14T08:06:16.810Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression的理解">
 <meta name="twitter:description" content="LR的推导以及从广义线性模型、最大熵模型角度的理解">
@@ -454,7 +454,7 @@
 <h3 id="模型参数估计"><a href="#模型参数估计" class="headerlink" title="模型参数估计"></a>模型参数估计</h3><p>逻辑斯谛回归模型学习中，对于给定的训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_N,y_n)\}$ ，其中，$x_I\in R^n,y_i\in\{0,1\}$,可以应用<strong>极大似然估计法</strong>估计模型参数，从而得到逻辑斯谛回归模型。设：</p>
 <script type="math/tex; mode=display">P(Y=1|x)=\pi(x),\ \ \ P(Y=0|x)=1-\pi(x)</script><p>似然函数为</p>
 <script type="math/tex; mode=display">\Pi^N_{i=1}[\pi(x_i)^{y_i}][1-\pi(x)]^{1-y_i}</script><p>对数似然函数为</p>
-<script type="math/tex; mode=display">L(w)=\sum^N_{i=1}[y_i\log \pi(x_i)+(1-y_i)\log (1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ \ =\sum^N_{i=1}[y_i\log{\pi(x) \over 1-\pi(x_i)}+\log(1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ =\sum^N_{i=1}[y_i(wx)-\log(1+exp(wx))]\ \ \ \ \</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
+<script type="math/tex; mode=display">L(w)=\sum^N_{i=1}[y_i\log \pi(x_i)+(1-y_i)\log (1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ \ =\sum^N_{i=1}[y_i\log{\pi(x) \over 1-\pi(x_i)}+\log(1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ =\sum^N_{i=1}[y_i(wx)-\log(1+exp(wx))]\ \ \ \ \ \ \</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
 <p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
 <script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
 <script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}​</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
@@ -613,7 +613,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -624,7 +624,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -635,7 +635,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
