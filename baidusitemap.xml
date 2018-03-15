@@ -4,6 +4,32 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/03/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
+    <lastmod>2018-03-15T08:18:45.489Z</lastmod>
+    <data>
+        <display>
+        <title>2017-JDD京东金融算法大赛12th解决方案</title>
+        <pubTime>2018-03-15T04:08:59.000Z</pubTime>
+        
+        <tag>JDD</tag>
+         
+        <tag>大数据竞赛</tag>
+         
+        <tag>销量预测</tag>
+         
+        <tag>时间序列</tag>
+         
+         
+           
+             
+              <breadCrumb title="比赛" url="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/</loc>
     <lastmod>2018-03-14T16:30:55.734Z</lastmod>
     <data>
@@ -215,9 +241,9 @@
         
         <tag>机器学习</tag>
          
-        <tag>拉格朗日对偶</tag>
-         
         <tag>数学</tag>
+         
+        <tag>拉格朗日对偶</tag>
          
          
            
