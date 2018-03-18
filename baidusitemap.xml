@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/03/18/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/</loc>
+    <lastmod>2018-03-18T10:30:33.050Z</lastmod>
+    <data>
+        <display>
+        <title>SVM与LR的异同</title>
+        <pubTime>2018-03-18T08:54:31.000Z</pubTime>
+        
+        <tag>LR</tag>
+         
+        <tag>SVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/17/GBDT/</loc>
     <lastmod>2018-03-18T05:12:25.007Z</lastmod>
     <data>
@@ -185,11 +207,11 @@
         
         <tag>LR</tag>
          
+        <tag>机器学习</tag>
+         
         <tag>理论</tag>
          
         <tag>广义线性模型</tag>
-         
-        <tag>机器学习</tag>
          
         <tag>GLM</tag>
          
