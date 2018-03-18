@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-15T08:18:45.489Z</updated>
+  <updated>2018-03-18T05:12:25.007Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,129 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[GBDT]]></title>
+    <link href="http://yoursite.com/2018/03/17/GBDT/"/>
+    <id>http://yoursite.com/2018/03/17/GBDT/</id>
+    <published>2018-03-17T14:02:03.000Z</published>
+    <updated>2018-03-18T05:12:25.007Z</updated>
+    <content type="html"><![CDATA[<h1 id="提升方法"><a href="#提升方法" class="headerlink" title="提升方法"></a>提升方法</h1><blockquote>
+<p>在分类问题中，它通过改变训练样本的权重，学习多个分类器，并将这些分类器进行线性组合，他通过改变训练样本的权重，学习多个分类器，并将这些分类器进行线性组合，特高分类性能</p>
+<p>对于提升方法，有两个问题需要回答：一是在每一轮如何改变训练数据的权值或概率分布；而是如何将弱分类器组合成一个强分类器。</p>
+<p>​                                                    -《统计学习方法》</p>
+</blockquote>
+<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><blockquote>
+<p>$Adaboost$算法的特点是通过迭代每次学习一个基本分类器，每次迭代中，提高那些被前一轮分类器错误分类<strong>数据</strong>的权值，而降低那些被正确分类的<strong>数据</strong>的权值。最后$Adaboost$将基本分类器的线性组合作为强分类器，其中给分类误差率小的<strong>基本分类器</strong>大的权值，给分类误差率大的<strong>基本分类器</strong>小的权值</p>
+</blockquote>
+<h2 id="提升树"><a href="#提升树" class="headerlink" title="提升树"></a>提升树</h2><p>提升树正是一种前向分步的加法模型，但是其基分类器是树模型(二叉树)，分为二叉分类树和二叉回归树，提升树往往在实践中表现非常好。提升树的模型如下:</p>
+<script type="math/tex; mode=display">f_M(x)=\sum^M_{m=1}T(x;\Theta)</script><p>其中$T(x;\Theta)$表示决策树，$M$为树的个数，$\Theta$表示树的参数。</p>
+<p>首先确定初始提升树$f_0(x)=0$，第$m$步的模型是</p>
+<script type="math/tex; mode=display">f_m(x)=f_{m-1}(x)+T(x;\Theta_m)</script><p>其中，$f_{m-1}(x)$为当前模型，通过经验风险极小化确定下一棵决策树的参数$\Theta_m$，第$m$步的模型是</p>
+<script type="math/tex; mode=display">\hat \Theta_m=\arg \min_{\Theta_m}\sum^N_{i=1}L(y_i,\ f_{m-1}(x_i)+T(x_i;\Theta_m))</script><h1 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h1><h2 id="为什么拟合负梯度"><a href="#为什么拟合负梯度" class="headerlink" title="为什么拟合负梯度"></a>为什么拟合负梯度</h2><p>为什么要拟合负梯度（<strong>注意这里的梯度是对$\hat y_i^{t-1}$</strong>求导）呢？</p>
+<p>跟梯度下降类似，我们不断减去$\partial f(x)\over \partial x$可以得到$\min_x f(x)$，同理不断减去$\partial L\over\partial \hat y^{t-1}_i$就能得到$\min_{\hat y}L(\hat y)$。所以其实GBDT就是在<strong>函数空间</strong>的梯度下降。</p>
+<h2 id="传统GBDT算法"><a href="#传统GBDT算法" class="headerlink" title="传统GBDT算法"></a>传统GBDT算法</h2><p>算法流程：</p>
+<p><img src="/2018/03/17/GBDT/算法流程.png" alt=""></p>
+<p>乍一看，GBDT算法跟<strong>梯度下降</strong>算法很像，其实GBDT就是在<strong>函数空间</strong>的梯度下降，我们不断减去$\partial f(x)\over \partial x$可以得到$\min_x f(x)$，同理不断减去$\partial L\over\partial F_{K-1}$就能得到$\min_FL(F)$，注意这里是对$F_{K-1}$求导。</p>
+<h2 id="基于残差的GBDT"><a href="#基于残差的GBDT" class="headerlink" title="基于残差的GBDT"></a>基于残差的GBDT</h2><h3 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h3><p>$GBDT$全称$Gradient Boosting Decision Tree$, 其中$gradient$被称为梯度，更一般的理解，可以认为是一阶导，这里残差与梯度是什么关系呢。我们看平方损失函数${1\over 2}\sum^n_0(y_i-F(x_i))^2$，这个算是函数主要是针对回归类型的。</p>
+<p>$    {1\over 2}\sum^n_{i=1}(y_i-F(x_i))^2$</p>
+<p>$= {1\over 2}\sum^n_{i=1}(y_i-\hat y_i^t)^2$</p>
+<p>$= {1\over 2}\sum^n_{i=1}(y_i-\hat y_i^{t-1}-f_t(x_i))^2$</p>
+<p>令其对$\hat y_i^{t-1}$求导为0 得：</p>
+<script type="math/tex; mode=display">-\sum^n_{i=1}(y_i-\hat y_i^{t-1}-f_t(x_i))=0</script><p>则：</p>
+<script type="math/tex; mode=display">\sum_{i=1}^nf_t(x_i)=\sum_{i=1}^n(y_i-\hat y_i^{t-1})</script><p>所以基于残差的gbdt是一种特殊的gbdt模型，它的损失函数是平方损失函数，只能处理回归类的问题。</p>
+<h3 id="为什么基于残差的gbdt不是一个好的选择"><a href="#为什么基于残差的gbdt不是一个好的选择" class="headerlink" title="为什么基于残差的gbdt不是一个好的选择"></a>为什么基于残差的gbdt不是一个好的选择</h3><p>首先基于残差的gbdt只能处理回归类的问题，不能处理分类问题，这是损失函数所限制的，所以更一般化的gbdt是基于梯度的算法，这也就意味着只要我给出的损失函数是可导的，那么我就能用gbdt的思想去解决问题。具体解决的问题就不会仅仅限于回归了。</p>
+<p> 另外，基于残差的gbdt在解决回归问题上也不算是一个好的选择，一个比较明显的缺点就是对异常值过于敏感。</p>
+<h2 id="Boosting的加法模型"><a href="#Boosting的加法模型" class="headerlink" title="Boosting的加法模型"></a>Boosting的加法模型</h2><p>gbdt模型可以认为是是由k个基模型组成的一个加法运算式：</p>
+<p><img src="/2018/03/17/GBDT/公式0.svg" alt=""></p>
+<p>其中F是指所有基模型组成的函数空，以回归任务为例，回归树可以看作为一个把特征向量映射为某个score的函数。该模型的参数为：$\Theta=\{f_1,f_2,…,f_K\}$。于一般的机器学习算法不同的是，加法模型不是学习d维空间中的权重，而是<strong>直接学习函数（决策树）集合</strong>。</p>
+<p>那么一般化的损失函数是预测值$\hat y$与 真实值$y$之间的关系，如我们前面的平方损失函数，那么对于n个样本来说，则可以写成：</p>
+<script type="math/tex; mode=display">L=\sum^n_{i=1}l(y_i,\ \hat y_i)</script><p>更一般的，我们知道一个好的模型，在偏差和方差上有一个较好的平衡，而算法的损失函数正是代表了模型的偏差面，<strong>最小化损失函数，就相当于最小化模型的偏差，但同时我们也需要兼顾模型的方差，所以目标函数还包括抑制模型复杂度的正则项</strong>，因此目标函数可以写成：</p>
+<script type="math/tex; mode=display">Obj=\sum^n_{i=1}f_k(x_i)+\sum^K_{k=1}\Omega(f_k)</script><p>其中$\Omega$代表了基模型的复杂度，若基模型是书模型，则树的深度、叶子节点数等指标可以反映树的复杂度。</p>
+<p>对于Boosting来说，它采用的是前向分布算法，即从前往后，逐渐建立基模型来优化逼近目标函数，具体过程如下：</p>
+<p><img src="/2018/03/17/GBDT/equation0.svg" alt=""></p>
+<p>那么，在每一步，如何学习一个新的模型呢，答案的关键还是在于gbdt的目标函数上，即新模型的加入总是以优化目标函数为目的的。</p>
+<p>我们一第$t$步的模型拟合为例，在这一步，模型对第$i$个样本$x_i$的预测为：</p>
+<script type="math/tex; mode=display">\hat y_i^t=\hat y^{t-1}_i+f_t(x_i)</script><p>其中$f_t(x_i)$就是我们这次需要加入的新模型，即需要拟合的模型，此时，目标函数就可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation1.svg" alt=""></p>
+<p>即此时最优化目标函数，就相当于求得了$f_t(x_i)$</p>
+<h2 id="GBDT的目标函数"><a href="#GBDT的目标函数" class="headerlink" title="GBDT的目标函数"></a>GBDT的目标函数</h2><blockquote>
+<p><strong>泰勒公式：</strong>设$n$是一个正整数，如果定义在一个包含$a$的区间上的函数$f$在$a$点处$n+1$次可导，那么对于这个区间上的任意$x$都有：$f(x)=\sum^N_{n=0}{f^{(n)}(a)\over n!}(x-a)^n+R_n(x)$，其中的多项式称为函数在$a$处的泰勒展开式，$R_n(x)$是泰勒公式的余项且是$(x-a)^n$的高阶无穷小。</p>
+<p>​                                                    ——维基百科</p>
+</blockquote>
+<p>二阶泰勒展开：</p>
+<p><img src="/2018/03/17/GBDT/equation2.svg" alt=""></p>
+<p>那么在等式$(1)$中，我们把$\hat y^{t-1}_i$看成是等式$(2)$中的$x$，$f_t(x_i)$看成是$\Delta x$，因此等式$(1)$可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation3.svg" alt=""></p>
+<p>其中$g_i$和$h_i$分别为$l(y_i, \hat y_i^{t-1})$<strong>关于$\hat y_i^{t-1}$</strong>的一阶导和二阶导。我们一平方损失函数为例$\sum^n_{i=1}(y_i-(\hat y^{t-1}_i+f_t(x_i) ) )^2$，则$g_i=\partial _{\hat y^{t-1}}(\hat y^{t-1}-y_i)^2=2(\hat y^{t-1}-y_i)$，$h_i=\partial^2_{\hat y^{t-1}}(\hat y^{t-1}-y_i)^2=2$。</p>
+<p>由于在第$t$步$\hat y^{t-1}_i$其实是一个已知的值，所以$l(y_i, \hat y^{t-1}_i)$是一个常数，其对函数优化不会产生影响，因此，等式$(3)$可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation4.svg" alt=""></p>
+<p>所以我们只需要求出前一步损失函数的一阶和二阶导的值（由于前一步的$\hat y^{t-1}$是已知的，所以这两个值就是常数）带入等式$(4)$，然后优化目标函数，就可得到每一步的$f(x)$，最后根据加法模型的到一个整体的模型。</p>
+<h2 id="如何用决策树来表示上一步的目标函数"><a href="#如何用决策树来表示上一步的目标函数" class="headerlink" title="如何用决策树来表示上一步的目标函数"></a>如何用决策树来表示上一步的目标函数</h2><p> 假设我们$boosting$的基模型用决策树来实现，则一颗生成好的决策树，即结构确定，也就是说树的叶子结点其实是确定了的。假设这棵树的叶子节点有$T$片叶子，而每片叶子对应的值$w\in R^T$。熟悉决策树的同学应该清楚，每一片叶子结点中样本的预测值都会是一样的，在分类问题中，是某一类；在回归问题中，是某一个值，那么肯定存在这样一个函数$q:R^d\rightarrow \{1,2,…,T\}$，及将$f_t(x)$中的每个样本映射到每一个叶子节点上，当然$f_t(x)$和$q$我们都是不知道的，但我们也不关心，这里只是说明一下决策树表达数据结构的方法是怎么样的，不理解也没有问题。</p>
+<p>那么$f_t(x)$就可以转成$w_{q(x)}$，这里的$q(x)$代表了每个样本<strong>在哪个叶子节点上</strong>，而$w_{q(x)}$则代表了哪个叶子结点去什么$w$值，所以$w_{q(x)}$就代表了每个样本的取值$w$（即预测值）。</p>
+<p>如果决策树的复杂度可以由正则项来定义$\Omega(f_t)=\gamma T+{1\over2}\lambda\sum_{j=1}^Tw_j^2$ (这是xgb的正则项)，即决策树模型的复杂度由生成的树的叶子节点数量和叶子节点对应的值向量的$L2$范数决定。</p>
+<p>我们假设<strong>$I_j=\{i|q(x_i)=j\}$</strong>为第$j$个叶子节点的样本集合，则等式$(4)$根据上面的一些变换可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation5.svg" alt=""></p>
+<p><em>即我们之前样本的集合，现在都改写成了叶子结点的集合，由于一个叶子结点有多个样本存在，因此才有了$\sum_{i\in I_j}g_i$和$\sum_{i\in I_j}h_i$这两项。</em></p>
+<p>定义$G_j=\sum_{i\in I_j}g_i，H_j=\sum_{i\in I_j}h_i$，则等式$(5)$可以写成：</p>
+<script type="math/tex; mode=display">Obj^{(t)}=\sum^T_{j=1}[G_jw_j+{1\over 2}(H_j+\lambda)w_j^2]+\gamma T</script><p>如果树结构是固定的，即$q$是确定的，或者说我们已经知道了每个叶子结点有哪些样本，所以$G_j$和$H_j$是确定的，但$w$不确定（$w$其实就是我们要预测的值），那么令目标函数一阶导数为$0$，则可以求得叶子结点$j$对应的值：</p>
+<p><img src="/2018/03/17/GBDT/equation6.svg" alt=""></p>
+<p>目标函数的值可以化简为：</p>
+<p><img src="/2018/03/17/GBDT/equation7.svg" alt=""></p>
+<h2 id="如何最优化目标函数"><a href="#如何最优化目标函数" class="headerlink" title="如何最优化目标函数"></a>如何最优化目标函数</h2><p> 那么对于单棵决策树，一种理想的优化状态就是枚举所有可能的树结构，因此过程如下：</p>
+<ol>
+<li>首先枚举所有可能的树结构；</li>
+<li>计算每种树结构下的目标函数值，即等式$(7)$的值；</li>
+<li>取目标函数最小（大）值为最佳的数结构，根据等式6求得每个叶子节点的$w$取值，即样本的预测值。</li>
+</ol>
+<p>然而，可能的树结构数量是无穷的，所以实际上我们不可能枚举所有可能的树结构。通常情况下，我们采用贪心策略来生成决策树的每个节点。 </p>
+<ol>
+<li>从深度为0的树开始，对每个叶节点枚举所有的可用特征 </li>
+<li>针对每个特征，把属于该节点的训练样本根据该特征值升序排列，通过线性扫描的方式来决定该特征的最佳分裂点，并记录该特征的最大收益（采用最佳分裂点时的收益） </li>
+<li>选择收益最大的特征作为分裂特征，用该特征的最佳分裂点作为分裂位置，把该节点生长出左右两个新的叶节点，并为每个新节点关联对应的样本集 </li>
+<li>回到第1步，递归执行到满足特定条件为止</li>
+</ol>
+<p>那么如何计算上面的收益呢，很简单，仍然紧扣目标函数就可以了。假设我们在某一节点上二分裂成两个节点，分别是左$（L）$右$（R）$，则分列前的目标函数是$-{1\over 2}[{(G_L+G_R)^2\over H_L+H_R+\lambda}] $，分裂后则是$-{1\over 2}[{G_L^2\over H_L+\lambda}+{G_R^2\over H_R+\lambda}]+2\lambda$，则对于目标函数来说，分裂后的收益是（这里假设是最小化目标函数，所以用分列前减去分裂后）：</p>
+<p><img src="/2018/03/17/GBDT/equation8.svg" alt=""></p>
+<p><strong><em>等式$(8)$计算出来的收益，也是作为变量重要度输出的重要依据。</em></strong></p>
+<p>以上其实是$xgboost$建树方案</p>
+<h2 id="建树总结"><a href="#建树总结" class="headerlink" title="建树总结"></a>建树总结</h2><p>所以gbdt的算法可以总结为：</p>
+<ol>
+<li>算法在拟合的每一步都新生成一颗决策树；</li>
+<li>在拟合这棵树之前，需要计算损失函数在每个样本上的一阶导和二阶导，即$g_i$和$h_i$;</li>
+<li>通过上面的贪心策略生成一棵树，计算每个叶子节点的$G_j$和$H_j$，利用等式$(6)$计算预测值$w$;</li>
+<li>把新生成的决策树$f_t(x)$加入$\hat y^t_i=\hat y^{t-1}_i+\epsilon f_t(x_i)$，其中$\epsilon$为学习率，主要为了<strong>抑制模型的过拟合</strong>。</li>
+</ol>
+<h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>下面介绍GBDT中抵抗过拟合的技巧</p>
+<ol>
+<li><strong>限制树的复杂度</strong>：$\Omega$函数对树的节点数和节点上预测值$\sum^T_{j=1}w_j^2$的平方和具有惩罚。除此之外，我们通常在终止条件上增加一条：树的深度。</li>
+<li><strong>采样</strong>：训练每个树的时候，只使用一部分样本。</li>
+<li><strong>列采样</strong>：即训练每个树的时候，只使用一部分特征。这里是$xgboost$的创新，它将随机森林思想引入。</li>
+<li><strong>$Shrinkage$</strong>:进一步惩罚$\{w_j\}^T_1$,设定学习率$\epsilon$，防止过拟合。</li>
+<li><strong>$Early stop$</strong>：因为GBDT的可叠加性，我们使用的模型不一定是最终的$ensemble$，而是根据测试集的情况，选择使用前若干棵树。</li>
+</ol>
+<hr>
+<p><strong>参考链接：</strong></p>
+<ol>
+<li><a href="https://www.zybuluo.com/yxd/note/611571" target="_blank" rel="noopener">GBDT算法原理深入解析</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/29765582" target="_blank" rel="noopener">机器学习-一文理解GBDT的原理-20171001</a></li>
+<li><a href="http://www.flickering.cn/category/machine_learning/" target="_blank" rel="noopener">火光摇曳</a></li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[从二阶泰勒展开（Xgboost）推导GBDT]]>
+    
+    </summary>
+    
+      <category term="GBDT" scheme="http://yoursite.com/tags/GBDT/"/>
+    
+      <category term="xgboost" scheme="http://yoursite.com/tags/xgboost/"/>
+    
+      <category term="梯度提升树" scheme="http://yoursite.com/tags/%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[2017-JDD京东金融算法大赛12th解决方案]]></title>
@@ -115,9 +238,9 @@
     
     </summary>
     
-      <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
-    
       <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
+    
+      <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
     
       <category term="销量预测" scheme="http://yoursite.com/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
     
@@ -680,9 +803,9 @@
     
       <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
-    
       <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -693,7 +816,7 @@
     <link href="http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/"/>
     <id>http://yoursite.com/2018/02/27/剑指offer/</id>
     <published>2018-02-27T00:32:16.000Z</published>
-    <updated>2018-03-06T11:14:21.327Z</updated>
+    <updated>2018-03-16T02:50:30.736Z</updated>
     <content type="html"><![CDATA[<h1 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h1><h2 id="二维数组中的查找"><a href="#二维数组中的查找" class="headerlink" title="二维数组中的查找"></a>二维数组中的查找</h2><p><strong>Q:</strong>在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
 <p><strong>思路：</strong>思路从右上开始，右上为一行最大，一列最小。target&lt;右上，删一列;  target&gt;右上,删一行</p>
 <p><strong>Code</strong></p>
@@ -980,7 +1103,11 @@
 <p><strong>Code</strong></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">Getindex</span><span class="params">(self, data, left, right, k)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> left &gt; right:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">        mid = (left + right) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> data[mid] == k:</span><br><span class="line">            <span class="keyword">return</span> mid</span><br><span class="line">        <span class="keyword">if</span> data[mid] &lt; k:</span><br><span class="line">            <span class="keyword">return</span> self.Getindex(data, mid+<span class="number">1</span>, right,k)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.Getindex(data,left,mid<span class="number">-1</span>,k)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">GetNumberOfK</span><span class="params">(self, data, k)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = len(data) - <span class="number">1</span></span><br><span class="line">        flag = self.Getindex(data, left, right, k)</span><br><span class="line">        <span class="keyword">if</span> flag &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            l = r = flag</span><br><span class="line">            <span class="keyword">while</span> l &gt;= <span class="number">1</span> <span class="keyword">and</span> data[l<span class="number">-1</span>] == k:</span><br><span class="line">                l -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> data[<span class="number">0</span>] == k:</span><br><span class="line">                l =<span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> r &lt;= len(data) - <span class="number">2</span> <span class="keyword">and</span> data[r+<span class="number">1</span>] == k:</span><br><span class="line">                r += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> data[right] == k:</span><br><span class="line">                r = right</span><br><span class="line">            <span class="keyword">return</span> r - l + <span class="number">1</span></span><br></pre></td></tr></table></figure>
 <hr>
-<h2 id=""><a href="#" class="headerlink" title=" "></a> </h2>]]></content>
+<h2 id="数组中的逆序对"><a href="#数组中的逆序对" class="headerlink" title="数组中的逆序对"></a>数组中的逆序对</h2><p><strong>Q：</strong>在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。</p>
+<p><strong>思路：</strong>根据归并排序改编，每次合并两个数组排序时，查找两个数组中的逆序对，因为单个数组已经排好序，所以只需考虑两个数组之间的逆序对。具体方法是，见代码注释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution34</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.count = <span class="number">0</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">InversePairs</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        self.guibing(data)</span><br><span class="line">        <span class="keyword">return</span> self.count</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">guibing</span><span class="params">(self,data)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> len(data) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line">        mid = len(data) // <span class="number">2</span></span><br><span class="line">        left = self.guibing(data[:mid])</span><br><span class="line">        right = self.guibing(data[mid:])</span><br><span class="line">        <span class="comment"># left_len 用于left、right合并最后right剩余时候计算剩余right的逆序对</span></span><br><span class="line">        left_len = len(left)</span><br><span class="line">        res = []</span><br><span class="line">        <span class="keyword">while</span> left <span class="keyword">and</span> right:</span><br><span class="line">            <span class="comment"># 比较left、right最后一位，将大的从头插入res</span></span><br><span class="line">            <span class="comment"># 如果left[-1]大，此时right的长度就是left[-1]对应的逆序对数</span></span><br><span class="line">            <span class="keyword">if</span> left[<span class="number">-1</span>] &gt; right[<span class="number">-1</span>]:</span><br><span class="line">                self.count += len(right)</span><br><span class="line">                res.insert(<span class="number">0</span>, left.pop(<span class="number">-1</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                res.insert(<span class="number">0</span>, right.pop(<span class="number">-1</span>))</span><br><span class="line">        <span class="keyword">if</span> left:</span><br><span class="line">            <span class="keyword">return</span> left + res</span><br><span class="line">        <span class="keyword">if</span> right:</span><br><span class="line">            <span class="keyword">return</span> right + res</span><br></pre></td></tr></table></figure>
+<hr>
+]]></content>
     <summary type="html">
     <![CDATA[剑指offer刷题记录]]>
     

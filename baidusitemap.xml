@@ -4,6 +4,52 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/03/17/GBDT/</loc>
+    <lastmod>2018-03-18T05:12:25.007Z</lastmod>
+    <data>
+        <display>
+        <title>GBDT</title>
+        <pubTime>2018-03-17T14:02:03.000Z</pubTime>
+        
+        <tag>GBDT</tag>
+         
+        <tag>xgboost</tag>
+         
+        <tag>梯度提升树</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/</loc>
+    <lastmod>2018-03-16T02:50:30.736Z</lastmod>
+    <data>
+        <display>
+        <title>剑指offer</title>
+        <pubTime>2018-02-27T00:32:16.000Z</pubTime>
+        
+        <tag>编程</tag>
+         
+        <tag>代码</tag>
+         
+         
+           
+             
+              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
     <lastmod>2018-03-15T08:18:45.489Z</lastmod>
     <data>
@@ -11,9 +57,9 @@
         <title>2017-JDD京东金融算法大赛12th解决方案</title>
         <pubTime>2018-03-15T04:08:59.000Z</pubTime>
         
-        <tag>JDD</tag>
-         
         <tag>大数据竞赛</tag>
+         
+        <tag>JDD</tag>
          
         <tag>销量预测</tag>
          
@@ -210,28 +256,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/</loc>
-    <lastmod>2018-03-06T11:14:21.327Z</lastmod>
-    <data>
-        <display>
-        <title>剑指offer</title>
-        <pubTime>2018-02-27T00:32:16.000Z</pubTime>
-        
-        <tag>编程</tag>
-         
-        <tag>代码</tag>
-         
-         
-           
-             
-              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/</loc>
     <lastmod>2018-03-04T08:04:05.776Z</lastmod>
     <data>
@@ -241,9 +265,9 @@
         
         <tag>机器学习</tag>
          
-        <tag>数学</tag>
-         
         <tag>拉格朗日对偶</tag>
+         
+        <tag>数学</tag>
          
          
            
