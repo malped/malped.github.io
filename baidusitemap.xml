@@ -5,7 +5,7 @@
     
   <url>
     <loc>http://yoursite.com/2018/03/18/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/</loc>
-    <lastmod>2018-03-18T10:30:33.050Z</lastmod>
+    <lastmod>2018-03-18T10:36:34.424Z</lastmod>
     <data>
         <display>
         <title>SVM与LR的异同</title>
@@ -207,11 +207,11 @@
         
         <tag>LR</tag>
          
-        <tag>机器学习</tag>
-         
         <tag>理论</tag>
          
         <tag>广义线性模型</tag>
+         
+        <tag>机器学习</tag>
          
         <tag>GLM</tag>
          

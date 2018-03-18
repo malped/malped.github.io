@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-18T10:30:33.050Z</updated>
+  <updated>2018-03-18T10:36:34.424Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,10 +19,13 @@
     <link href="http://yoursite.com/2018/03/18/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/"/>
     <id>http://yoursite.com/2018/03/18/SVM与LR的异同/</id>
     <published>2018-03-18T08:54:31.000Z</published>
-    <updated>2018-03-18T10:30:33.050Z</updated>
+    <updated>2018-03-18T10:36:34.424Z</updated>
     <content type="html"><![CDATA[<p>本篇文章主要是对几篇blog以及知乎回答的总结</p>
-<h1 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h1><h2 id="LR和SVM都是有监督分类算法"><a href="#LR和SVM都是有监督分类算法" class="headerlink" title="LR和SVM都是有监督分类算法"></a>LR和SVM都是有监督分类算法</h2><h2 id="不考虑核函数，LR和SVM都是线性分类算法"><a href="#不考虑核函数，LR和SVM都是线性分类算法" class="headerlink" title="不考虑核函数，LR和SVM都是线性分类算法"></a>不考虑核函数，LR和SVM都是线性分类算法</h2><p>他们的分类决策面都是线性的。</p>
-<h2 id="LR和SVM都是判别模型"><a href="#LR和SVM都是判别模型" class="headerlink" title="LR和SVM都是判别模型"></a>LR和SVM都是判别模型</h2><h1 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h1><h2 id="LR和SVM本质不同来自于-Loss-Function"><a href="#LR和SVM本质不同来自于-Loss-Function" class="headerlink" title="LR和SVM本质不同来自于$Loss Function$"></a>LR和SVM本质不同来自于$Loss Function$</h2><ul>
+<p>[TOC]</p>
+<h1 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h1><hr>
+<h2 id="1-LR和SVM都是有监督分类算法"><a href="#1-LR和SVM都是有监督分类算法" class="headerlink" title="1. LR和SVM都是有监督分类算法"></a>1. LR和SVM都是有监督分类算法</h2><h2 id="2-不考虑核函数，LR和SVM都是线性分类算法"><a href="#2-不考虑核函数，LR和SVM都是线性分类算法" class="headerlink" title="2. 不考虑核函数，LR和SVM都是线性分类算法"></a>2. 不考虑核函数，LR和SVM都是线性分类算法</h2><p>他们的分类决策面都是线性的。</p>
+<h2 id="3-LR和SVM都是判别模型"><a href="#3-LR和SVM都是判别模型" class="headerlink" title="3. LR和SVM都是判别模型"></a>3. LR和SVM都是判别模型</h2><h1 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h1><hr>
+<h2 id="1-LR和SVM本质不同来自于-Loss-Function"><a href="#1-LR和SVM本质不同来自于-Loss-Function" class="headerlink" title="1. LR和SVM本质不同来自于$Loss Function$"></a>1. LR和SVM本质不同来自于$Loss Function$</h2><ul>
 <li><p>LR是$logistical loss$:</p>
 <script type="math/tex; mode=display">J(\theta)=-\sum_iy_i\log(p_{\theta}(x_i))+(1-y_i)\log(1-p_{\theta}(x_i))</script><p>SVM是$hinge loss$：</p>
 <script type="math/tex; mode=display">\sum^N_{i=1}[1-y_i(wx_i+b)]_++\lambda||w||^2</script></li>
@@ -40,25 +43,25 @@
 <p>$LR$则通过非线性映射，大大减小了离分类平面较远的点的权重，提高了与分类最相关的数据点的权重。（$sigmoid$函数中间比较陡峭？）</p>
 </li>
 </ul>
-<h2 id="LR可以产生概率，SVM不能产生概率"><a href="#LR可以产生概率，SVM不能产生概率" class="headerlink" title="LR可以产生概率，SVM不能产生概率"></a>LR可以产生概率，SVM不能产生概率</h2><ul>
+<h2 id="2-LR可以产生概率，SVM不能产生概率"><a href="#2-LR可以产生概率，SVM不能产生概率" class="headerlink" title="2. LR可以产生概率，SVM不能产生概率"></a>2. LR可以产生概率，SVM不能产生概率</h2><ul>
 <li><p>LR模型的原理就是基于伯努利分布的假设推导出来的（见LR文章），所以它产生的结果代表了分成某一类的概率</p>
 <p>SVM不是基于概率的假设，无法输出概率</p>
 </li>
 </ul>
-<h2 id="SVM依赖数据的测度，而LR则不受影响"><a href="#SVM依赖数据的测度，而LR则不受影响" class="headerlink" title="SVM依赖数据的测度，而LR则不受影响"></a>SVM依赖数据的测度，而LR则不受影响</h2><ul>
+<h2 id="3-SVM依赖数据的测度，而LR则不受影响"><a href="#3-SVM依赖数据的测度，而LR则不受影响" class="headerlink" title="3. SVM依赖数据的测度，而LR则不受影响"></a>3. SVM依赖数据的测度，而LR则不受影响</h2><ul>
 <li>SVM是基于距离的，所以受测度影响；LR是基于概率的，所以不受测度影响</li>
 <li>SVM需要最小化${1\over 2}||w||^2$，所以其依赖于不同维度的测度不同，如果差别较大需要做$normalization$，当然如果LR要加上正则化时，也是需要$normalization$</li>
 <li>如果用到梯度下降算法，则一般都需要$feature scaling$，如果不归一化，梯度下降会很慢</li>
 </ul>
-<h2 id="SVM自带结构风险最小化，LR不带正则项则是经验风险最小化"><a href="#SVM自带结构风险最小化，LR不带正则项则是经验风险最小化" class="headerlink" title="SVM自带结构风险最小化，LR不带正则项则是经验风险最小化"></a>SVM自带结构风险最小化，LR不带正则项则是经验风险最小化</h2><ul>
+<h2 id="4-SVM自带结构风险最小化，LR不带正则项则是经验风险最小化"><a href="#4-SVM自带结构风险最小化，LR不带正则项则是经验风险最小化" class="headerlink" title="4. SVM自带结构风险最小化，LR不带正则项则是经验风险最小化"></a>4. SVM自带结构风险最小化，LR不带正则项则是经验风险最小化</h2><ul>
 <li>因为SVM本身就是优化${1\over 2}||w||^2$最小化的，所以其优化的目标函数本身就含有结构风险最小化，所以<strong>不需要加正则项</strong></li>
 <li>LR不加正则化的时候，优化目标就是经验风险最小化，所以最后<strong>需要加入正则项</strong>，增强模型泛化能力</li>
 </ul>
-<h2 id="SVM会用核函数而LR一般不用核函数的原因"><a href="#SVM会用核函数而LR一般不用核函数的原因" class="headerlink" title="SVM会用核函数而LR一般不用核函数的原因"></a>SVM会用核函数而LR一般不用核函数的原因</h2><ul>
+<h2 id="5-SVM会用核函数而LR一般不用核函数的原因"><a href="#5-SVM会用核函数而LR一般不用核函数的原因" class="headerlink" title="5. SVM会用核函数而LR一般不用核函数的原因"></a>5. SVM会用核函数而LR一般不用核函数的原因</h2><ul>
 <li>SVM转化为对偶问题后，分类只需要<strong>计算与少数个支持向量的距离（原因从KKT条件最后一条理解，非支持向量不提供约束）</strong>，这个在进行复杂核函数计算时优势很明显，能够大大简化模型和计算量</li>
 <li>LR则是<strong>每个点都需要两两计算核函数</strong>，计算量庞大</li>
 </ul>
-<h2 id="LR和SVM在实际应用中的区别"><a href="#LR和SVM在实际应用中的区别" class="headerlink" title="LR和SVM在实际应用中的区别"></a>LR和SVM在实际应用中的区别</h2><ul>
+<h2 id="6-LR和SVM在实际应用中的区别"><a href="#6-LR和SVM在实际应用中的区别" class="headerlink" title="6. LR和SVM在实际应用中的区别"></a>6. LR和SVM在实际应用中的区别</h2><ul>
 <li>根据经验来看，对于小规模数据集，SVM的效果要好于LR，但是在大数据中，SVM计算复杂度收到限制，而LR因为训练简单，可以在线训练，所以经常被大量采用。</li>
 <li>$Andrew NG$在课里讲过：<ol>
 <li>如果$Feature$的数量很大，这时候选用$LR$或者是$Linear Kernel$的$SVM$</li>
@@ -584,11 +587,11 @@
     
       <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
     
-      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
       <category term="理论" scheme="http://yoursite.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="广义线性模型" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="GLM" scheme="http://yoursite.com/tags/GLM/"/>
     
