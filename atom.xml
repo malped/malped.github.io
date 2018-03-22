@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-18T10:36:34.424Z</updated>
+  <updated>2018-03-22T06:47:31.988Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,135 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[L1、L2正则化]]></title>
+    <link href="http://yoursite.com/2018/03/20/L1%E3%80%81L2%E6%AD%A3%E5%88%99%E5%8C%96/"/>
+    <id>http://yoursite.com/2018/03/20/L1、L2正则化/</id>
+    <published>2018-03-19T16:30:03.000Z</published>
+    <updated>2018-03-22T06:47:31.988Z</updated>
+    <content type="html"><![CDATA[<h1 id="从概率角度推导"><a href="#从概率角度推导" class="headerlink" title="从概率角度推导"></a>从概率角度推导</h1><hr>
+<p>本部分引<a href="https://www.zhihu.com/question/20447622/answer/25186207" target="_blank" rel="noopener">知乎用户bsdelf</a></p>
+<p>从概率论的角度：</p>
+<ol>
+<li>$Least Square$的解析解可以用$Gaussian$分布以及最大似然估计求得</li>
+<li>$Ridge$回归可以用$Gaussian$分布和最大后验估计解释</li>
+<li>$Lasso$回归可以用$Laplace$分布和最大后验估计解释</li>
+</ol>
+<p>首先假设线性回归模型具有如下形式：</p>
+<script type="math/tex; mode=display">f(x)=\sum^d_{j=1}{x_jw_j}+\epsilon=\mathbf{xw^T}+\epsilon</script><p>其中$\mathbf{x}\in \mathbb{R}^{1\times d}，\mathbf{w}\in \mathbb{R}^{n\times d}$，<strong>误差</strong>$\epsilon\in\mathbb{R}$。</p>
+<p>当前一直$\mathbf{X}=(\mathbf{x_1,x_2,…,x_n})^T\in\mathbb{R}^{n\times d}，\mathbf{y}\in\mathbb{R}^{n\times 1}$，怎样求$\mathbf w$呢？</p>
+<p><strong>策略1</strong>：假设$\epsilon_i\sim N(0,\sigma^2)$，也就是说$\mathbf{y_i}\sim N(\mathbf{x_iw^T,\sigma^2})$，那么用最大似然估计推导：</p>
+<p>$\arg\max_{\mathbf{w}}L(\mathbf{w})$</p>
+<p>$=\ln \prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp (-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over\sigma})^2)$</p>
+<p>$-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf y_i-\mathbf{w_iw^T})^2-n\ln \sigma\sqrt{2\pi}$</p>
+<p>$\arg\min_{\mathbf w}f(\mathbf w)$</p>
+<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2$</p>
+<p>$=||\mathbf y-\mathbf{Xw^T}||^2_2$</p>
+<p>这不就是最小二乘吗？</p>
+<p><strong>策略2</strong>:假设$\epsilon_i\sim N(0,\sigma^2)$，$\mathbf w_i\sim N(0,\tau^2)$，那么最后又最大后验估计推导：</p>
+<p>$\arg\max_\mathbf{w}L(\mathbf w)$</p>
+<p>$=\ln\prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over \sigma})^2)·\prod^d_{j=1}{1\over \tau\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf w_j\over\tau})^2)$</p>
+<p>$=-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf{y}_i-\mathbf{x_iw^T})^2-{1\over 2\tau^2}\sum^d_{j=1}\mathbf w^2_j-n\ln\sigma\sqrt{2\pi}-d\ln\tau\sqrt{2\pi}$</p>
+<p>$\arg\min_\mathbf wf(\mathbf w)$</p>
+<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2+\lambda\sum^d_{j=1}\mathbf w_j^2$</p>
+<p>$=||\mathbf y-\mathbf{Xw^T||^2_2+\lambda||\mathbf w||^2_2}$</p>
+<p>这不就是$Ridge$回归吗？</p>
+<p><strong>策略3</strong>：假设$\epsilon_i\sim N(0,\sigma^2)$，$\mathbf w_i\sim Laplace(0,b)$，那么最后又最大后验估计推导：</p>
+<p>$\arg\max_\mathbf{w}L(\mathbf w)$</p>
+<p>$=\ln\prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over \sigma})^2)·\prod^d_{j=1}{1\over 2b}\exp(-{|\mathbf w_j|\over b})$</p>
+<p>$=-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf{y}_i-\mathbf{x_iw^T})^2-{1\over 2\tau^2}\sum^d_{j=1}|\mathbf w_j|-n\ln\sigma\sqrt{2\pi}-d\ln\tau\sqrt{2\pi}$</p>
+<p>$\arg\min_\mathbf wf(\mathbf w)$</p>
+<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2+\lambda\sum^d_{j=1}|\mathbf w_j|$</p>
+<p>$=||\mathbf y-\mathbf{Xw^T||^2_2+\lambda||\mathbf w||_1}$</p>
+<p>这不就是$Lasso$吗？</p>
+<h2 id="L1、L2-正则化各自的特点"><a href="#L1、L2-正则化各自的特点" class="headerlink" title="$L1、L2$正则化各自的特点"></a>$L1、L2$正则化各自的特点</h2><hr>
+<h2 id="L1-正则化"><a href="#L1-正则化" class="headerlink" title="$L1$正则化"></a>$L1$正则化</h2><p>$L1$范数是指向量中各个元素绝对值之和，也叫<strong>“稀疏规则算子”</strong>。那么<strong>为什么$L1$范数会使<em>权值稀疏</em>？实际上：任何规则化孙子，如果它在$w_i=0$的地方不可微，并且可以分解为一个”求和”的形式，那么这个规则化算子就可以实现稀疏</strong></p>
+<p><strong>权值稀疏</strong>的好处：</p>
+<p><strong>1）特征选择：</strong></p>
+<p>没有信息的特征权值比较小。</p>
+<p><strong>2）可解释性</strong>：</p>
+<p>我们可以相信权重非0的特征上面提供的信息远大于筛选掉的信息</p>
+<p><strong>$L1$正则化不可导</strong>：</p>
+<p>L1不可导可以使用$Proximal Algorithms$或者$ADMM$来解决。</p>
+<h2 id="L2-正则化"><a href="#L2-正则化" class="headerlink" title="$L2$正则化"></a>$L2$正则化</h2><p>$L2$范数又称“<strong>岭回归</strong>”，也叫“<strong>权值衰减</strong>”。让权值都趋向0，可以修正过拟合，原因可能权值系数小了，模型<strong>“多项式性”</strong>就不明显了？。</p>
+<p><strong>1）学习理论角度：</strong></p>
+<p>$L2$范数可以防止过拟合，提升模型泛化能力</p>
+<p><strong>2）优化计算角度：</strong></p>
+<p>$L2$有助于处理$condition number$不好的情况</p>
+<p>这篇<a href="https://zhuanlan.zhihu.com/p/32488420" target="_blank" rel="noopener">知乎文章</a>对$L2$正则化从四个方面深度剖析。</p>
+<ol>
+<li><p>$mse$损失函数</p>
+<script type="math/tex; mode=display">L(w)={1\over N}(y-\hat y)^T(y-\hat y)={1\over N}(y-Xw)^T(y-Xw)</script><p>为使其达到最小，则关于$w$的偏导为0：</p>
+<script type="math/tex; mode=display">\hat w=(X^TX)^{-1}X^Ty</script><p>然而会存在$X^TX$不可逆的情况。为了避免这个问题，将$X^TX$矩阵的对角元素增大一个量$\lambda$，变成$X^TX+\lambda I$。相当于在矩阵$X^TX$中的对角线上加一个值增高他的山岭。山岭增高后矩阵变成可逆的。带入得：</p>
+<script type="math/tex; mode=display">\hat w_{bridge}=(X^TX+\lambda I)^{-1}X^Ty</script></li>
+<li><p>从贝叶斯的角度，假设$w$服从$N(0,\sigma^2I_p)$分布，在最大似然的基础上加入了$w$的先验知识，相当于极大化后验概率。求解该极大化的后验概率，对应的先验知识就是正则化部分</p>
+</li>
+<li><p>$L2$正则化的解相当于先对数据做了主成分分析，然后对于方差小的主成分方向进行惩罚。主成分分析原样保留大方差方向，去掉小方差方向，相当于一个硬选择。而$ L2$ 正则根据方差的大小施加不同程度的惩罚，相当于软选择。</p>
+</li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[L1、L2正则化的贝叶斯解释以及各自的特点]]>
+    
+    </summary>
+    
+      <category term="L1" scheme="http://yoursite.com/tags/L1/"/>
+    
+      <category term="L2" scheme="http://yoursite.com/tags/L2/"/>
+    
+      <category term="正则化" scheme="http://yoursite.com/tags/%E6%AD%A3%E5%88%99%E5%8C%96/"/>
+    
+      <category term="先验概率" scheme="http://yoursite.com/tags/%E5%85%88%E9%AA%8C%E6%A6%82%E7%8E%87/"/>
+    
+      <category term="后验概率" scheme="http://yoursite.com/tags/%E5%90%8E%E9%AA%8C%E6%A6%82%E7%8E%87/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[支持向量机SVM]]></title>
+    <link href="http://yoursite.com/2018/03/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/"/>
+    <id>http://yoursite.com/2018/03/18/支持向量机SVM/</id>
+    <published>2018-03-18T13:34:16.000Z</published>
+    <updated>2018-03-18T16:34:41.074Z</updated>
+    <content type="html"><![CDATA[<h1 id="线性可分支持向量机与硬间隔最大化"><a href="#线性可分支持向量机与硬间隔最大化" class="headerlink" title="线性可分支持向量机与硬间隔最大化"></a>线性可分支持向量机与硬间隔最大化</h1><hr>
+<h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><p>考虑一个二分类问题，假设输入空间和特征空间为两个不同的空间。<strong>输入空间为欧式空间或离散集合，特征空间为欧式空间或希尔伯特空间。</strong>线性可分支持向量机、线性支持向量机假设这两个空间的元素一一对应，并将输入空间中的输入映射为特征空间中的特征向量。非线性支持向量机利用一个从输入空间到特征空间的非线性映射将输入映射为特征向量。所以<strong>输入都有输入空间转换到特征空间，支持向量机的学习是在特征空间进行的。</strong></p>
+<p><strong>定义   线性可分支持向量机：</strong>给定线性可分训练数据集，通过间隔最大化或等价地求解相应的凸二次规划问题学习得到的分离超平面为：</p>
+<script type="math/tex; mode=display">w^￥x+b^￥=0</script><p>以及相应的分类决策函数：</p>
+<script type="math/tex; mode=display">f(x)=sign(w^￥x+b^￥)</script><h2 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h2><p>一般来说，一个点距离分离超平面的远近可以表示分类预测的确信程度。在超平面$wx+b=0$确定的情况下，$|wx+b|$能够<strong>相对的</strong>表示点$x$距离超平面的远近。而$wx+b$的符号与类标记$y$的符号是否一致能够表示分类是否正确。所以可用量$y(wx+b)$来表示分类的正确性以及确信度，这就是<strong>函数间隔</strong>的概念。</p>
+<p><strong><em>为什么$|wx+b|$是相对的表示距离：首先这指的是函数距离，同一个函数内有比较价值。其次因为$b$的影响，真正距离并不是这个，但是距离的比较都有这个$b$，所以这里就不再考虑</em></strong></p>
+<p><strong>定义  函数间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的函数间隔为</p>
+<script type="math/tex; mode=display">\hat\gamma_i=y_i(wx_i+b)</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的函数间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
+<script type="math/tex; mode=display">\hat\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>选择分离超平面时，只有函数间隔还不够，因为<strong><em>只要成比例的改变$w$和$b$，例如将它们改写为$2w$和$2b$，超平面并没有改变，但函数间隔却成为原来的$2$倍。所以可以对分离超平面的法向量$w$加某些约束，如规范化，$||w||=1$，使得间隔是确定的。</em></strong>这时函数间隔成为几何间隔。</p>
+<p><strong>定义  几何间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的几何间隔为：</p>
+<script type="math/tex; mode=display">\gamma_i=y_i({w\over ||w||}x_i+{b\over||w||})</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的几何间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
+<script type="math/tex; mode=display">\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>函数间隔和几何间隔的关系：</p>
+<script type="math/tex; mode=display">\gamma={\hat\gamma\over||w||}\ \ \ \ \ (1)</script><p>如果$||w||=1$，那么函数间隔和几何间隔相等。如果超平面参数$w$和$b$成比例的改变（超平面没有改变），函数间隔也按此比例改变，而几何间隔不变。</p>
+<h2 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h2><p>间隔最大化的直观解释是：对训练数据集找到几何间隔最大的超平面意味着一充分大的确信度对训练数据进行分类。也就是说，不仅将正负实例点分开，而且对最难分的实例点（离超平面最近的点）也有足够大的确信度将它们分开。这样的超平面应该对未知的新实例有很好的分类预测能力。</p>
+<h3 id="最大间隔分离超平面"><a href="#最大间隔分离超平面" class="headerlink" title="最大间隔分离超平面"></a>最大间隔分离超平面</h3><p>求一个几何间隔最大的分离超平面可以表示为下面问题的最优化：</p>
+<script type="math/tex; mode=display">\max_{w,b}\ \ \ \gamma</script><script type="math/tex; mode=display">s.t.\ \ y_i({w\over||w||}x_i+{b\over||w||})\ge\gamma,\ \ i=1,2,…,N</script><p>我们希望最大化几何间隔$\gamma$（<strong>$\gamma$为所有点的中几何距离最短的点的几何距离，就是支持向量的几何距离</strong>），约束条件表示的是超平面关于每个训练样本点的几何间隔至少是$\gamma$。</p>
+<p>考虑几何间隔与函数间隔的关系式$(1)$，可以将这个问题改写为(这里为了构造出$||w||$):</p>
+<script type="math/tex; mode=display">\max_{w,b}\ \ \ {\hat\gamma\over||w||}</script><script type="math/tex; mode=display">s.t.\ \ y_i(wx_i+b)\ge\hat\gamma,\ \ i=1,2,…,N</script><p>**函数间隔$\hat\gamma$的取值并不影响最优化问题的解。将$w,b$按比例变化为$\lambda w,\lambda b$，超平面并未发生改变，函数间隔变为$\lambda\hat\gamma $。所以函数间隔的改变只影响$w,b$的系数，不改变超平面。这样就可以去$\hat\gamma=1$，并带入以上最优化问题。注意到最大化$1\over ||w||$和最小化${1\over 2}||w||^2$是等价地。于是就得到了下面线性可分支持向量机学习的最优化问题：</p>
+<script type="math/tex; mode=display">\min_{w,b}\ \ \ {1\over 2}||w||^2</script><script type="math/tex; mode=display">s.t.\ \ \ y_i(wx_i+b)-1\ge0,\ \ \ i=1,2,…,N</script><p><strong><em>SVM部分暂时弃更，东西差不多都是《统计学习方法上的》，关于自己理解的部分也都标注在了书上，手码实在太多了，这部分先看书把。。</em></strong></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[支持向量机自己的备忘录]]>
+    
+    </summary>
+    
+      <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
+    
+      <category term="支持向量机" scheme="http://yoursite.com/tags/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"/>
+    
+      <category term="核函数" scheme="http://yoursite.com/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
+    
+      <category term="拉格朗日" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[SVM与LR的异同]]></title>
@@ -83,9 +212,9 @@
     
     </summary>
     
-      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
-    
       <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
+    
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -315,9 +444,9 @@
     
     </summary>
     
-      <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
-    
       <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
+    
+      <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
     
       <category term="销量预测" scheme="http://yoursite.com/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
     
@@ -332,7 +461,7 @@
     <link href="http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
     <id>http://yoursite.com/2018/03/13/2017-CCF-大数据竞赛Top4/</id>
     <published>2018-03-13T14:58:29.000Z</published>
-    <updated>2018-03-14T16:30:55.734Z</updated>
+    <updated>2018-03-21T14:23:56.884Z</updated>
     <content type="html"><![CDATA[<h1 id="2017-CCF-大数据比赛记录（首赛）"><a href="#2017-CCF-大数据比赛记录（首赛）" class="headerlink" title="2017 CCF 大数据比赛记录（首赛）"></a>2017 CCF 大数据比赛记录（首赛）</h1><p>此次是在CCF平台与天池平台联合举办的大数据比赛，题目是：商场中精确定位用户所在店铺，主办方是蚂蚁金服。我和朋友两个人都是第一次参加这种大数据比赛，也算一步一个坑走了过来…线下赛最终经过反作弊筛选后是前100，共有2845支队伍。最后因为我俩临近期末考试，比赛也就就此结束了。</p>
 <h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>给出用户在商场使用手机支付时所采集到的信息，包括用户信息，店铺信息，商场信息等，要求预测给出上述信息后精准预测用户所在店铺。具体给出的数据表可以点击<a href="https://tianchi.aliyun.com/competition/information.htm?spm=5176.100067.5678.2.3bb01226n9sWID&amp;raceId=231620" target="_blank" rel="noopener">这里</a>来看。</p>
 <h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ol>
@@ -401,8 +530,9 @@
 <h1 id="数据集的划分"><a href="#数据集的划分" class="headerlink" title="数据集的划分"></a>数据集的划分</h1><p>这里说一下我们实际的数据集划分，在最后给出可能的改进。</p>
 <p>这是个时间相关的问题，而且数据量比较大，就放弃了分层$k$折交叉，我们选取一个周作为本地验证集</p>
 <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h2><p>最开始我们用的是$xgboost$的多分类模型，分商场进行预测，效果一般。然后转向使用二分类实现多分类，提升显著。具体为每次将一个$label$作为正例，其他作为反例，每次输出每条记录是该正例的概率，最后以最大概率的$label$作为预测结果</p>
-<h2 id="样本不均衡"><a href="#样本不均衡" class="headerlink" title="样本不均衡"></a>样本不均衡</h2><p>每次有将近100个$label$每次只将一个当做正例，正负样本比会非常小，会导致时间成本过长，精度下降，需要靠采样解决。</p>
+<h2 id="二分类-amp-样本不均衡"><a href="#二分类-amp-样本不均衡" class="headerlink" title="二分类&amp;样本不均衡"></a>二分类&amp;样本不均衡</h2><p>每次有将近100个$label$每次只将一个当做正例，正负样本比会非常小，会导致时间成本过长，精度下降，需要靠采样解决。</p>
 <p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度，但是精度略有损失，可能因为评价指标是$AUC$所以对样本不均衡不敏感。我们最后还是放弃了采样。</p>
+<p>二分类还会造成一个问题：每次对于一个模型训练的时候，正样本平均只有小几百，负样本可能大几千甚至上万。这样正样本太少可能造成过拟合，因此我们模型部分着重调整了泛化部分的参数。</p>
 <h2 id="模型参数"><a href="#模型参数" class="headerlink" title="模型参数"></a>模型参数</h2><p>xgb的模型参数就常用的那几个：</p>
 <p><img src="/2018/03/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
 <h3 id="1、eta-默认0-3"><a href="#1、eta-默认0-3" class="headerlink" title="1、eta[默认0.3]"></a>1、eta[默认0.3]</h3><p>和GBM中的 learning rate 参数类似。 通过减少每一步的权重，可以提高模型的鲁棒性。 典型值为0.01-0.2。</p>
