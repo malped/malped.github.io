@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-23T16:17:52.928Z</updated>
+  <updated>2018-03-24T03:10:46.995Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2018/03/23/%E8%BD%AC-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E7%BB%BC%E8%BF%B0/"/>
     <id>http://yoursite.com/2018/03/23/转-梯度下降优化算法综述/</id>
     <published>2018-03-23T08:28:34.000Z</published>
-    <updated>2018-03-23T16:17:52.928Z</updated>
+    <updated>2018-03-24T03:10:46.995Z</updated>
     <content type="html"><![CDATA[<p><strong><em>本文转载自：</em></strong><a href="https://blog.csdn.net/google19890102/article/details/69942970" target="_blank" rel="noopener">https://blog.csdn.net/google19890102/article/details/69942970</a></p>
 <hr>
 <blockquote>
@@ -143,8 +143,15 @@
 </ul>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><strong><em>本文转载自：</em></strong><a href="https://blog.csdn.net/google19890102/article/details/69942970" target="_blank" rel="noopener">ht]]>
+    <![CDATA[转载一篇很全面的梯度下降优化算法综述]]>
+    
     </summary>
+    
+      <category term="梯度下降" scheme="http://yoursite.com/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/"/>
+    
+      <category term="转载" scheme="http://yoursite.com/tags/%E8%BD%AC%E8%BD%BD/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
