@@ -88,7 +88,7 @@
 <meta name="description" content="从二阶泰勒展开（Xgboost）推导GBDT">
 <meta name="keywords" content="GBDT,xgboost,梯度提升树">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GBDT">
+<meta property="og:title" content="GBDT&amp;Xgboost">
 <meta property="og:url" content="http://yoursite.com/2018/03/17/GBDT/index.html">
 <meta property="og:site_name" content="Malped">
 <meta property="og:description" content="从二阶泰勒展开（Xgboost）推导GBDT">
@@ -104,9 +104,11 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/17/GBDT/equation6.svg">
 <meta property="og:image" content="http://yoursite.com/2018/03/17/GBDT/equation7.svg">
 <meta property="og:image" content="http://yoursite.com/2018/03/17/GBDT/equation8.svg">
-<meta property="og:updated_time" content="2018-03-18T05:12:25.007Z">
+<meta property="og:image" content="http://yoursite.com/2018/03/17/GBDT/贪婪算法.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/17/GBDT/缺失值.jpg">
+<meta property="og:updated_time" content="2018-03-25T04:28:42.467Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GBDT">
+<meta name="twitter:title" content="GBDT&amp;Xgboost">
 <meta name="twitter:description" content="从二阶泰勒展开（Xgboost）推导GBDT">
 <meta name="twitter:image" content="http://yoursite.com/2018/03/17/GBDT/算法流程.png">
 
@@ -144,7 +146,7 @@
 
 
 
-  <title>GBDT | Malped</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>GBDT&Xgboost | Malped</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -332,7 +334,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">GBDT</h1>
+          <h1 class="post-title" itemprop="name headline">GBDT&Xgboost</h1>
         
 
         <div class="post-meta">
@@ -408,7 +410,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3,369
+                  4,652
                 </span>
               
 
@@ -476,7 +478,7 @@
 <script type="math/tex; mode=display">\hat y_i^t=\hat y^{t-1}_i+f_t(x_i)</script><p>其中$f_t(x_i)$就是我们这次需要加入的新模型，即需要拟合的模型，此时，目标函数就可以写成：</p>
 <p><img src="/2018/03/17/GBDT/equation1.svg" alt=""></p>
 <p>即此时最优化目标函数，就相当于求得了$f_t(x_i)$</p>
-<h2 id="GBDT的目标函数"><a href="#GBDT的目标函数" class="headerlink" title="GBDT的目标函数"></a>GBDT的目标函数</h2><blockquote>
+<h1 id="Xgboost"><a href="#Xgboost" class="headerlink" title="$Xgboost$"></a>$Xgboost$</h1><h2 id="Xgboost-的目标函数"><a href="#Xgboost-的目标函数" class="headerlink" title="$Xgboost$的目标函数"></a>$Xgboost$的目标函数</h2><blockquote>
 <p><strong>泰勒公式：</strong>设$n$是一个正整数，如果定义在一个包含$a$的区间上的函数$f$在$a$点处$n+1$次可导，那么对于这个区间上的任意$x$都有：$f(x)=\sum^N_{n=0}{f^{(n)}(a)\over n!}(x-a)^n+R_n(x)$，其中的多项式称为函数在$a$处的泰勒展开式，$R_n(x)$是泰勒公式的余项且是$(x-a)^n$的高阶无穷小。</p>
 <p>​                                                    ——维基百科</p>
 </blockquote>
@@ -499,7 +501,7 @@
 <p><img src="/2018/03/17/GBDT/equation6.svg" alt=""></p>
 <p>目标函数的值可以化简为：</p>
 <p><img src="/2018/03/17/GBDT/equation7.svg" alt=""></p>
-<h2 id="如何最优化目标函数"><a href="#如何最优化目标函数" class="headerlink" title="如何最优化目标函数"></a>如何最优化目标函数</h2><p> 那么对于单棵决策树，一种理想的优化状态就是枚举所有可能的树结构，因此过程如下：</p>
+<h2 id="如何求树的结构（单线程版本）"><a href="#如何求树的结构（单线程版本）" class="headerlink" title="如何求树的结构（单线程版本）"></a>如何求树的结构（单线程版本）</h2><p> 那么对于单棵决策树，一种理想的优化状态就是枚举所有可能的树结构，因此过程如下：</p>
 <ol>
 <li>首先枚举所有可能的树结构；</li>
 <li>计算每种树结构下的目标函数值，即等式$(7)$的值；</li>
@@ -515,7 +517,8 @@
 <p>那么如何计算上面的收益呢，很简单，仍然紧扣目标函数就可以了。假设我们在某一节点上二分裂成两个节点，分别是左$（L）$右$（R）$，则分列前的目标函数是$-{1\over 2}[{(G_L+G_R)^2\over H_L+H_R+\lambda}] $，分裂后则是$-{1\over 2}[{G_L^2\over H_L+\lambda}+{G_R^2\over H_R+\lambda}]+2\lambda$，则对于目标函数来说，分裂后的收益是（这里假设是最小化目标函数，所以用分列前减去分裂后）：</p>
 <p><img src="/2018/03/17/GBDT/equation8.svg" alt=""></p>
 <p><strong><em>等式$(8)$计算出来的收益，也是作为变量重要度输出的重要依据。</em></strong></p>
-<p>以上其实是$xgboost$建树方案</p>
+<p>这时，就有两种后续。一种是当最好的分割的情况下，GainGain为负时就停止树的生长，这样的话效率会比较高也简单，但是这样就放弃了未来可能会有更好的情况。另外一种就是一直分割到最大深度，然后进行修剪，递归得把划分叶子得到的Gain为负的收回。一般来说，后一种要好一些，于是我们采用后一种，完整的算法如下（没有写修剪）</p>
+<p><img src="/2018/03/17/GBDT/贪婪算法.png" alt=""></p>
 <h2 id="建树总结"><a href="#建树总结" class="headerlink" title="建树总结"></a>建树总结</h2><p>所以gbdt的算法可以总结为：</p>
 <ol>
 <li>算法在拟合的每一步都新生成一颗决策树；</li>
@@ -523,6 +526,29 @@
 <li>通过上面的贪心策略生成一棵树，计算每个叶子节点的$G_j$和$H_j$，利用等式$(6)$计算预测值$w$;</li>
 <li>把新生成的决策树$f_t(x)$加入$\hat y^t_i=\hat y^{t-1}_i+\epsilon f_t(x_i)$，其中$\epsilon$为学习率，主要为了<strong>抑制模型的过拟合</strong>。</li>
 </ol>
+<h2 id="算法复杂度"><a href="#算法复杂度" class="headerlink" title="算法复杂度"></a>算法复杂度</h2><ol>
+<li>按照某特征里的值进行排序，复杂度是$O(nlog n)$<br>  2. 扫描一遍该特征所有值得到最优分割点，因为该层（兄弟统一考虑）一共有$n$个样本，所以复杂度是$O(n)$<br>  3. 一共有$d$个特征，所以对于一层的操作，复杂度是$O(d(nlog n+n))=O(d nlog n)$<br>  4. 该树的深度为$k$。所以总复杂度是$O(k d nlog n)$</li>
+</ol>
+<h2 id="近似算法"><a href="#近似算法" class="headerlink" title="近似算法"></a>近似算法</h2><h3 id="近似算法思想"><a href="#近似算法思想" class="headerlink" title="近似算法思想"></a>近似算法思想</h3><p>枚举特征所有可能分割在计算上要求很高，为有效做到这一点，算法必须根据特征值对数据预先排序。贪心算法很强大，<strong>然而当数据量过大，无法装入整个内存中时，会非常不高效。</strong></p>
+<p>树模型对特征取值范围不敏感，只对顺序敏感。近似算法首先根据特征分布的百分位提出候选分裂点，然后将连续特征映射到这些候选分割点形成的bucket中，聚合统计数据，并基于聚合数据找到最佳解决方案。<strong>近似算法通常使用加权百分位树选择候选分割点，使特征按照权重期望均匀分布在候选分割点之间。</strong></p>
+<p>我们用$D_k=\{(x_{1k},h_1),(x_{2k},h_2),(x_{3k},h_3),…,(x_{nk},h_n)\}$代表每个样本的第$k$个特征和其对应的二阶梯度所组成的集合。那么我们就可以用百分比来定义这个排名函数$r_k:\mathbb{R}\rightarrow[0,1]$：</p>
+<script type="math/tex; mode=display">r_k(z)={1\over \sum_{(x,h)\in D_k}h}\sum_{(x,h)\in D_k,\ x<z}h</script><p>上式表示的是该特征的值小于z的样本所占总样本的比例。于是我们就能用下面这个不等式来寻找分割点$\{s_{k1},s_{k2},s_{k3},…,s_{kl}\}$</p>
+<script type="math/tex; mode=display">||r_k(s_{k,j})-r_k(s_{k,j+1})||<\epsilon,\ \ s_{k,1}=\min_ix_{ik}, \ s_{k,l}=\max_ix_{ik}</script><p>上式中$\epsilon$表示的是一个近似比例，或者说一个扫描步进。从最小值开始，每次增加$\epsilon(\max_ix_{ik}-\min_ix_{ik})$作为分割点。然后再这些分割点中选择一个 最大的分数作为最后的分割点。并且这里每个数据点被$h_i$加权,这里等式$(4)$可以写成如下形式：</p>
+<script type="math/tex; mode=display">\sum^n_{i=1}{1\over 2}h_i(f_t(x_i)-g_i/h_i)^2+\Omega(f_t)+constant</script><p>可以把$h_i$看做方差损失函数的权值。</p>
+<h3 id="两种近似算法"><a href="#两种近似算法" class="headerlink" title="两种近似算法"></a>两种近似算法</h3><p>很明显这里有两种分割思路：</p>
+<ul>
+<li>全局分割：建树前将所有特征分割完</li>
+<li>局部分割：每次分裂节点后重新分割特征</li>
+</ul>
+<p>全局方法比局部方法需要更少的分割步骤，但是全局方法通常需要更多的候选点才能保证效果，因为候选在每次节点分裂之后不会被重新完善，局部分割在每次分裂节点后被重新完善，并且有可能适合更深的树。</p>
+<h2 id="并行化"><a href="#并行化" class="headerlink" title="并行化"></a>并行化</h2><p>此部分引自知乎答主<a href="https://www.zhihu.com/question/41354392" target="_blank" rel="noopener">杨军</a></p>
+<p>在$XGBoost$的实现中，对算法进行了模块化的拆解，几个重要的部分分别是：</p>
+<p>​       I. $ObjFunction$：对应于不同的$Loss Function$，可以完成一阶和二阶导数的计算。</p>
+<p>​       II. $GradientBooster$：用于管理$Boost$方法生成的$Model$，注意，这里的$Booster Model$既可以对应于线性$Booster Model$，也可以对应于$Tree Booster Model$。</p>
+<p>​       III. $Updater$：用于建树，根据具体的建树策略不同，也会有多种$Updater$。比如，在$XGBoost$里为了性能优化，既提供了单机多线程并行加速，也支持多机分布式加速。也就提供了若干种不同的并行建树的$updater$实现，按并行策略的不同，包括：<br>       I). $inter-feature exact parallelism $（特征级精确并行）<br>       II). $inter-feature approximate parallelism$（特征级近似并行，基于特征分bin计算，减少了枚举所有特征分裂点的开销）<br>       III). $intra-feature parallelism$ （特征内并行）<br>       IV). $inter-node parallelism$  （多机并行）</p>
+<h2 id="处理缺失值"><a href="#处理缺失值" class="headerlink" title="处理缺失值"></a>处理缺失值</h2><p>此部分引自知乎答主<a href="https://www.zhihu.com/search?type=content&amp;q=xgboost%20%E7%BC%BA%E5%A4%B1%E5%80%BC" target="_blank" rel="noopener">微调</a></p>
+<p>$xgboost$处理缺失值的方法和其他树模型不同。根据作者$Tianqi Chen$在论文中章节3.4的介绍，$xgboost$把缺失值当做稀疏矩阵来对待，本身的在节点分裂时不考虑的缺失值的数值。通过这个工程$trick$来减少了为稀疏离散特征寻找$split point$的时间开销。缺失值数据会被分到左子树和右子树分别计算损失，选择较优的那一个。如果训练中没有数据缺失，预测时出现了数据缺失，那么默认被分类到右子树。具体的介绍可以参考<a href="https://github.com/dmlc/xgboost/issues/21" target="_blank" rel="noopener">链接1</a><a href="http://xgboost.readthedocs.io/en/latest/faq.html#how-to-deal-with-missing-value" target="_blank" rel="noopener">链接2</a>。</p>
+<p><img src="/2018/03/17/GBDT/缺失值.jpg" alt=""></p>
 <h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>下面介绍GBDT中抵抗过拟合的技巧</p>
 <ol>
 <li><strong>限制树的复杂度</strong>：$\Omega$函数对树的节点数和节点上预测值$\sum^T_{j=1}w_j^2$的平方和具有惩罚。除此之外，我们通常在终止条件上增加一条：树的深度。</li>
@@ -534,6 +560,10 @@
 <hr>
 <p><strong>参考链接：</strong></p>
 <ol>
+<li><a href="https://arxiv.org/pdf/1603.02754v1.pdf" target="_blank" rel="noopener">XGBoost: A Scalable Tree Boosting System</a></li>
+<li><a href="http://xgboost.readthedocs.io/en/latest/" target="_blank" rel="noopener">xgboost</a></li>
+<li><a href="http://djjowfy.com/2017/08/01/XGBoost%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">xgboost原理</a></li>
+<li><a href="https://www.zhihu.com/search?type=content&amp;q=xgboost%20%E7%BC%BA%E5%A4%B1%E5%80%BC" target="_blank" rel="noopener">知乎</a></li>
 <li><a href="https://www.zybuluo.com/yxd/note/611571" target="_blank" rel="noopener">GBDT算法原理深入解析</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/29765582" target="_blank" rel="noopener">机器学习-一文理解GBDT的原理-20171001</a></li>
 <li><a href="http://www.flickering.cn/category/machine_learning/" target="_blank" rel="noopener">火光摇曳</a></li>
@@ -572,8 +602,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/15/2017-JDD京东金融算法大赛12th解决方案/" rel="next" title="2017-JDD京东金融算法大赛12th解决方案">
-                <i class="fa fa-chevron-left"></i> 2017-JDD京东金融算法大赛12th解决方案
+              <a href="/2018/03/10/线性模型的判断/" rel="next" title="线性模型的判断">
+                <i class="fa fa-chevron-left"></i> 线性模型的判断
               </a>
             
           </div>
@@ -582,8 +612,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/18/SVM与LR的异同/" rel="prev" title="SVM与LR的异同">
-                SVM与LR的异同 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/19/最优化问题及KKT条件的几何理解/" rel="prev" title="最优化问题及KKT条件的几何理解">
+                最优化问题及KKT条件的几何理解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -768,7 +798,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#提升方法"><span class="nav-number">1.</span> <span class="nav-text">提升方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost"><span class="nav-number">1.1.</span> <span class="nav-text">Adaboost</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">1.2.</span> <span class="nav-text">提升树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBDT"><span class="nav-number">2.</span> <span class="nav-text">GBDT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么拟合负梯度"><span class="nav-number">2.1.</span> <span class="nav-text">为什么拟合负梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传统GBDT算法"><span class="nav-number">2.2.</span> <span class="nav-text">传统GBDT算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于残差的GBDT"><span class="nav-number">2.3.</span> <span class="nav-text">基于残差的GBDT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推导"><span class="nav-number">2.3.1.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么基于残差的gbdt不是一个好的选择"><span class="nav-number">2.3.2.</span> <span class="nav-text">为什么基于残差的gbdt不是一个好的选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boosting的加法模型"><span class="nav-number">2.4.</span> <span class="nav-text">Boosting的加法模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GBDT的目标函数"><span class="nav-number">2.5.</span> <span class="nav-text">GBDT的目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何用决策树来表示上一步的目标函数"><span class="nav-number">2.6.</span> <span class="nav-text">如何用决策树来表示上一步的目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何最优化目标函数"><span class="nav-number">2.7.</span> <span class="nav-text">如何最优化目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建树总结"><span class="nav-number">2.8.</span> <span class="nav-text">建树总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化"><span class="nav-number">2.9.</span> <span class="nav-text">正则化</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#提升方法"><span class="nav-number">1.</span> <span class="nav-text">提升方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost"><span class="nav-number">1.1.</span> <span class="nav-text">Adaboost</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">1.2.</span> <span class="nav-text">提升树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBDT"><span class="nav-number">2.</span> <span class="nav-text">GBDT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么拟合负梯度"><span class="nav-number">2.1.</span> <span class="nav-text">为什么拟合负梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传统GBDT算法"><span class="nav-number">2.2.</span> <span class="nav-text">传统GBDT算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于残差的GBDT"><span class="nav-number">2.3.</span> <span class="nav-text">基于残差的GBDT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推导"><span class="nav-number">2.3.1.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么基于残差的gbdt不是一个好的选择"><span class="nav-number">2.3.2.</span> <span class="nav-text">为什么基于残差的gbdt不是一个好的选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boosting的加法模型"><span class="nav-number">2.4.</span> <span class="nav-text">Boosting的加法模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Xgboost"><span class="nav-number">3.</span> <span class="nav-text">$Xgboost$</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Xgboost-的目标函数"><span class="nav-number">3.1.</span> <span class="nav-text">$Xgboost$的目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何用决策树来表示上一步的目标函数"><span class="nav-number">3.2.</span> <span class="nav-text">如何用决策树来表示上一步的目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何求树的结构（单线程版本）"><span class="nav-number">3.3.</span> <span class="nav-text">如何求树的结构（单线程版本）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建树总结"><span class="nav-number">3.4.</span> <span class="nav-text">建树总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法复杂度"><span class="nav-number">3.5.</span> <span class="nav-text">算法复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#近似算法"><span class="nav-number">3.6.</span> <span class="nav-text">近似算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#近似算法思想"><span class="nav-number">3.6.1.</span> <span class="nav-text">近似算法思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两种近似算法"><span class="nav-number">3.6.2.</span> <span class="nav-text">两种近似算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行化"><span class="nav-number">3.7.</span> <span class="nav-text">并行化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理缺失值"><span class="nav-number">3.8.</span> <span class="nav-text">处理缺失值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化"><span class="nav-number">3.9.</span> <span class="nav-text">正则化</span></a></li></ol></li></ol></div>
             
 
           </div>

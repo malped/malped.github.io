@@ -156,188 +156,373 @@
   </entry>
   
   <entry>
-    <title><![CDATA[几种特征选择的方法]]></title>
-    <link href="http://yoursite.com/2018/03/23/%E5%87%A0%E7%A7%8D%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E6%96%B9%E6%B3%95/"/>
-    <id>http://yoursite.com/2018/03/23/几种特征选择的方法/</id>
-    <published>2018-03-23T07:33:33.000Z</published>
-    <updated>2018-03-23T08:20:40.813Z</updated>
-    <content type="html"><![CDATA[<p>当数据预处理完成后，我们需要选择有意义的特征输入机器学习的算法和模型进行训练。通常来说，从两个方面考虑来选择特征：</p>
-<ul>
-<li>特征是否发散：如果一个特征不发散，例如方差接近于0，也就是说样本在这个特征上基本上没有差异，这个特征对于样本的区分并没有什么用。</li>
-<li>特征与目标的相关性：这点比较显见，与目标相关性高的特征，应当优选选择。除方差法外，本文介绍的其他方法均从相关性考虑。</li>
-</ul>
-<p>根据特征选择的形式又可以将特征选择方法分为3种：</p>
-<ul>
-<li>Filter：过滤法，按照发散性或者相关性对各个特征进行评分，设定阈值或者待选择阈值的个数，选择特征。</li>
-<li>Wrapper：包装法，根据目标函数（通常是预测效果评分），每次选择若干特征，或者排除若干特征。</li>
-<li>Embedded：嵌入法，先使用某些机器学习的算法和模型进行训练，得到各个特征的权值系数，根据系数从大到小选择特征。类似于Filter方法，但是是通过训练来确定特征的优劣。</li>
-</ul>
-<p>　　我们使用sklearn中的feature_selection库来进行特征选择。</p>
-<h1 id="Filter"><a href="#Filter" class="headerlink" title="$Filter$"></a>$Filter$</h1><ul>
-<li>优点：快速，主需要统计知识</li>
-<li>缺点：难以挖局特征之间的组合效应</li>
-</ul>
-<h2 id="方差选择法"><a href="#方差选择法" class="headerlink" title="方差选择法"></a>方差选择法</h2><p>使用方差选择法，先要计算各个特征的方差，然后根据阈值，选择方差大于阈值的特征。</p>
-<h2 id="相关系数法"><a href="#相关系数法" class="headerlink" title="相关系数法"></a>相关系数法</h2><p>使用相关系数法，先要计算各个特征对目标值的相关系数以及相关系数的P值。</p>
-<h2 id="卡方检验"><a href="#卡方检验" class="headerlink" title="卡方检验"></a>卡方检验</h2><p>经典的卡方检验是检验定性自变量对定性因变量的相关性。假设自变量有N种取值，因变量有M种取值，考虑自变量等于i且因变量等于j的样本频数的观察值与期望的差距，构建统计量：</p>
-<script type="math/tex; mode=display">\chi^2=\sum{(A-E)\over E}</script><p>其中$A$为实际值，$E$为理论值。<strong>$\chi^2$用于衡量两个变量实际值与联合分布理论值的差异程度（也就是卡方检验的核心思想）</strong>，包含了一下两个信息：</p>
-<ul>
-<li>实际值与理论值偏差的绝对大小</li>
-<li>差异程度与理论值的相对大小</li>
-</ul>
-<p>这个统计量含义就是<strong>自变量对因变量的相关性</strong>。</p>
-<p>可以这么理解，对于这两个特征的联合分布矩阵，这两个变量不相关，那么通过边缘概率求得的期望值（$E$）就应该越接近于真实值（$A$），$\chi^2$越小；相反，这两个变量越相关，通关边缘概率分布求得的期望值（$E$）跟真实值（$A$）的差距就应该越大，$\chi^2$越大。</p>
-<p>因此$\chi^2$越大，说明自变量与因变量相关性越强</p>
-<h2 id="互信息法"><a href="#互信息法" class="headerlink" title="互信息法"></a>互信息法</h2><p>不多说</p>
-<h1 id="Wrapper"><a href="#Wrapper" class="headerlink" title="$Wrapper$"></a>$Wrapper$</h1><ul>
-<li>优点：直接面向算法优化，不需要太多知识</li>
-<li>缺点：庞大的搜索空间，需要定义启发式策略</li>
-</ul>
-<p>递归消除特征法使用一个基模型来进行多轮训练，每轮训练后，消除若干权值系数的特征，再基于新的特征集进行下一轮训练。</p>
-<h1 id="Embedded"><a href="#Embedded" class="headerlink" title="$Embedded$"></a>$Embedded$</h1><ul>
-<li>优点：快速，并且面向算法</li>
-<li>缺点：需要调整结构和参数配置</li>
-</ul>
-<h2 id="基于惩罚项的特征选择法"><a href="#基于惩罚项的特征选择法" class="headerlink" title="基于惩罚项的特征选择法"></a>基于惩罚项的特征选择法</h2><p>使用带$L1$惩罚项的基模型，除了筛选出特征外，同时也进行了降维。</p>
-<p>$Lasso$的参数$\lambda$越大，参数的解越稀疏，选出的特征越少。</p>
-<p><a href="http://www.zhihu.com/question/28641663/answer/41653367" target="_blank" rel="noopener">L1惩罚项降维的原理在于保留多个对目标值具有同等相关性的特征中的一个</a>，所以没选到的特征不代表不重要。故，可结合L2惩罚项来优化。具体操作为：若一个特征在L1中的权值为1，选择在L2中权值差别不大且在L1中权值为0的特征构成同类集合，将这一集合中的特征平分L1中的权值.</p>
-<h2 id="基于树模型的特征选择法"><a href="#基于树模型的特征选择法" class="headerlink" title="基于树模型的特征选择法"></a><strong>基于树模型的特征选择法</strong></h2><p>各种树模型可以输出特征的重要性</p>
+    <title><![CDATA[最优化问题及KKT条件的几何理解]]></title>
+    <link href="http://yoursite.com/2018/03/19/%E6%9C%80%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E5%8F%8AKKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E5%87%A0%E4%BD%95%E7%90%86%E8%A7%A3/"/>
+    <id>http://yoursite.com/2018/03/19/最优化问题及KKT条件的几何理解/</id>
+    <published>2018-03-19T07:31:31.000Z</published>
+    <updated>2018-03-25T04:30:53.527Z</updated>
+    <content type="html"><![CDATA[<p>以二维空间$R^2$举例，从简单的无约束优化（0梯度条件），到等式约束优化（拉格朗日条件），再到不等式约束优化（KKT条件）解析优化问题解法的几何意义。</p>
+<h2 id="无约束优化问题"><a href="#无约束优化问题" class="headerlink" title="无约束优化问题"></a>无约束优化问题</h2><p>$\min f(x)$，其中，<strong>$x=(x_1,x_2)$</strong></p>
+<p><img src="/2018/03/19/最优化问题及KKT条件的几何理解/无约束优化.jpg" alt=""></p>
+<p>此时，对于$f(x)$的局部极小值点（红点）处梯度必然为0.因此优化问题可以转化为求解梯度为0的点。</p>
+<h2 id="带等式约束的优化问题"><a href="#带等式约束的优化问题" class="headerlink" title="带等式约束的优化问题"></a>带等式约束的优化问题</h2><p>$\min f(x)$，其中，<strong>$x=(x_1,x_2)$</strong></p>
+<p>$s.t. h(x)=0$</p>
+<p>与无约束问题不同，此时极小值点被限制在曲线$h(x)=0$上，我们因此将$\{x|h(x)=0\}$成为<strong>可行域</strong>，解只能在这个可行域里面取。如下图所示，曲线$h(x)=0$（黑色实线）便是可行域，现在要求在可行域上面的极小点。可以想象从无约束问题的极小点（黑点）靠等高线向外扩展，当扩展等高线第一次接触可行域时候（相切，<strong>梯度方向相反</strong>）的交点便是可行域的极小点。所以，相切，梯度方向相反，是取得极小值点的必要条件。</p>
+<p>补充：能够碰到极大极小值点的必要条件是：梯度场与切空间垂直，也就是梯度场不能够有任何流形切空间上的分量，否则在切空间方向有分量，在流形上沿分量方向走，函数值会增加，沿反方向走，函数值会减少，不可能为局部极小或者极大值点。</p>
+<p><img src="/2018/03/19/最优化问题及KKT条件的几何理解/等式约束优化.jpg" alt=""></p>
+<p>两条曲线相切，梯度方向相反，即梯度差一个任意的常数乘子（取为$-\lambda$）：$\nabla f(x)=-\lambda \nabla h(x)$，调整后即可得到拉格朗日条件$\nabla (f(x)+\lambda h(x))=0$.</p>
+<p>如此，带等式约束的优化问题转化为了无约束的优化问题，只需要对拉格朗日条件解方程组即可。这里$\lambda$便是拉格朗日乘子，有多少个等式约束就有多少个拉格朗日乘子。</p>
+<h2 id="带不等式约束的优化问题"><a href="#带不等式约束的优化问题" class="headerlink" title="带不等式约束的优化问题"></a>带不等式约束的优化问题</h2><h3 id="只有一个不等式起作用时"><a href="#只有一个不等式起作用时" class="headerlink" title="只有一个不等式起作用时"></a>只有一个不等式起作用时</h3><p>$\min f(x)$</p>
+<p>$s.t.  h(x)\le0$</p>
+<p>当只有一个不等式起作用时，如下图所示，可行域变成了阴影部分，最小值点还是切点，跟等式约束条件完全一样，只需要把不等号当做等号去求解即可。</p>
+<p><img src="/2018/03/19/最优化问题及KKT条件的几何理解/不等式约束优化1.jpg" alt=""></p>
+<h3 id="两个及以上不等式起作用时"><a href="#两个及以上不等式起作用时" class="headerlink" title="两个及以上不等式起作用时"></a>两个及以上不等式起作用时</h3><p>$\min f(x)$</p>
+<p>$s.t.$</p>
+<p>$g_1(x)\le0$</p>
+<p>$g_2(x)\le0$</p>
+<p>如下图，当$f(x)$等高线慢慢扩大时，等高线与可行域（阴影部分）第一次相遇的点是个顶点，2个不等式同时起作用。满足最小值点从原来黑点的位置（切点）移动到了红点的位置，现在跟哪条约束函数都不相切了。这时候就需要用到KKt条件了。这里的条件是指：某一个点它如果是最小值点的话，就必须满足这个条件（在含不等式约束的优化问题里）。这是个<strong>必要条件</strong>，前面说的也全部是<strong>必要条件</strong>。</p>
+<p><img src="/2018/03/19/最优化问题及KKT条件的几何理解/不等式约束优化2.jpg" alt=""></p>
+<p>这个问题的解$x^*$应满足的KKT（卡罗需-库恩-塔克）条件为：</p>
+<p>$1. \mu_1\ge0, \mu_2\ge0;$</p>
+<p>$2. \nabla f(x^￥)+\mu_1\nabla g_1(x^￥)+\mu_2\nabla g_2(x^￥)=0;$</p>
+<p>$3. \mu_1g_1(x^￥)+\mu_2g_2(x^￥)=0$</p>
+<p>其中，$\mu$叫做KKT乘子，有多少个不等式约束就有多少个KKT乘子。加上本问题中的约束不封，就是完整版的KKT条件。<strong>对于有等式的情况：把其中一个不等式约束换成等式，可行域变成了半条曲线，最小值还是小红点，情况是一样的。</strong></p>
+<p>接下来看看KKT条件的几何意义。上图中<strong>绿色箭头</strong>为两条曲线的<strong>负梯度</strong>方向，<strong>红色箭头</strong>为等高线的<strong>梯度</strong>方向。如果这个顶点为满足约束的最小值点，那么该点处等高线梯度（红色箭头）一定在两个绿色箭头之间（$-\nabla g(x)$方向（绿色箭头）一定指向$g(x)$减小方向，即$g(x)\lt0$一边）</p>
+<p>$\mu_1\ge0,\mu_2\ge0$(红色箭头一定在绿色箭头之间)的解释：若三个向量的位置如下图所示，即$-\nabla f(x)$落在$\nabla g_1,\nabla g_2$所形成的锥形区域外侧。此时，作等高线（等值线）在点$x^k$处的切平面，可以发现：<strong>沿着与扶梯度$-\nabla f(x)$成锐角方向移动</strong>，只要能在红色阴影（阴影左界为当前等高线）取值，$f(x)$总能减小，而红色阴影区域为可行域，因此既可以建系哦啊目标函数值，又不破坏约束条件，所以当前$x^k$不是最优点。</p>
+<p><img src="/2018/03/19/最优化问题及KKT条件的几何理解/箭头中间.jpg" alt=""></p>
+<h2 id="有些不等式约束不起作用时"><a href="#有些不等式约束不起作用时" class="headerlink" title="有些不等式约束不起作用时"></a>有些不等式约束不起作用时</h2><p>如下面这个优化问题：</p>
+<p>$\min f(x)$</p>
+<p>$s.t.$</p>
+<p>$g_1(x)\le0$</p>
+<p>$g_2(x)\le0$</p>
+<p>$g_3(x)\le0$</p>
+<p>如下图$g_3(x)\le0$是不起作用的</p>
+<p><img src="/2018/03/19/最优化问题及KKT条件的几何理解/不等式约束优化3.jpg" alt=""></p>
+<p>对于最小值点$x^*$，三个不等式约束的不同在于：</p>
+<p>$g_1(x^￥)=0$（起作用）</p>
+<p>$g_2(x^￥)=0$（起作用）</p>
+<p>$g_3(x^￥)\lt0$（不起作用，最小值点不在$g_3(x)=0$上）</p>
+<p>此时KKT条件1，2变为：</p>
+<p>$1. \mu_1\ge0, \mu_2\ge0, \mu_3\ge0, $</p>
+<p>$2. \nabla f(x^￥)+\mu_1\nabla g_1(x^￥)+\mu_2\nabla g_2(x^￥)+\mu_3\nabla g_3(x^￥)=0$</p>
+<p>条件2中的$\mu_3\nabla g_3(x^￥)$让我们很苦恼，$g_3(x￥)$约束根本不起作用，要是能令$\mu_3=0$就好了。加上条件3：</p>
+<p>$3. \mu_1g_1(x^￥)+\mu_2g_2(x^￥)+\mu_3g_3(x^￥)=0$</p>
+<p>恰好能使$\mu_3=0​$。由于$g_1(x^￥)=0, g_2(x^￥)=0​$，所以前两项等于0，第三项$g_3(x^￥)\lt0​$,在条件3的作用下使得$\mu_3=0​$。正好满足哟啊求。如果再多几项不起作用的不等式约束，条件2都能在条件3的作用下实现：目标函数$f(x)​$的梯度$\nabla f(x)​$被起作用的不等式约束函数$g(x)​$的负梯度$-\nabla g(x)​$线性标出且系数$\mu​$全部非负（红色箭头被绿色箭头夹在中间）。这样，优化问题的求解就变成了对所有KKT条件解方程组。</p>
+<p>如果再定义一个拉格朗日函数：</p>
+<p>$L(x,\mu)=f(x)+\mu_1g_1(x)+\mu_2g_2(x)+…$</p>
+<p>令它对<strong>$x$</strong>的偏导为0，就是KKT条件中的条件2了。</p>
+<p>注意：以上所有都是局部极小值的点<strong>必要条件</strong>。据此求得的解不一定是局部极小值点（更别提全局），原因是上图中所画的等高线也许根本就不闭合，也急速实说我们一直想靠近的等高线和中间的黑点可能压根就是个鞍点或者近似鞍点。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[简单盘述一下特征工程中的特征选择部分]]>
+    <![CDATA[从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解]]>
     
     </summary>
     
-      <category term="特征选择" scheme="http://yoursite.com/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/"/>
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-      <category term="特征工程" scheme="http://yoursite.com/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"/>
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
-  </entry>
-  
-  <entry>
-    <title><![CDATA[L1、L2正则化]]></title>
-    <link href="http://yoursite.com/2018/03/20/L1%E3%80%81L2%E6%AD%A3%E5%88%99%E5%8C%96/"/>
-    <id>http://yoursite.com/2018/03/20/L1、L2正则化/</id>
-    <published>2018-03-19T16:30:03.000Z</published>
-    <updated>2018-03-22T06:47:31.988Z</updated>
-    <content type="html"><![CDATA[<h1 id="从概率角度推导"><a href="#从概率角度推导" class="headerlink" title="从概率角度推导"></a>从概率角度推导</h1><hr>
-<p>本部分引<a href="https://www.zhihu.com/question/20447622/answer/25186207" target="_blank" rel="noopener">知乎用户bsdelf</a></p>
-<p>从概率论的角度：</p>
-<ol>
-<li>$Least Square$的解析解可以用$Gaussian$分布以及最大似然估计求得</li>
-<li>$Ridge$回归可以用$Gaussian$分布和最大后验估计解释</li>
-<li>$Lasso$回归可以用$Laplace$分布和最大后验估计解释</li>
-</ol>
-<p>首先假设线性回归模型具有如下形式：</p>
-<script type="math/tex; mode=display">f(x)=\sum^d_{j=1}{x_jw_j}+\epsilon=\mathbf{xw^T}+\epsilon</script><p>其中$\mathbf{x}\in \mathbb{R}^{1\times d}，\mathbf{w}\in \mathbb{R}^{n\times d}$，<strong>误差</strong>$\epsilon\in\mathbb{R}$。</p>
-<p>当前一直$\mathbf{X}=(\mathbf{x_1,x_2,…,x_n})^T\in\mathbb{R}^{n\times d}，\mathbf{y}\in\mathbb{R}^{n\times 1}$，怎样求$\mathbf w$呢？</p>
-<p><strong>策略1</strong>：假设$\epsilon_i\sim N(0,\sigma^2)$，也就是说$\mathbf{y_i}\sim N(\mathbf{x_iw^T,\sigma^2})$，那么用最大似然估计推导：</p>
-<p>$\arg\max_{\mathbf{w}}L(\mathbf{w})$</p>
-<p>$=\ln \prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp (-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over\sigma})^2)$</p>
-<p>$-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf y_i-\mathbf{w_iw^T})^2-n\ln \sigma\sqrt{2\pi}$</p>
-<p>$\arg\min_{\mathbf w}f(\mathbf w)$</p>
-<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2$</p>
-<p>$=||\mathbf y-\mathbf{Xw^T}||^2_2$</p>
-<p>这不就是最小二乘吗？</p>
-<p><strong>策略2</strong>:假设$\epsilon_i\sim N(0,\sigma^2)$，$\mathbf w_i\sim N(0,\tau^2)$，那么最后又最大后验估计推导：</p>
-<p>$\arg\max_\mathbf{w}L(\mathbf w)$</p>
-<p>$=\ln\prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over \sigma})^2)·\prod^d_{j=1}{1\over \tau\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf w_j\over\tau})^2)$</p>
-<p>$=-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf{y}_i-\mathbf{x_iw^T})^2-{1\over 2\tau^2}\sum^d_{j=1}\mathbf w^2_j-n\ln\sigma\sqrt{2\pi}-d\ln\tau\sqrt{2\pi}$</p>
-<p>$\arg\min_\mathbf wf(\mathbf w)$</p>
-<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2+\lambda\sum^d_{j=1}\mathbf w_j^2$</p>
-<p>$=||\mathbf y-\mathbf{Xw^T||^2_2+\lambda||\mathbf w||^2_2}$</p>
-<p>这不就是$Ridge$回归吗？</p>
-<p><strong>策略3</strong>：假设$\epsilon_i\sim N(0,\sigma^2)$，$\mathbf w_i\sim Laplace(0,b)$，那么最后又最大后验估计推导：</p>
-<p>$\arg\max_\mathbf{w}L(\mathbf w)$</p>
-<p>$=\ln\prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over \sigma})^2)·\prod^d_{j=1}{1\over 2b}\exp(-{|\mathbf w_j|\over b})$</p>
-<p>$=-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf{y}_i-\mathbf{x_iw^T})^2-{1\over 2\tau^2}\sum^d_{j=1}|\mathbf w_j|-n\ln\sigma\sqrt{2\pi}-d\ln\tau\sqrt{2\pi}$</p>
-<p>$\arg\min_\mathbf wf(\mathbf w)$</p>
-<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2+\lambda\sum^d_{j=1}|\mathbf w_j|$</p>
-<p>$=||\mathbf y-\mathbf{Xw^T||^2_2+\lambda||\mathbf w||_1}$</p>
-<p>这不就是$Lasso$吗？</p>
-<h2 id="L1、L2-正则化各自的特点"><a href="#L1、L2-正则化各自的特点" class="headerlink" title="$L1、L2$正则化各自的特点"></a>$L1、L2$正则化各自的特点</h2><hr>
-<h2 id="L1-正则化"><a href="#L1-正则化" class="headerlink" title="$L1$正则化"></a>$L1$正则化</h2><p>$L1$范数是指向量中各个元素绝对值之和，也叫<strong>“稀疏规则算子”</strong>。那么<strong>为什么$L1$范数会使<em>权值稀疏</em>？实际上：任何规则化孙子，如果它在$w_i=0$的地方不可微，并且可以分解为一个”求和”的形式，那么这个规则化算子就可以实现稀疏</strong></p>
-<p><strong>权值稀疏</strong>的好处：</p>
-<p><strong>1）特征选择：</strong></p>
-<p>没有信息的特征权值比较小。</p>
-<p><strong>2）可解释性</strong>：</p>
-<p>我们可以相信权重非0的特征上面提供的信息远大于筛选掉的信息</p>
-<p><strong>$L1$正则化不可导</strong>：</p>
-<p>L1不可导可以使用$Proximal Algorithms$或者$ADMM$来解决。</p>
-<h2 id="L2-正则化"><a href="#L2-正则化" class="headerlink" title="$L2$正则化"></a>$L2$正则化</h2><p>$L2$范数又称“<strong>岭回归</strong>”，也叫“<strong>权值衰减</strong>”。让权值都趋向0，可以修正过拟合，原因可能权值系数小了，模型<strong>“多项式性”</strong>就不明显了？。</p>
-<p><strong>1）学习理论角度：</strong></p>
-<p>$L2$范数可以防止过拟合，提升模型泛化能力</p>
-<p><strong>2）优化计算角度：</strong></p>
-<p>$L2$有助于处理$condition number$不好的情况</p>
-<p>这篇<a href="https://zhuanlan.zhihu.com/p/32488420" target="_blank" rel="noopener">知乎文章</a>对$L2$正则化从四个方面深度剖析。</p>
-<ol>
-<li><p>$mse$损失函数</p>
-<script type="math/tex; mode=display">L(w)={1\over N}(y-\hat y)^T(y-\hat y)={1\over N}(y-Xw)^T(y-Xw)</script><p>为使其达到最小，则关于$w$的偏导为0：</p>
-<script type="math/tex; mode=display">\hat w=(X^TX)^{-1}X^Ty</script><p>然而会存在$X^TX$不可逆的情况。为了避免这个问题，将$X^TX$矩阵的对角元素增大一个量$\lambda$，变成$X^TX+\lambda I$。相当于在矩阵$X^TX$中的对角线上加一个值增高他的山岭。山岭增高后矩阵变成可逆的。带入得：</p>
-<script type="math/tex; mode=display">\hat w_{bridge}=(X^TX+\lambda I)^{-1}X^Ty</script></li>
-<li><p>从贝叶斯的角度，假设$w$服从$N(0,\sigma^2I_p)$分布，在最大似然的基础上加入了$w$的先验知识，相当于极大化后验概率。求解该极大化的后验概率，对应的先验知识就是正则化部分</p>
-</li>
-<li><p>$L2$正则化的解相当于先对数据做了主成分分析，然后对于方差小的主成分方向进行惩罚。主成分分析原样保留大方差方向，去掉小方差方向，相当于一个硬选择。而$ L2$ 正则根据方差的大小施加不同程度的惩罚，相当于软选择。</p>
-</li>
-</ol>
-]]></content>
-    <summary type="html">
-    <![CDATA[L1、L2正则化的贝叶斯解释以及各自的特点]]>
+      <category term="KKT" scheme="http://yoursite.com/tags/KKT/"/>
     
-    </summary>
-    
-      <category term="L1" scheme="http://yoursite.com/tags/L1/"/>
-    
-      <category term="L2" scheme="http://yoursite.com/tags/L2/"/>
-    
-      <category term="正则化" scheme="http://yoursite.com/tags/%E6%AD%A3%E5%88%99%E5%8C%96/"/>
-    
-      <category term="先验概率" scheme="http://yoursite.com/tags/%E5%85%88%E9%AA%8C%E6%A6%82%E7%8E%87/"/>
-    
-      <category term="后验概率" scheme="http://yoursite.com/tags/%E5%90%8E%E9%AA%8C%E6%A6%82%E7%8E%87/"/>
+      <category term="最优化" scheme="http://yoursite.com/tags/%E6%9C%80%E4%BC%98%E5%8C%96/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
   <entry>
-    <title><![CDATA[支持向量机SVM]]></title>
-    <link href="http://yoursite.com/2018/03/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/"/>
-    <id>http://yoursite.com/2018/03/18/支持向量机SVM/</id>
-    <published>2018-03-18T13:34:16.000Z</published>
-    <updated>2018-03-18T16:34:41.074Z</updated>
-    <content type="html"><![CDATA[<h1 id="线性可分支持向量机与硬间隔最大化"><a href="#线性可分支持向量机与硬间隔最大化" class="headerlink" title="线性可分支持向量机与硬间隔最大化"></a>线性可分支持向量机与硬间隔最大化</h1><hr>
-<h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><p>考虑一个二分类问题，假设输入空间和特征空间为两个不同的空间。<strong>输入空间为欧式空间或离散集合，特征空间为欧式空间或希尔伯特空间。</strong>线性可分支持向量机、线性支持向量机假设这两个空间的元素一一对应，并将输入空间中的输入映射为特征空间中的特征向量。非线性支持向量机利用一个从输入空间到特征空间的非线性映射将输入映射为特征向量。所以<strong>输入都有输入空间转换到特征空间，支持向量机的学习是在特征空间进行的。</strong></p>
-<p><strong>定义   线性可分支持向量机：</strong>给定线性可分训练数据集，通过间隔最大化或等价地求解相应的凸二次规划问题学习得到的分离超平面为：</p>
-<script type="math/tex; mode=display">w^￥x+b^￥=0</script><p>以及相应的分类决策函数：</p>
-<script type="math/tex; mode=display">f(x)=sign(w^￥x+b^￥)</script><h2 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h2><p>一般来说，一个点距离分离超平面的远近可以表示分类预测的确信程度。在超平面$wx+b=0$确定的情况下，$|wx+b|$能够<strong>相对的</strong>表示点$x$距离超平面的远近。而$wx+b$的符号与类标记$y$的符号是否一致能够表示分类是否正确。所以可用量$y(wx+b)$来表示分类的正确性以及确信度，这就是<strong>函数间隔</strong>的概念。</p>
-<p><strong><em>为什么$|wx+b|$是相对的表示距离：首先这指的是函数距离，同一个函数内有比较价值。其次因为$b$的影响，真正距离并不是这个，但是距离的比较都有这个$b$，所以这里就不再考虑</em></strong></p>
-<p><strong>定义  函数间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的函数间隔为</p>
-<script type="math/tex; mode=display">\hat\gamma_i=y_i(wx_i+b)</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的函数间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
-<script type="math/tex; mode=display">\hat\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>选择分离超平面时，只有函数间隔还不够，因为<strong><em>只要成比例的改变$w$和$b$，例如将它们改写为$2w$和$2b$，超平面并没有改变，但函数间隔却成为原来的$2$倍。所以可以对分离超平面的法向量$w$加某些约束，如规范化，$||w||=1$，使得间隔是确定的。</em></strong>这时函数间隔成为几何间隔。</p>
-<p><strong>定义  几何间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的几何间隔为：</p>
-<script type="math/tex; mode=display">\gamma_i=y_i({w\over ||w||}x_i+{b\over||w||})</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的几何间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
-<script type="math/tex; mode=display">\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>函数间隔和几何间隔的关系：</p>
-<script type="math/tex; mode=display">\gamma={\hat\gamma\over||w||}\ \ \ \ \ (1)</script><p>如果$||w||=1$，那么函数间隔和几何间隔相等。如果超平面参数$w$和$b$成比例的改变（超平面没有改变），函数间隔也按此比例改变，而几何间隔不变。</p>
-<h2 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h2><p>间隔最大化的直观解释是：对训练数据集找到几何间隔最大的超平面意味着一充分大的确信度对训练数据进行分类。也就是说，不仅将正负实例点分开，而且对最难分的实例点（离超平面最近的点）也有足够大的确信度将它们分开。这样的超平面应该对未知的新实例有很好的分类预测能力。</p>
-<h3 id="最大间隔分离超平面"><a href="#最大间隔分离超平面" class="headerlink" title="最大间隔分离超平面"></a>最大间隔分离超平面</h3><p>求一个几何间隔最大的分离超平面可以表示为下面问题的最优化：</p>
-<script type="math/tex; mode=display">\max_{w,b}\ \ \ \gamma</script><script type="math/tex; mode=display">s.t.\ \ y_i({w\over||w||}x_i+{b\over||w||})\ge\gamma,\ \ i=1,2,…,N</script><p>我们希望最大化几何间隔$\gamma$（<strong>$\gamma$为所有点的中几何距离最短的点的几何距离，就是支持向量的几何距离</strong>），约束条件表示的是超平面关于每个训练样本点的几何间隔至少是$\gamma$。</p>
-<p>考虑几何间隔与函数间隔的关系式$(1)$，可以将这个问题改写为(这里为了构造出$||w||$):</p>
-<script type="math/tex; mode=display">\max_{w,b}\ \ \ {\hat\gamma\over||w||}</script><script type="math/tex; mode=display">s.t.\ \ y_i(wx_i+b)\ge\hat\gamma,\ \ i=1,2,…,N</script><p>**函数间隔$\hat\gamma$的取值并不影响最优化问题的解。将$w,b$按比例变化为$\lambda w,\lambda b$，超平面并未发生改变，函数间隔变为$\lambda\hat\gamma $。所以函数间隔的改变只影响$w,b$的系数，不改变超平面。这样就可以去$\hat\gamma=1$，并带入以上最优化问题。注意到最大化$1\over ||w||$和最小化${1\over 2}||w||^2$是等价地。于是就得到了下面线性可分支持向量机学习的最优化问题：</p>
-<script type="math/tex; mode=display">\min_{w,b}\ \ \ {1\over 2}||w||^2</script><script type="math/tex; mode=display">s.t.\ \ \ y_i(wx_i+b)-1\ge0,\ \ \ i=1,2,…,N</script><p><strong><em>SVM部分暂时弃更，东西差不多都是《统计学习方法上的》，关于自己理解的部分也都标注在了书上，手码实在太多了，这部分先看书把。。</em></strong></p>
+    <title><![CDATA[GBDT&Xgboost]]></title>
+    <link href="http://yoursite.com/2018/03/17/GBDT/"/>
+    <id>http://yoursite.com/2018/03/17/GBDT/</id>
+    <published>2018-03-17T14:02:03.000Z</published>
+    <updated>2018-03-25T04:28:42.467Z</updated>
+    <content type="html"><![CDATA[<h1 id="提升方法"><a href="#提升方法" class="headerlink" title="提升方法"></a>提升方法</h1><blockquote>
+<p>在分类问题中，它通过改变训练样本的权重，学习多个分类器，并将这些分类器进行线性组合，他通过改变训练样本的权重，学习多个分类器，并将这些分类器进行线性组合，特高分类性能</p>
+<p>对于提升方法，有两个问题需要回答：一是在每一轮如何改变训练数据的权值或概率分布；而是如何将弱分类器组合成一个强分类器。</p>
+<p>​                                                    -《统计学习方法》</p>
+</blockquote>
+<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><blockquote>
+<p>$Adaboost$算法的特点是通过迭代每次学习一个基本分类器，每次迭代中，提高那些被前一轮分类器错误分类<strong>数据</strong>的权值，而降低那些被正确分类的<strong>数据</strong>的权值。最后$Adaboost$将基本分类器的线性组合作为强分类器，其中给分类误差率小的<strong>基本分类器</strong>大的权值，给分类误差率大的<strong>基本分类器</strong>小的权值</p>
+</blockquote>
+<h2 id="提升树"><a href="#提升树" class="headerlink" title="提升树"></a>提升树</h2><p>提升树正是一种前向分步的加法模型，但是其基分类器是树模型(二叉树)，分为二叉分类树和二叉回归树，提升树往往在实践中表现非常好。提升树的模型如下:</p>
+<script type="math/tex; mode=display">f_M(x)=\sum^M_{m=1}T(x;\Theta)</script><p>其中$T(x;\Theta)$表示决策树，$M$为树的个数，$\Theta$表示树的参数。</p>
+<p>首先确定初始提升树$f_0(x)=0$，第$m$步的模型是</p>
+<script type="math/tex; mode=display">f_m(x)=f_{m-1}(x)+T(x;\Theta_m)</script><p>其中，$f_{m-1}(x)$为当前模型，通过经验风险极小化确定下一棵决策树的参数$\Theta_m$，第$m$步的模型是</p>
+<script type="math/tex; mode=display">\hat \Theta_m=\arg \min_{\Theta_m}\sum^N_{i=1}L(y_i,\ f_{m-1}(x_i)+T(x_i;\Theta_m))</script><h1 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h1><h2 id="为什么拟合负梯度"><a href="#为什么拟合负梯度" class="headerlink" title="为什么拟合负梯度"></a>为什么拟合负梯度</h2><p>为什么要拟合负梯度（<strong>注意这里的梯度是对$\hat y_i^{t-1}$</strong>求导）呢？</p>
+<p>跟梯度下降类似，我们不断减去$\partial f(x)\over \partial x$可以得到$\min_x f(x)$，同理不断减去$\partial L\over\partial \hat y^{t-1}_i$就能得到$\min_{\hat y}L(\hat y)$。所以其实GBDT就是在<strong>函数空间</strong>的梯度下降。</p>
+<h2 id="传统GBDT算法"><a href="#传统GBDT算法" class="headerlink" title="传统GBDT算法"></a>传统GBDT算法</h2><p>算法流程：</p>
+<p><img src="/2018/03/17/GBDT/算法流程.png" alt=""></p>
+<p>乍一看，GBDT算法跟<strong>梯度下降</strong>算法很像，其实GBDT就是在<strong>函数空间</strong>的梯度下降，我们不断减去$\partial f(x)\over \partial x$可以得到$\min_x f(x)$，同理不断减去$\partial L\over\partial F_{K-1}$就能得到$\min_FL(F)$，注意这里是对$F_{K-1}$求导。</p>
+<h2 id="基于残差的GBDT"><a href="#基于残差的GBDT" class="headerlink" title="基于残差的GBDT"></a>基于残差的GBDT</h2><h3 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h3><p>$GBDT$全称$Gradient Boosting Decision Tree$, 其中$gradient$被称为梯度，更一般的理解，可以认为是一阶导，这里残差与梯度是什么关系呢。我们看平方损失函数${1\over 2}\sum^n_0(y_i-F(x_i))^2$，这个算是函数主要是针对回归类型的。</p>
+<p>$    {1\over 2}\sum^n_{i=1}(y_i-F(x_i))^2$</p>
+<p>$= {1\over 2}\sum^n_{i=1}(y_i-\hat y_i^t)^2$</p>
+<p>$= {1\over 2}\sum^n_{i=1}(y_i-\hat y_i^{t-1}-f_t(x_i))^2$</p>
+<p>令其对$\hat y_i^{t-1}$求导为0 得：</p>
+<script type="math/tex; mode=display">-\sum^n_{i=1}(y_i-\hat y_i^{t-1}-f_t(x_i))=0</script><p>则：</p>
+<script type="math/tex; mode=display">\sum_{i=1}^nf_t(x_i)=\sum_{i=1}^n(y_i-\hat y_i^{t-1})</script><p>所以基于残差的gbdt是一种特殊的gbdt模型，它的损失函数是平方损失函数，只能处理回归类的问题。</p>
+<h3 id="为什么基于残差的gbdt不是一个好的选择"><a href="#为什么基于残差的gbdt不是一个好的选择" class="headerlink" title="为什么基于残差的gbdt不是一个好的选择"></a>为什么基于残差的gbdt不是一个好的选择</h3><p>首先基于残差的gbdt只能处理回归类的问题，不能处理分类问题，这是损失函数所限制的，所以更一般化的gbdt是基于梯度的算法，这也就意味着只要我给出的损失函数是可导的，那么我就能用gbdt的思想去解决问题。具体解决的问题就不会仅仅限于回归了。</p>
+<p> 另外，基于残差的gbdt在解决回归问题上也不算是一个好的选择，一个比较明显的缺点就是对异常值过于敏感。</p>
+<h2 id="Boosting的加法模型"><a href="#Boosting的加法模型" class="headerlink" title="Boosting的加法模型"></a>Boosting的加法模型</h2><p>gbdt模型可以认为是是由k个基模型组成的一个加法运算式：</p>
+<p><img src="/2018/03/17/GBDT/公式0.svg" alt=""></p>
+<p>其中F是指所有基模型组成的函数空，以回归任务为例，回归树可以看作为一个把特征向量映射为某个score的函数。该模型的参数为：$\Theta=\{f_1,f_2,…,f_K\}$。于一般的机器学习算法不同的是，加法模型不是学习d维空间中的权重，而是<strong>直接学习函数（决策树）集合</strong>。</p>
+<p>那么一般化的损失函数是预测值$\hat y$与 真实值$y$之间的关系，如我们前面的平方损失函数，那么对于n个样本来说，则可以写成：</p>
+<script type="math/tex; mode=display">L=\sum^n_{i=1}l(y_i,\ \hat y_i)</script><p>更一般的，我们知道一个好的模型，在偏差和方差上有一个较好的平衡，而算法的损失函数正是代表了模型的偏差面，<strong>最小化损失函数，就相当于最小化模型的偏差，但同时我们也需要兼顾模型的方差，所以目标函数还包括抑制模型复杂度的正则项</strong>，因此目标函数可以写成：</p>
+<script type="math/tex; mode=display">Obj=\sum^n_{i=1}f_k(x_i)+\sum^K_{k=1}\Omega(f_k)</script><p>其中$\Omega$代表了基模型的复杂度，若基模型是书模型，则树的深度、叶子节点数等指标可以反映树的复杂度。</p>
+<p>对于Boosting来说，它采用的是前向分布算法，即从前往后，逐渐建立基模型来优化逼近目标函数，具体过程如下：</p>
+<p><img src="/2018/03/17/GBDT/equation0.svg" alt=""></p>
+<p>那么，在每一步，如何学习一个新的模型呢，答案的关键还是在于gbdt的目标函数上，即新模型的加入总是以优化目标函数为目的的。</p>
+<p>我们一第$t$步的模型拟合为例，在这一步，模型对第$i$个样本$x_i$的预测为：</p>
+<script type="math/tex; mode=display">\hat y_i^t=\hat y^{t-1}_i+f_t(x_i)</script><p>其中$f_t(x_i)$就是我们这次需要加入的新模型，即需要拟合的模型，此时，目标函数就可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation1.svg" alt=""></p>
+<p>即此时最优化目标函数，就相当于求得了$f_t(x_i)$</p>
+<h1 id="Xgboost"><a href="#Xgboost" class="headerlink" title="$Xgboost$"></a>$Xgboost$</h1><h2 id="Xgboost-的目标函数"><a href="#Xgboost-的目标函数" class="headerlink" title="$Xgboost$的目标函数"></a>$Xgboost$的目标函数</h2><blockquote>
+<p><strong>泰勒公式：</strong>设$n$是一个正整数，如果定义在一个包含$a$的区间上的函数$f$在$a$点处$n+1$次可导，那么对于这个区间上的任意$x$都有：$f(x)=\sum^N_{n=0}{f^{(n)}(a)\over n!}(x-a)^n+R_n(x)$，其中的多项式称为函数在$a$处的泰勒展开式，$R_n(x)$是泰勒公式的余项且是$(x-a)^n$的高阶无穷小。</p>
+<p>​                                                    ——维基百科</p>
+</blockquote>
+<p>二阶泰勒展开：</p>
+<p><img src="/2018/03/17/GBDT/equation2.svg" alt=""></p>
+<p>那么在等式$(1)$中，我们把$\hat y^{t-1}_i$看成是等式$(2)$中的$x$，$f_t(x_i)$看成是$\Delta x$，因此等式$(1)$可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation3.svg" alt=""></p>
+<p>其中$g_i$和$h_i$分别为$l(y_i, \hat y_i^{t-1})$<strong>关于$\hat y_i^{t-1}$</strong>的一阶导和二阶导。我们一平方损失函数为例$\sum^n_{i=1}(y_i-(\hat y^{t-1}_i+f_t(x_i) ) )^2$，则$g_i=\partial _{\hat y^{t-1}}(\hat y^{t-1}-y_i)^2=2(\hat y^{t-1}-y_i)$，$h_i=\partial^2_{\hat y^{t-1}}(\hat y^{t-1}-y_i)^2=2$。</p>
+<p>由于在第$t$步$\hat y^{t-1}_i$其实是一个已知的值，所以$l(y_i, \hat y^{t-1}_i)$是一个常数，其对函数优化不会产生影响，因此，等式$(3)$可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation4.svg" alt=""></p>
+<p>所以我们只需要求出前一步损失函数的一阶和二阶导的值（由于前一步的$\hat y^{t-1}$是已知的，所以这两个值就是常数）带入等式$(4)$，然后优化目标函数，就可得到每一步的$f(x)$，最后根据加法模型的到一个整体的模型。</p>
+<h2 id="如何用决策树来表示上一步的目标函数"><a href="#如何用决策树来表示上一步的目标函数" class="headerlink" title="如何用决策树来表示上一步的目标函数"></a>如何用决策树来表示上一步的目标函数</h2><p> 假设我们$boosting$的基模型用决策树来实现，则一颗生成好的决策树，即结构确定，也就是说树的叶子结点其实是确定了的。假设这棵树的叶子节点有$T$片叶子，而每片叶子对应的值$w\in R^T$。熟悉决策树的同学应该清楚，每一片叶子结点中样本的预测值都会是一样的，在分类问题中，是某一类；在回归问题中，是某一个值，那么肯定存在这样一个函数$q:R^d\rightarrow \{1,2,…,T\}$，及将$f_t(x)$中的每个样本映射到每一个叶子节点上，当然$f_t(x)$和$q$我们都是不知道的，但我们也不关心，这里只是说明一下决策树表达数据结构的方法是怎么样的，不理解也没有问题。</p>
+<p>那么$f_t(x)$就可以转成$w_{q(x)}$，这里的$q(x)$代表了每个样本<strong>在哪个叶子节点上</strong>，而$w_{q(x)}$则代表了哪个叶子结点去什么$w$值，所以$w_{q(x)}$就代表了每个样本的取值$w$（即预测值）。</p>
+<p>如果决策树的复杂度可以由正则项来定义$\Omega(f_t)=\gamma T+{1\over2}\lambda\sum_{j=1}^Tw_j^2$ (这是xgb的正则项)，即决策树模型的复杂度由生成的树的叶子节点数量和叶子节点对应的值向量的$L2$范数决定。</p>
+<p>我们假设<strong>$I_j=\{i|q(x_i)=j\}$</strong>为第$j$个叶子节点的样本集合，则等式$(4)$根据上面的一些变换可以写成：</p>
+<p><img src="/2018/03/17/GBDT/equation5.svg" alt=""></p>
+<p><em>即我们之前样本的集合，现在都改写成了叶子结点的集合，由于一个叶子结点有多个样本存在，因此才有了$\sum_{i\in I_j}g_i$和$\sum_{i\in I_j}h_i$这两项。</em></p>
+<p>定义$G_j=\sum_{i\in I_j}g_i，H_j=\sum_{i\in I_j}h_i$，则等式$(5)$可以写成：</p>
+<script type="math/tex; mode=display">Obj^{(t)}=\sum^T_{j=1}[G_jw_j+{1\over 2}(H_j+\lambda)w_j^2]+\gamma T</script><p>如果树结构是固定的，即$q$是确定的，或者说我们已经知道了每个叶子结点有哪些样本，所以$G_j$和$H_j$是确定的，但$w$不确定（$w$其实就是我们要预测的值），那么令目标函数一阶导数为$0$，则可以求得叶子结点$j$对应的值：</p>
+<p><img src="/2018/03/17/GBDT/equation6.svg" alt=""></p>
+<p>目标函数的值可以化简为：</p>
+<p><img src="/2018/03/17/GBDT/equation7.svg" alt=""></p>
+<h2 id="如何求树的结构（单线程版本）"><a href="#如何求树的结构（单线程版本）" class="headerlink" title="如何求树的结构（单线程版本）"></a>如何求树的结构（单线程版本）</h2><p> 那么对于单棵决策树，一种理想的优化状态就是枚举所有可能的树结构，因此过程如下：</p>
+<ol>
+<li>首先枚举所有可能的树结构；</li>
+<li>计算每种树结构下的目标函数值，即等式$(7)$的值；</li>
+<li>取目标函数最小（大）值为最佳的数结构，根据等式6求得每个叶子节点的$w$取值，即样本的预测值。</li>
+</ol>
+<p>然而，可能的树结构数量是无穷的，所以实际上我们不可能枚举所有可能的树结构。通常情况下，我们采用贪心策略来生成决策树的每个节点。 </p>
+<ol>
+<li>从深度为0的树开始，对每个叶节点枚举所有的可用特征 </li>
+<li>针对每个特征，把属于该节点的训练样本根据该特征值升序排列，通过线性扫描的方式来决定该特征的最佳分裂点，并记录该特征的最大收益（采用最佳分裂点时的收益） </li>
+<li>选择收益最大的特征作为分裂特征，用该特征的最佳分裂点作为分裂位置，把该节点生长出左右两个新的叶节点，并为每个新节点关联对应的样本集 </li>
+<li>回到第1步，递归执行到满足特定条件为止</li>
+</ol>
+<p>那么如何计算上面的收益呢，很简单，仍然紧扣目标函数就可以了。假设我们在某一节点上二分裂成两个节点，分别是左$（L）$右$（R）$，则分列前的目标函数是$-{1\over 2}[{(G_L+G_R)^2\over H_L+H_R+\lambda}] $，分裂后则是$-{1\over 2}[{G_L^2\over H_L+\lambda}+{G_R^2\over H_R+\lambda}]+2\lambda$，则对于目标函数来说，分裂后的收益是（这里假设是最小化目标函数，所以用分列前减去分裂后）：</p>
+<p><img src="/2018/03/17/GBDT/equation8.svg" alt=""></p>
+<p><strong><em>等式$(8)$计算出来的收益，也是作为变量重要度输出的重要依据。</em></strong></p>
+<p>这时，就有两种后续。一种是当最好的分割的情况下，GainGain为负时就停止树的生长，这样的话效率会比较高也简单，但是这样就放弃了未来可能会有更好的情况。另外一种就是一直分割到最大深度，然后进行修剪，递归得把划分叶子得到的Gain为负的收回。一般来说，后一种要好一些，于是我们采用后一种，完整的算法如下（没有写修剪）</p>
+<p><img src="/2018/03/17/GBDT/贪婪算法.png" alt=""></p>
+<h2 id="建树总结"><a href="#建树总结" class="headerlink" title="建树总结"></a>建树总结</h2><p>所以gbdt的算法可以总结为：</p>
+<ol>
+<li>算法在拟合的每一步都新生成一颗决策树；</li>
+<li>在拟合这棵树之前，需要计算损失函数在每个样本上的一阶导和二阶导，即$g_i$和$h_i$;</li>
+<li>通过上面的贪心策略生成一棵树，计算每个叶子节点的$G_j$和$H_j$，利用等式$(6)$计算预测值$w$;</li>
+<li>把新生成的决策树$f_t(x)$加入$\hat y^t_i=\hat y^{t-1}_i+\epsilon f_t(x_i)$，其中$\epsilon$为学习率，主要为了<strong>抑制模型的过拟合</strong>。</li>
+</ol>
+<h2 id="算法复杂度"><a href="#算法复杂度" class="headerlink" title="算法复杂度"></a>算法复杂度</h2><ol>
+<li>按照某特征里的值进行排序，复杂度是$O(nlog n)$<br>  2. 扫描一遍该特征所有值得到最优分割点，因为该层（兄弟统一考虑）一共有$n$个样本，所以复杂度是$O(n)$<br>  3. 一共有$d$个特征，所以对于一层的操作，复杂度是$O(d(nlog n+n))=O(d nlog n)$<br>  4. 该树的深度为$k$。所以总复杂度是$O(k d nlog n)$</li>
+</ol>
+<h2 id="近似算法"><a href="#近似算法" class="headerlink" title="近似算法"></a>近似算法</h2><h3 id="近似算法思想"><a href="#近似算法思想" class="headerlink" title="近似算法思想"></a>近似算法思想</h3><p>枚举特征所有可能分割在计算上要求很高，为有效做到这一点，算法必须根据特征值对数据预先排序。贪心算法很强大，<strong>然而当数据量过大，无法装入整个内存中时，会非常不高效。</strong></p>
+<p>树模型对特征取值范围不敏感，只对顺序敏感。近似算法首先根据特征分布的百分位提出候选分裂点，然后将连续特征映射到这些候选分割点形成的bucket中，聚合统计数据，并基于聚合数据找到最佳解决方案。<strong>近似算法通常使用加权百分位树选择候选分割点，使特征按照权重期望均匀分布在候选分割点之间。</strong></p>
+<p>我们用$D_k=\{(x_{1k},h_1),(x_{2k},h_2),(x_{3k},h_3),…,(x_{nk},h_n)\}$代表每个样本的第$k$个特征和其对应的二阶梯度所组成的集合。那么我们就可以用百分比来定义这个排名函数$r_k:\mathbb{R}\rightarrow[0,1]$：</p>
+<script type="math/tex; mode=display">r_k(z)={1\over \sum_{(x,h)\in D_k}h}\sum_{(x,h)\in D_k,\ x<z}h</script><p>上式表示的是该特征的值小于z的样本所占总样本的比例。于是我们就能用下面这个不等式来寻找分割点$\{s_{k1},s_{k2},s_{k3},…,s_{kl}\}$</p>
+<script type="math/tex; mode=display">||r_k(s_{k,j})-r_k(s_{k,j+1})||<\epsilon,\ \ s_{k,1}=\min_ix_{ik}, \ s_{k,l}=\max_ix_{ik}</script><p>上式中$\epsilon$表示的是一个近似比例，或者说一个扫描步进。从最小值开始，每次增加$\epsilon(\max_ix_{ik}-\min_ix_{ik})$作为分割点。然后再这些分割点中选择一个 最大的分数作为最后的分割点。并且这里每个数据点被$h_i$加权,这里等式$(4)$可以写成如下形式：</p>
+<script type="math/tex; mode=display">\sum^n_{i=1}{1\over 2}h_i(f_t(x_i)-g_i/h_i)^2+\Omega(f_t)+constant</script><p>可以把$h_i$看做方差损失函数的权值。</p>
+<h3 id="两种近似算法"><a href="#两种近似算法" class="headerlink" title="两种近似算法"></a>两种近似算法</h3><p>很明显这里有两种分割思路：</p>
+<ul>
+<li>全局分割：建树前将所有特征分割完</li>
+<li>局部分割：每次分裂节点后重新分割特征</li>
+</ul>
+<p>全局方法比局部方法需要更少的分割步骤，但是全局方法通常需要更多的候选点才能保证效果，因为候选在每次节点分裂之后不会被重新完善，局部分割在每次分裂节点后被重新完善，并且有可能适合更深的树。</p>
+<h2 id="并行化"><a href="#并行化" class="headerlink" title="并行化"></a>并行化</h2><p>此部分引自知乎答主<a href="https://www.zhihu.com/question/41354392" target="_blank" rel="noopener">杨军</a></p>
+<p>在$XGBoost$的实现中，对算法进行了模块化的拆解，几个重要的部分分别是：</p>
+<p>​       I. $ObjFunction$：对应于不同的$Loss Function$，可以完成一阶和二阶导数的计算。</p>
+<p>​       II. $GradientBooster$：用于管理$Boost$方法生成的$Model$，注意，这里的$Booster Model$既可以对应于线性$Booster Model$，也可以对应于$Tree Booster Model$。</p>
+<p>​       III. $Updater$：用于建树，根据具体的建树策略不同，也会有多种$Updater$。比如，在$XGBoost$里为了性能优化，既提供了单机多线程并行加速，也支持多机分布式加速。也就提供了若干种不同的并行建树的$updater$实现，按并行策略的不同，包括：<br>       I). $inter-feature exact parallelism $（特征级精确并行）<br>       II). $inter-feature approximate parallelism$（特征级近似并行，基于特征分bin计算，减少了枚举所有特征分裂点的开销）<br>       III). $intra-feature parallelism$ （特征内并行）<br>       IV). $inter-node parallelism$  （多机并行）</p>
+<h2 id="处理缺失值"><a href="#处理缺失值" class="headerlink" title="处理缺失值"></a>处理缺失值</h2><p>此部分引自知乎答主<a href="https://www.zhihu.com/search?type=content&amp;q=xgboost%20%E7%BC%BA%E5%A4%B1%E5%80%BC" target="_blank" rel="noopener">微调</a></p>
+<p>$xgboost$处理缺失值的方法和其他树模型不同。根据作者$Tianqi Chen$在论文中章节3.4的介绍，$xgboost$把缺失值当做稀疏矩阵来对待，本身的在节点分裂时不考虑的缺失值的数值。通过这个工程$trick$来减少了为稀疏离散特征寻找$split point$的时间开销。缺失值数据会被分到左子树和右子树分别计算损失，选择较优的那一个。如果训练中没有数据缺失，预测时出现了数据缺失，那么默认被分类到右子树。具体的介绍可以参考<a href="https://github.com/dmlc/xgboost/issues/21" target="_blank" rel="noopener">链接1</a><a href="http://xgboost.readthedocs.io/en/latest/faq.html#how-to-deal-with-missing-value" target="_blank" rel="noopener">链接2</a>。</p>
+<p><img src="/2018/03/17/GBDT/缺失值.jpg" alt=""></p>
+<h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>下面介绍GBDT中抵抗过拟合的技巧</p>
+<ol>
+<li><strong>限制树的复杂度</strong>：$\Omega$函数对树的节点数和节点上预测值$\sum^T_{j=1}w_j^2$的平方和具有惩罚。除此之外，我们通常在终止条件上增加一条：树的深度。</li>
+<li><strong>采样</strong>：训练每个树的时候，只使用一部分样本。</li>
+<li><strong>列采样</strong>：即训练每个树的时候，只使用一部分特征。这里是$xgboost$的创新，它将随机森林思想引入。</li>
+<li><strong>$Shrinkage$</strong>:进一步惩罚$\{w_j\}^T_1$,设定学习率$\epsilon$，防止过拟合。</li>
+<li><strong>$Early stop$</strong>：因为GBDT的可叠加性，我们使用的模型不一定是最终的$ensemble$，而是根据测试集的情况，选择使用前若干棵树。</li>
+</ol>
+<hr>
+<p><strong>参考链接：</strong></p>
+<ol>
+<li><a href="https://arxiv.org/pdf/1603.02754v1.pdf" target="_blank" rel="noopener">XGBoost: A Scalable Tree Boosting System</a></li>
+<li><a href="http://xgboost.readthedocs.io/en/latest/" target="_blank" rel="noopener">xgboost</a></li>
+<li><a href="http://djjowfy.com/2017/08/01/XGBoost%E7%9A%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">xgboost原理</a></li>
+<li><a href="https://www.zhihu.com/search?type=content&amp;q=xgboost%20%E7%BC%BA%E5%A4%B1%E5%80%BC" target="_blank" rel="noopener">知乎</a></li>
+<li><a href="https://www.zybuluo.com/yxd/note/611571" target="_blank" rel="noopener">GBDT算法原理深入解析</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/29765582" target="_blank" rel="noopener">机器学习-一文理解GBDT的原理-20171001</a></li>
+<li><a href="http://www.flickering.cn/category/machine_learning/" target="_blank" rel="noopener">火光摇曳</a></li>
+</ol>
 ]]></content>
     <summary type="html">
-    <![CDATA[支持向量机自己的备忘录]]>
+    <![CDATA[从二阶泰勒展开（Xgboost）推导GBDT]]>
     
     </summary>
     
-      <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
+      <category term="GBDT" scheme="http://yoursite.com/tags/GBDT/"/>
     
-      <category term="支持向量机" scheme="http://yoursite.com/tags/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"/>
+      <category term="xgboost" scheme="http://yoursite.com/tags/xgboost/"/>
     
-      <category term="核函数" scheme="http://yoursite.com/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
+      <category term="梯度提升树" scheme="http://yoursite.com/tags/%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91/"/>
     
-      <category term="拉格朗日" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5/"/>
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[线性模型的判断]]></title>
+    <link href="http://yoursite.com/2018/03/10/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%88%A4%E6%96%AD/"/>
+    <id>http://yoursite.com/2018/03/10/线性模型的判断/</id>
+    <published>2018-03-10T07:03:08.000Z</published>
+    <updated>2018-03-10T07:57:05.416Z</updated>
+    <content type="html"><![CDATA[<h2 id="线性模型的判断"><a href="#线性模型的判断" class="headerlink" title="线性模型的判断"></a>线性模型的判断</h2><p>线性模型定义：如果模型是参数的线性函数，并且存在线性分类面就是线性模型，否则不是。</p>
+<p>注意：线性模型可以用曲线拟合样本，但是分类的决策边界一定是直线的，例如$LR$</p>
+<p>例子：</p>
+<p>单层感知机（网络）无法解决异或问题（单层感知机是线性模型）</p>
+<p>存在非线性激活函数的多层感知机（网络）可以解决异或问题（存在非线性激活函数多层感知机是非线性）</p>
+<h2 id="快速判断线性非线性"><a href="#快速判断线性非线性" class="headerlink" title="快速判断线性非线性"></a>快速判断线性非线性</h2><h3 id="线性的情况"><a href="#线性的情况" class="headerlink" title="线性的情况"></a>线性的情况</h3><ol>
+<li>看乘法式子中自变量$x$前的系数$w$，如果$w$只影响一个$x$，那么此模型为线性模型。（等价于对决策边界是否为超平面的判断）</li>
+</ol>
+<p>非线性的情况</p>
+<ol>
+<li>$(变量)^n$，且$n$不为1为非线性</li>
+<li>$|变量|$有变量在绝对值内为非线性</li>
+<li>$sgn (变量)$有变量在符号函数内为非线性</li>
+</ol>
+<h2 id="常见的模型"><a href="#常见的模型" class="headerlink" title="常见的模型"></a>常见的模型</h2><p>常见的线性分类器：$LR$，贝叶斯分类器，单层感知机，线性回归</p>
+<p>常见的非线性分类器：决策树，$RF$，$GBDT$，多层感知机</p>
+<p>$SVM$两种都有（看是线性核还是高斯核）</p>
+<p>线性分类器速度快、编程方便，但是拟合效果可能不好</p>
+<p>非线性分类器编程复杂，但是拟合能力强</p>
+<h2 id="为什么朴素贝叶斯分类器是线性分类器？"><a href="#为什么朴素贝叶斯分类器是线性分类器？" class="headerlink" title="为什么朴素贝叶斯分类器是线性分类器？"></a>为什么朴素贝叶斯分类器是线性分类器？</h2><p><strong>这一部分我感觉我的理解出现了偏差，先写上了</strong></p>
+<h3 id="朴素贝叶斯分类器"><a href="#朴素贝叶斯分类器" class="headerlink" title="朴素贝叶斯分类器"></a>朴素贝叶斯分类器</h3><p>假设了各特征之间相互独立，采用后验概率最大的类别</p>
+<p>贝叶斯公式：</p>
+<script type="math/tex; mode=display">p(C_k|x_1,x_2,…,x_n)={p(C_k)\Pi^n_{i=1}p(x_i|C_k)\over \sum_ip(x|C_i)p(C_i)}</script><p>训练时候只需要统计$p(C_k),p(x_i|C_k)$，可以说是$very  naive$了</p>
+<h3 id="从线性模型角度理解"><a href="#从线性模型角度理解" class="headerlink" title="从线性模型角度理解"></a>从线性模型角度理解</h3><p>这里以二分类举例</p>
+<p>我们将样本表示为$x=(x_1,x_2,…,x_n)$，$y=\{0,1\}$，$p_{ki}$表示$C_k$中$x_i$出现的概率</p>
+<p>$\log p(C_k)p(x|C_k)$</p>
+<p>$=\log p(C_k)+\sum_{i=1}^n\log p_{ki}$</p>
+<p>对于上式，将$\log p_{ki}$看做$w_i$，而$x_i$为样本中$x_i$表示的值的出现，$x_i=1$。上式可以化为：</p>
+<p>$=w^T_kx+b$</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[线性模型的判断，为什么朴素贝叶斯是线性模型？]]>
+    
+    </summary>
+    
+      <category term="线性模型" scheme="http://yoursite.com/tags/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="非线性模型" scheme="http://yoursite.com/tags/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="朴素贝叶斯" scheme="http://yoursite.com/tags/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[说说生成模型与判别模型]]></title>
+    <link href="http://yoursite.com/2018/03/09/%E8%AF%B4%E8%AF%B4%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://yoursite.com/2018/03/09/说说生成模型与判别模型/</id>
+    <published>2018-03-09T14:16:06.000Z</published>
+    <updated>2018-03-10T05:32:46.367Z</updated>
+    <content type="html"><![CDATA[<p>本文主要是对<a href="https://www.zhihu.com/question/20446337" target="_blank" rel="noopener">知乎相关问题</a>的总结</p>
+<h2 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h2><hr>
+<p>监督学习的任务就是学习一个模型，应用这一个模型，对给定的输入预测相应的输出。这个模型的一般形式为决策函数：$Y=f(X)$或者条件概率分布：$P(Y|X)$</p>
+<p>监督学习方法又可以氛围生成方法和判别方法。所学到的模型分别称为生成模型和判别模型。</p>
+<h3 id="生成模型"><a href="#生成模型" class="headerlink" title="生成模型"></a>生成模型</h3><p>书上的话：生成方法由数据学习<strong>联合概率分布P(X,Y)</strong>，<strong>然后</strong>求出<strong>条件概率分布$P(Y|X)$</strong>作为预测模型，即生成模型：$P(Y|X)={P(X,Y)\over P(X)}$</p>
+<p>这样的方法称为生成方法，是因为<strong>模型表示了$X,Y$的生成关系</strong>。典型的<strong>生成模型</strong>有：<em>朴素贝叶斯法</em>、<em>隐马尔科夫模型、混合高斯模型、AODE、Latent Dirichlet allocation（unsup）、Restricted Boltzmann Machine</em></p>
+<p>生成模型，就是生成（<strong>数据de分布</strong>）的模型，关注的是抓取样本的分布特征，通过建立每个类别的特征分布，最终建立很多类别模型（一般有多少类就有多少个），最后比较结果选择最优。生成模型输入$X$与输出$Y$之间<strong>没有因果关系</strong>。</p>
+<h3 id="判定模型"><a href="#判定模型" class="headerlink" title="判定模型"></a>判定模型</h3><p>书上的话：判别方法由数据直接学习决策函数$f(x)$或者条件概率分布$P(Y|X)$作为预测的模型，即判别模型。判别方法关心的是对给定的输入$X$应该预测什么样的输出$Y$。典型的判别方法包括：<em>kNN，感知机，决策树，逻辑回归，最大熵模型，SVM，提升方法，条件随机场，神经网络等</em>。</p>
+<p>判别模型，就是判别（<strong>数据输出量</strong>）的模型，直接采用<strong>输入特征</strong>去预测输出，或者说条件概率。判定模型只有一个模型，$X$往里面丢，$label$就出来了。判别模型输入$X$与输出$Y$之间<strong>有因果关系</strong></p>
+<h2 id="用起来？"><a href="#用起来？" class="headerlink" title="用起来？"></a>用起来？</h2><hr>
+<h3 id="生成模型-1"><a href="#生成模型-1" class="headerlink" title="生成模型"></a>生成模型</h3><p>优点：</p>
+<p>1.生成模型给出的是<strong>联合分布$P(\hat x,\hat c)$</strong>，不仅能够由联合分布计算条件分布$P(\hat c|\hat x)$（反之不行），还可以给出其他信息，比如可以使用$P(\hat x)=\sum^k_{i=1}P(\hat x|\hat c_i)P(\hat c_i)$来计算边缘分布$P(\hat x)$。如果一个输入样本的边缘分布$P(\hat x)$很小的话，那么可以认为学处的这个模型可能不太适合对这个样本进行分类，分类效果可能会不好，这技术里所谓的$outlier detection$。</p>
+<p>2.生成模型收敛速度比较快，即当样本数量较多时，生成模型能更快地收敛于真实模型。<br>3.生成模型能够应付存在隐变量的情况，比如混合高斯模型就是含有隐变量的生成方法。</p>
+<p>4.生成模型所需计算资源是更少的，大部分情况下只要做统计计数就可以获得模型</p>
+<p>缺点：</p>
+<p>1.实践中多数情况下判别模型效果更好</p>
+<h3 id="判别模型"><a href="#判别模型" class="headerlink" title="判别模型"></a>判别模型</h3><p>优点：</p>
+<p>1.直接面对预测，准确率往往较生成模型高</p>
+<p>2.由于直接学习$P(\hat c|\hat x)$而不需要求解类别条件概率，所以<strong>允许我们对输入进行抽象</strong>（比如降维、构造等），从而能够<strong>简化学习问题</strong>。</p>
+<p>缺点：</p>
+<p>1.判别模型所需资源更多，因为判别模型必须靠误差梯度下降法来获得模型，训练所需时间要多很多。</p>
+<h2 id="过拟合："><a href="#过拟合：" class="headerlink" title="过拟合："></a>过拟合：</h2><hr>
+<h3 id="生成模型-2"><a href="#生成模型-2" class="headerlink" title="生成模型"></a>生成模型</h3><p>‘‘没有考虑正则化很简单，因为他们<strong>很少过拟合</strong>’’。生成模型学习$X,Y$的联合概率分布$P(X,Y)$，直接学习的就是数据的分布，从整个数据的整体着手，<strong>很少会出现过拟合</strong>。</p>
+<p>基本上属于<strong>高偏差/低方差</strong>分类器，<strong>当样本数量小于特征数量或样本数量不足时</strong>，应选用这种模型</p>
+<h3 id="判别模型-1"><a href="#判别模型-1" class="headerlink" title="判别模型"></a>判别模型</h3><p>判别模型应当有<strong>正则化过程</strong>，因为是直接生成$f(x)$或者$p(y|x)$，所以很容易比较$y$跟$f(x)$的关系，按照现有数据照葫芦画瓢来判别，<strong>容易过拟合</strong>，所以正则化便有存在的意义。</p>
+<p>基本上属于<strong>低偏差/高方差</strong>分类器，容易过拟合，需要正则项。<strong>数据量充足时</strong>选用判别模型</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>随着训练集的增大，<strong>低偏差/高方差</strong>分类器（判别模型）相对于<strong>高偏差/低方差</strong>分类器（生成模型）准确率高，因为随着数据量的增大，现有训练集数据的分布更接近于真实分布，此时生成模型优势变小，同时生成模型不能提高足够的准确率，此时，判别模型优势更大。</p>
+<p>举个例子：</p>
+<p>当一份分类数据的特征维度大于样本数量时。如果采用判别模型，极端情况下每条样本都有唯一的特征（或特征组合），此时如果正则化不够给力，那么该判别模型将极大限度拟合<strong>当前</strong>数据，训练集AUC可能将近1，那么就可能得到训练数据上准确率100%，测试数据准确率不如XJB猜的模型。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[说道说道生成模型与判别模型在定义与特点上的不同]]>
+    
+    </summary>
+    
+      <category term="生成模型" scheme="http://yoursite.com/tags/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="判别模型" scheme="http://yoursite.com/tags/%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="模型" scheme="http://yoursite.com/tags/%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[拉格朗日对偶性]]></title>
+    <link href="http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/"/>
+    <id>http://yoursite.com/2018/03/03/拉格朗日对偶性/</id>
+    <published>2018-03-03T14:49:03.000Z</published>
+    <updated>2018-03-04T08:04:05.776Z</updated>
+    <content type="html"><![CDATA[<h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微函数，考虑约束最优化问题</p>
+<script type="math/tex; mode=display">\min_{x\in R^n}f(x)</script><script type="math/tex; mode=display">s.t.\ c_i(x)\le0,\ i=1,2,…,k</script><script type="math/tex; mode=display">h_j(x)=0,\ j=1,2,…,l ​</script><p>​    称此约束最优化问题为原始最优化问题或原始问题。</p>
+<p>​    首先，引进广义拉格朗日函数</p>
+<script type="math/tex; mode=display">L(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)</script><p>​    这里，$\alpha_i,\beta_j$是拉格朗日乘子，$\alpha_i\ge0$.</p>
+<p>​    考虑函数(<strong><em>注意：此时$L(x,\alpha,\beta)$的变量是$\alpha_i\beta_j$</em></strong>)：</p>
+<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)</script><p>​    这里下标$P(Primal)$表示原始问题.对于此函数（关于$\alpha,\beta$的函数，$x$是常量），经过我们优化（不管什么方法），确定$\alpha,\beta$的值，就可以得到$L(x,\alpha,\beta)$的最大值，因为此时$\alpha,\beta$已经确定，显然最大值<script type="math/tex">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)</script>就是<strong><em>只和$x$有关的函数</em></strong></p>
+<p>​    下面通过$x$是否绵竹约束条件两方面来分析这个函数：</p>
+<p>​        1.考虑某个$x$违反了原始的约束，即$c_i\gt0$或者$h_j\neq0$，那么：</p>
+<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)]=\infty</script><p>​        2.考虑$x$满足原始的约束，则：</p>
+<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)]=f(x)</script><p>​    注意最大化确定$\alpha,\beta$的过程，$f(x)$就是个常量，常量的最大值显然是本身</p>
+<p>​    通过上面两条分析可以得出：</p>
+<script type="math/tex; mode=display">\Theta_P(x)=\begin{cases}f(x),\ {x满足原始问题约束}\\+\infty,\ {其他}\\\end{cases}</script><p>​    那么<strong>在满足约束的条件下：</strong></p>
+<script type="math/tex; mode=display">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script><p>​    即$\min_x\Theta_P(x)$与原始优化问题等价，所以常用$\min_x\Theta_P(x)$来代表原始问题，定义原始问题的最优值：</p>
+<script type="math/tex; mode=display">p^*=\min_x\Theta_P(x)</script><p>​    原始问题讨论到这里，总结：重新定义一个无约束问题，这个无约束问题等价于原来的约束优化问题。</p>
+<h2 id="对偶问题"><a href="#对偶问题" class="headerlink" title="对偶问题"></a>对偶问题</h2><p>​    定义<strong>关于$\alpha,\beta$的函数</strong>：</p>
+<script type="math/tex; mode=display">\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)</script><p>​    注意上面等式<strong>右边是关于$x$的函数最小化,$x$确定之后，最小值就只与$\alpha,\beta$有关，所以此时是一个关于$\alpha,\beta$的函数</strong></p>
+<p>​    再考虑极大化$\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)$，即：</p>
+<script type="math/tex; mode=display">\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)</script><p>​    这就是原始问题的对偶问题，再将原始问题写出来：</p>
+<script type="math/tex; mode=display">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script><p>​    从形式上可以看出堆成，只不过<strong>原始问题先固定$L(x,\alpha,\beta)$中的$x$,优化参数$\alpha,\beta$，再优化$x$；而对偶问题是先固定$\alpha,\beta$，再优化$x$，然后再确定参数$\alpha,\beta$</strong></p>
+<p>​    定义对偶问题的最优值：</p>
+<script type="math/tex; mode=display">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)</script><h2 id="原始问题与对偶问题之间的关系"><a href="#原始问题与对偶问题之间的关系" class="headerlink" title="原始问题与对偶问题之间的关系"></a>原始问题与对偶问题之间的关系</h2><p>​    若原始问题和对偶问题都有最优值，则有$Min-Max$不等式：</p>
+<script type="math/tex; mode=display">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)\le\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=p^*</script><p>​    当$L(x,\alpha,\beta)$对$x$为凸函数，对$\alpha,\beta$为凹函数，以上等号成立。而$L(x,\alpha,\beta)$对$\alpha,\beta$为天然凹函数，因此只要$L(x,\alpha,\beta)$对$x$为凸函数，等号便成立</p>
+<p>​    证明：一个式子的最大值永远大于等于这个式子的最小值，哪怕是这个式子最小的最大值与最大的最小值相比（瘦死的骆驼比马大）。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[对拉格朗日对偶性的理解]]>
+    
+    </summary>
+    
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -345,10 +530,10 @@
   
   <entry>
     <title><![CDATA[SVM与LR的异同]]></title>
-    <link href="http://yoursite.com/2018/03/18/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/"/>
-    <id>http://yoursite.com/2018/03/18/SVM与LR的异同/</id>
-    <published>2018-03-18T08:54:31.000Z</published>
-    <updated>2018-03-18T10:36:34.424Z</updated>
+    <link href="http://yoursite.com/2018/02/19/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/"/>
+    <id>http://yoursite.com/2018/02/19/SVM与LR的异同/</id>
+    <published>2018-02-19T08:54:31.000Z</published>
+    <updated>2018-03-25T04:33:41.344Z</updated>
     <content type="html"><![CDATA[<p>本篇文章主要是对几篇blog以及知乎回答的总结</p>
 <p>[TOC]</p>
 <h1 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h1><hr>
@@ -421,123 +606,261 @@
   </entry>
   
   <entry>
-    <title><![CDATA[GBDT]]></title>
-    <link href="http://yoursite.com/2018/03/17/GBDT/"/>
-    <id>http://yoursite.com/2018/03/17/GBDT/</id>
-    <published>2018-03-17T14:02:03.000Z</published>
-    <updated>2018-03-18T05:12:25.007Z</updated>
-    <content type="html"><![CDATA[<h1 id="提升方法"><a href="#提升方法" class="headerlink" title="提升方法"></a>提升方法</h1><blockquote>
-<p>在分类问题中，它通过改变训练样本的权重，学习多个分类器，并将这些分类器进行线性组合，他通过改变训练样本的权重，学习多个分类器，并将这些分类器进行线性组合，特高分类性能</p>
-<p>对于提升方法，有两个问题需要回答：一是在每一轮如何改变训练数据的权值或概率分布；而是如何将弱分类器组合成一个强分类器。</p>
-<p>​                                                    -《统计学习方法》</p>
-</blockquote>
-<h2 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h2><blockquote>
-<p>$Adaboost$算法的特点是通过迭代每次学习一个基本分类器，每次迭代中，提高那些被前一轮分类器错误分类<strong>数据</strong>的权值，而降低那些被正确分类的<strong>数据</strong>的权值。最后$Adaboost$将基本分类器的线性组合作为强分类器，其中给分类误差率小的<strong>基本分类器</strong>大的权值，给分类误差率大的<strong>基本分类器</strong>小的权值</p>
-</blockquote>
-<h2 id="提升树"><a href="#提升树" class="headerlink" title="提升树"></a>提升树</h2><p>提升树正是一种前向分步的加法模型，但是其基分类器是树模型(二叉树)，分为二叉分类树和二叉回归树，提升树往往在实践中表现非常好。提升树的模型如下:</p>
-<script type="math/tex; mode=display">f_M(x)=\sum^M_{m=1}T(x;\Theta)</script><p>其中$T(x;\Theta)$表示决策树，$M$为树的个数，$\Theta$表示树的参数。</p>
-<p>首先确定初始提升树$f_0(x)=0$，第$m$步的模型是</p>
-<script type="math/tex; mode=display">f_m(x)=f_{m-1}(x)+T(x;\Theta_m)</script><p>其中，$f_{m-1}(x)$为当前模型，通过经验风险极小化确定下一棵决策树的参数$\Theta_m$，第$m$步的模型是</p>
-<script type="math/tex; mode=display">\hat \Theta_m=\arg \min_{\Theta_m}\sum^N_{i=1}L(y_i,\ f_{m-1}(x_i)+T(x_i;\Theta_m))</script><h1 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h1><h2 id="为什么拟合负梯度"><a href="#为什么拟合负梯度" class="headerlink" title="为什么拟合负梯度"></a>为什么拟合负梯度</h2><p>为什么要拟合负梯度（<strong>注意这里的梯度是对$\hat y_i^{t-1}$</strong>求导）呢？</p>
-<p>跟梯度下降类似，我们不断减去$\partial f(x)\over \partial x$可以得到$\min_x f(x)$，同理不断减去$\partial L\over\partial \hat y^{t-1}_i$就能得到$\min_{\hat y}L(\hat y)$。所以其实GBDT就是在<strong>函数空间</strong>的梯度下降。</p>
-<h2 id="传统GBDT算法"><a href="#传统GBDT算法" class="headerlink" title="传统GBDT算法"></a>传统GBDT算法</h2><p>算法流程：</p>
-<p><img src="/2018/03/17/GBDT/算法流程.png" alt=""></p>
-<p>乍一看，GBDT算法跟<strong>梯度下降</strong>算法很像，其实GBDT就是在<strong>函数空间</strong>的梯度下降，我们不断减去$\partial f(x)\over \partial x$可以得到$\min_x f(x)$，同理不断减去$\partial L\over\partial F_{K-1}$就能得到$\min_FL(F)$，注意这里是对$F_{K-1}$求导。</p>
-<h2 id="基于残差的GBDT"><a href="#基于残差的GBDT" class="headerlink" title="基于残差的GBDT"></a>基于残差的GBDT</h2><h3 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h3><p>$GBDT$全称$Gradient Boosting Decision Tree$, 其中$gradient$被称为梯度，更一般的理解，可以认为是一阶导，这里残差与梯度是什么关系呢。我们看平方损失函数${1\over 2}\sum^n_0(y_i-F(x_i))^2$，这个算是函数主要是针对回归类型的。</p>
-<p>$    {1\over 2}\sum^n_{i=1}(y_i-F(x_i))^2$</p>
-<p>$= {1\over 2}\sum^n_{i=1}(y_i-\hat y_i^t)^2$</p>
-<p>$= {1\over 2}\sum^n_{i=1}(y_i-\hat y_i^{t-1}-f_t(x_i))^2$</p>
-<p>令其对$\hat y_i^{t-1}$求导为0 得：</p>
-<script type="math/tex; mode=display">-\sum^n_{i=1}(y_i-\hat y_i^{t-1}-f_t(x_i))=0</script><p>则：</p>
-<script type="math/tex; mode=display">\sum_{i=1}^nf_t(x_i)=\sum_{i=1}^n(y_i-\hat y_i^{t-1})</script><p>所以基于残差的gbdt是一种特殊的gbdt模型，它的损失函数是平方损失函数，只能处理回归类的问题。</p>
-<h3 id="为什么基于残差的gbdt不是一个好的选择"><a href="#为什么基于残差的gbdt不是一个好的选择" class="headerlink" title="为什么基于残差的gbdt不是一个好的选择"></a>为什么基于残差的gbdt不是一个好的选择</h3><p>首先基于残差的gbdt只能处理回归类的问题，不能处理分类问题，这是损失函数所限制的，所以更一般化的gbdt是基于梯度的算法，这也就意味着只要我给出的损失函数是可导的，那么我就能用gbdt的思想去解决问题。具体解决的问题就不会仅仅限于回归了。</p>
-<p> 另外，基于残差的gbdt在解决回归问题上也不算是一个好的选择，一个比较明显的缺点就是对异常值过于敏感。</p>
-<h2 id="Boosting的加法模型"><a href="#Boosting的加法模型" class="headerlink" title="Boosting的加法模型"></a>Boosting的加法模型</h2><p>gbdt模型可以认为是是由k个基模型组成的一个加法运算式：</p>
-<p><img src="/2018/03/17/GBDT/公式0.svg" alt=""></p>
-<p>其中F是指所有基模型组成的函数空，以回归任务为例，回归树可以看作为一个把特征向量映射为某个score的函数。该模型的参数为：$\Theta=\{f_1,f_2,…,f_K\}$。于一般的机器学习算法不同的是，加法模型不是学习d维空间中的权重，而是<strong>直接学习函数（决策树）集合</strong>。</p>
-<p>那么一般化的损失函数是预测值$\hat y$与 真实值$y$之间的关系，如我们前面的平方损失函数，那么对于n个样本来说，则可以写成：</p>
-<script type="math/tex; mode=display">L=\sum^n_{i=1}l(y_i,\ \hat y_i)</script><p>更一般的，我们知道一个好的模型，在偏差和方差上有一个较好的平衡，而算法的损失函数正是代表了模型的偏差面，<strong>最小化损失函数，就相当于最小化模型的偏差，但同时我们也需要兼顾模型的方差，所以目标函数还包括抑制模型复杂度的正则项</strong>，因此目标函数可以写成：</p>
-<script type="math/tex; mode=display">Obj=\sum^n_{i=1}f_k(x_i)+\sum^K_{k=1}\Omega(f_k)</script><p>其中$\Omega$代表了基模型的复杂度，若基模型是书模型，则树的深度、叶子节点数等指标可以反映树的复杂度。</p>
-<p>对于Boosting来说，它采用的是前向分布算法，即从前往后，逐渐建立基模型来优化逼近目标函数，具体过程如下：</p>
-<p><img src="/2018/03/17/GBDT/equation0.svg" alt=""></p>
-<p>那么，在每一步，如何学习一个新的模型呢，答案的关键还是在于gbdt的目标函数上，即新模型的加入总是以优化目标函数为目的的。</p>
-<p>我们一第$t$步的模型拟合为例，在这一步，模型对第$i$个样本$x_i$的预测为：</p>
-<script type="math/tex; mode=display">\hat y_i^t=\hat y^{t-1}_i+f_t(x_i)</script><p>其中$f_t(x_i)$就是我们这次需要加入的新模型，即需要拟合的模型，此时，目标函数就可以写成：</p>
-<p><img src="/2018/03/17/GBDT/equation1.svg" alt=""></p>
-<p>即此时最优化目标函数，就相当于求得了$f_t(x_i)$</p>
-<h2 id="GBDT的目标函数"><a href="#GBDT的目标函数" class="headerlink" title="GBDT的目标函数"></a>GBDT的目标函数</h2><blockquote>
-<p><strong>泰勒公式：</strong>设$n$是一个正整数，如果定义在一个包含$a$的区间上的函数$f$在$a$点处$n+1$次可导，那么对于这个区间上的任意$x$都有：$f(x)=\sum^N_{n=0}{f^{(n)}(a)\over n!}(x-a)^n+R_n(x)$，其中的多项式称为函数在$a$处的泰勒展开式，$R_n(x)$是泰勒公式的余项且是$(x-a)^n$的高阶无穷小。</p>
-<p>​                                                    ——维基百科</p>
-</blockquote>
-<p>二阶泰勒展开：</p>
-<p><img src="/2018/03/17/GBDT/equation2.svg" alt=""></p>
-<p>那么在等式$(1)$中，我们把$\hat y^{t-1}_i$看成是等式$(2)$中的$x$，$f_t(x_i)$看成是$\Delta x$，因此等式$(1)$可以写成：</p>
-<p><img src="/2018/03/17/GBDT/equation3.svg" alt=""></p>
-<p>其中$g_i$和$h_i$分别为$l(y_i, \hat y_i^{t-1})$<strong>关于$\hat y_i^{t-1}$</strong>的一阶导和二阶导。我们一平方损失函数为例$\sum^n_{i=1}(y_i-(\hat y^{t-1}_i+f_t(x_i) ) )^2$，则$g_i=\partial _{\hat y^{t-1}}(\hat y^{t-1}-y_i)^2=2(\hat y^{t-1}-y_i)$，$h_i=\partial^2_{\hat y^{t-1}}(\hat y^{t-1}-y_i)^2=2$。</p>
-<p>由于在第$t$步$\hat y^{t-1}_i$其实是一个已知的值，所以$l(y_i, \hat y^{t-1}_i)$是一个常数，其对函数优化不会产生影响，因此，等式$(3)$可以写成：</p>
-<p><img src="/2018/03/17/GBDT/equation4.svg" alt=""></p>
-<p>所以我们只需要求出前一步损失函数的一阶和二阶导的值（由于前一步的$\hat y^{t-1}$是已知的，所以这两个值就是常数）带入等式$(4)$，然后优化目标函数，就可得到每一步的$f(x)$，最后根据加法模型的到一个整体的模型。</p>
-<h2 id="如何用决策树来表示上一步的目标函数"><a href="#如何用决策树来表示上一步的目标函数" class="headerlink" title="如何用决策树来表示上一步的目标函数"></a>如何用决策树来表示上一步的目标函数</h2><p> 假设我们$boosting$的基模型用决策树来实现，则一颗生成好的决策树，即结构确定，也就是说树的叶子结点其实是确定了的。假设这棵树的叶子节点有$T$片叶子，而每片叶子对应的值$w\in R^T$。熟悉决策树的同学应该清楚，每一片叶子结点中样本的预测值都会是一样的，在分类问题中，是某一类；在回归问题中，是某一个值，那么肯定存在这样一个函数$q:R^d\rightarrow \{1,2,…,T\}$，及将$f_t(x)$中的每个样本映射到每一个叶子节点上，当然$f_t(x)$和$q$我们都是不知道的，但我们也不关心，这里只是说明一下决策树表达数据结构的方法是怎么样的，不理解也没有问题。</p>
-<p>那么$f_t(x)$就可以转成$w_{q(x)}$，这里的$q(x)$代表了每个样本<strong>在哪个叶子节点上</strong>，而$w_{q(x)}$则代表了哪个叶子结点去什么$w$值，所以$w_{q(x)}$就代表了每个样本的取值$w$（即预测值）。</p>
-<p>如果决策树的复杂度可以由正则项来定义$\Omega(f_t)=\gamma T+{1\over2}\lambda\sum_{j=1}^Tw_j^2$ (这是xgb的正则项)，即决策树模型的复杂度由生成的树的叶子节点数量和叶子节点对应的值向量的$L2$范数决定。</p>
-<p>我们假设<strong>$I_j=\{i|q(x_i)=j\}$</strong>为第$j$个叶子节点的样本集合，则等式$(4)$根据上面的一些变换可以写成：</p>
-<p><img src="/2018/03/17/GBDT/equation5.svg" alt=""></p>
-<p><em>即我们之前样本的集合，现在都改写成了叶子结点的集合，由于一个叶子结点有多个样本存在，因此才有了$\sum_{i\in I_j}g_i$和$\sum_{i\in I_j}h_i$这两项。</em></p>
-<p>定义$G_j=\sum_{i\in I_j}g_i，H_j=\sum_{i\in I_j}h_i$，则等式$(5)$可以写成：</p>
-<script type="math/tex; mode=display">Obj^{(t)}=\sum^T_{j=1}[G_jw_j+{1\over 2}(H_j+\lambda)w_j^2]+\gamma T</script><p>如果树结构是固定的，即$q$是确定的，或者说我们已经知道了每个叶子结点有哪些样本，所以$G_j$和$H_j$是确定的，但$w$不确定（$w$其实就是我们要预测的值），那么令目标函数一阶导数为$0$，则可以求得叶子结点$j$对应的值：</p>
-<p><img src="/2018/03/17/GBDT/equation6.svg" alt=""></p>
-<p>目标函数的值可以化简为：</p>
-<p><img src="/2018/03/17/GBDT/equation7.svg" alt=""></p>
-<h2 id="如何最优化目标函数"><a href="#如何最优化目标函数" class="headerlink" title="如何最优化目标函数"></a>如何最优化目标函数</h2><p> 那么对于单棵决策树，一种理想的优化状态就是枚举所有可能的树结构，因此过程如下：</p>
-<ol>
-<li>首先枚举所有可能的树结构；</li>
-<li>计算每种树结构下的目标函数值，即等式$(7)$的值；</li>
-<li>取目标函数最小（大）值为最佳的数结构，根据等式6求得每个叶子节点的$w$取值，即样本的预测值。</li>
-</ol>
-<p>然而，可能的树结构数量是无穷的，所以实际上我们不可能枚举所有可能的树结构。通常情况下，我们采用贪心策略来生成决策树的每个节点。 </p>
-<ol>
-<li>从深度为0的树开始，对每个叶节点枚举所有的可用特征 </li>
-<li>针对每个特征，把属于该节点的训练样本根据该特征值升序排列，通过线性扫描的方式来决定该特征的最佳分裂点，并记录该特征的最大收益（采用最佳分裂点时的收益） </li>
-<li>选择收益最大的特征作为分裂特征，用该特征的最佳分裂点作为分裂位置，把该节点生长出左右两个新的叶节点，并为每个新节点关联对应的样本集 </li>
-<li>回到第1步，递归执行到满足特定条件为止</li>
-</ol>
-<p>那么如何计算上面的收益呢，很简单，仍然紧扣目标函数就可以了。假设我们在某一节点上二分裂成两个节点，分别是左$（L）$右$（R）$，则分列前的目标函数是$-{1\over 2}[{(G_L+G_R)^2\over H_L+H_R+\lambda}] $，分裂后则是$-{1\over 2}[{G_L^2\over H_L+\lambda}+{G_R^2\over H_R+\lambda}]+2\lambda$，则对于目标函数来说，分裂后的收益是（这里假设是最小化目标函数，所以用分列前减去分裂后）：</p>
-<p><img src="/2018/03/17/GBDT/equation8.svg" alt=""></p>
-<p><strong><em>等式$(8)$计算出来的收益，也是作为变量重要度输出的重要依据。</em></strong></p>
-<p>以上其实是$xgboost$建树方案</p>
-<h2 id="建树总结"><a href="#建树总结" class="headerlink" title="建树总结"></a>建树总结</h2><p>所以gbdt的算法可以总结为：</p>
-<ol>
-<li>算法在拟合的每一步都新生成一颗决策树；</li>
-<li>在拟合这棵树之前，需要计算损失函数在每个样本上的一阶导和二阶导，即$g_i$和$h_i$;</li>
-<li>通过上面的贪心策略生成一棵树，计算每个叶子节点的$G_j$和$H_j$，利用等式$(6)$计算预测值$w$;</li>
-<li>把新生成的决策树$f_t(x)$加入$\hat y^t_i=\hat y^{t-1}_i+\epsilon f_t(x_i)$，其中$\epsilon$为学习率，主要为了<strong>抑制模型的过拟合</strong>。</li>
-</ol>
-<h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>下面介绍GBDT中抵抗过拟合的技巧</p>
-<ol>
-<li><strong>限制树的复杂度</strong>：$\Omega$函数对树的节点数和节点上预测值$\sum^T_{j=1}w_j^2$的平方和具有惩罚。除此之外，我们通常在终止条件上增加一条：树的深度。</li>
-<li><strong>采样</strong>：训练每个树的时候，只使用一部分样本。</li>
-<li><strong>列采样</strong>：即训练每个树的时候，只使用一部分特征。这里是$xgboost$的创新，它将随机森林思想引入。</li>
-<li><strong>$Shrinkage$</strong>:进一步惩罚$\{w_j\}^T_1$,设定学习率$\epsilon$，防止过拟合。</li>
-<li><strong>$Early stop$</strong>：因为GBDT的可叠加性，我们使用的模型不一定是最终的$ensemble$，而是根据测试集的情况，选择使用前若干棵树。</li>
-</ol>
-<hr>
-<p><strong>参考链接：</strong></p>
-<ol>
-<li><a href="https://www.zybuluo.com/yxd/note/611571" target="_blank" rel="noopener">GBDT算法原理深入解析</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/29765582" target="_blank" rel="noopener">机器学习-一文理解GBDT的原理-20171001</a></li>
-<li><a href="http://www.flickering.cn/category/machine_learning/" target="_blank" rel="noopener">火光摇曳</a></li>
-</ol>
+    <title><![CDATA[支持向量机SVM]]></title>
+    <link href="http://yoursite.com/2018/02/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/"/>
+    <id>http://yoursite.com/2018/02/18/支持向量机SVM/</id>
+    <published>2018-02-18T13:34:16.000Z</published>
+    <updated>2018-03-25T04:33:29.488Z</updated>
+    <content type="html"><![CDATA[<h1 id="线性可分支持向量机与硬间隔最大化"><a href="#线性可分支持向量机与硬间隔最大化" class="headerlink" title="线性可分支持向量机与硬间隔最大化"></a>线性可分支持向量机与硬间隔最大化</h1><hr>
+<h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><p>考虑一个二分类问题，假设输入空间和特征空间为两个不同的空间。<strong>输入空间为欧式空间或离散集合，特征空间为欧式空间或希尔伯特空间。</strong>线性可分支持向量机、线性支持向量机假设这两个空间的元素一一对应，并将输入空间中的输入映射为特征空间中的特征向量。非线性支持向量机利用一个从输入空间到特征空间的非线性映射将输入映射为特征向量。所以<strong>输入都有输入空间转换到特征空间，支持向量机的学习是在特征空间进行的。</strong></p>
+<p><strong>定义   线性可分支持向量机：</strong>给定线性可分训练数据集，通过间隔最大化或等价地求解相应的凸二次规划问题学习得到的分离超平面为：</p>
+<script type="math/tex; mode=display">w^￥x+b^￥=0</script><p>以及相应的分类决策函数：</p>
+<script type="math/tex; mode=display">f(x)=sign(w^￥x+b^￥)</script><h2 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h2><p>一般来说，一个点距离分离超平面的远近可以表示分类预测的确信程度。在超平面$wx+b=0$确定的情况下，$|wx+b|$能够<strong>相对的</strong>表示点$x$距离超平面的远近。而$wx+b$的符号与类标记$y$的符号是否一致能够表示分类是否正确。所以可用量$y(wx+b)$来表示分类的正确性以及确信度，这就是<strong>函数间隔</strong>的概念。</p>
+<p><strong><em>为什么$|wx+b|$是相对的表示距离：首先这指的是函数距离，同一个函数内有比较价值。其次因为$b$的影响，真正距离并不是这个，但是距离的比较都有这个$b$，所以这里就不再考虑</em></strong></p>
+<p><strong>定义  函数间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的函数间隔为</p>
+<script type="math/tex; mode=display">\hat\gamma_i=y_i(wx_i+b)</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的函数间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
+<script type="math/tex; mode=display">\hat\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>选择分离超平面时，只有函数间隔还不够，因为<strong><em>只要成比例的改变$w$和$b$，例如将它们改写为$2w$和$2b$，超平面并没有改变，但函数间隔却成为原来的$2$倍。所以可以对分离超平面的法向量$w$加某些约束，如规范化，$||w||=1$，使得间隔是确定的。</em></strong>这时函数间隔成为几何间隔。</p>
+<p><strong>定义  几何间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的几何间隔为：</p>
+<script type="math/tex; mode=display">\gamma_i=y_i({w\over ||w||}x_i+{b\over||w||})</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的几何间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
+<script type="math/tex; mode=display">\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>函数间隔和几何间隔的关系：</p>
+<script type="math/tex; mode=display">\gamma={\hat\gamma\over||w||}\ \ \ \ \ (1)</script><p>如果$||w||=1$，那么函数间隔和几何间隔相等。如果超平面参数$w$和$b$成比例的改变（超平面没有改变），函数间隔也按此比例改变，而几何间隔不变。</p>
+<h2 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h2><p>间隔最大化的直观解释是：对训练数据集找到几何间隔最大的超平面意味着一充分大的确信度对训练数据进行分类。也就是说，不仅将正负实例点分开，而且对最难分的实例点（离超平面最近的点）也有足够大的确信度将它们分开。这样的超平面应该对未知的新实例有很好的分类预测能力。</p>
+<h3 id="最大间隔分离超平面"><a href="#最大间隔分离超平面" class="headerlink" title="最大间隔分离超平面"></a>最大间隔分离超平面</h3><p>求一个几何间隔最大的分离超平面可以表示为下面问题的最优化：</p>
+<script type="math/tex; mode=display">\max_{w,b}\ \ \ \gamma</script><script type="math/tex; mode=display">s.t.\ \ y_i({w\over||w||}x_i+{b\over||w||})\ge\gamma,\ \ i=1,2,…,N</script><p>我们希望最大化几何间隔$\gamma$（<strong>$\gamma$为所有点的中几何距离最短的点的几何距离，就是支持向量的几何距离</strong>），约束条件表示的是超平面关于每个训练样本点的几何间隔至少是$\gamma$。</p>
+<p>考虑几何间隔与函数间隔的关系式$(1)$，可以将这个问题改写为(这里为了构造出$||w||$):</p>
+<script type="math/tex; mode=display">\max_{w,b}\ \ \ {\hat\gamma\over||w||}</script><script type="math/tex; mode=display">s.t.\ \ y_i(wx_i+b)\ge\hat\gamma,\ \ i=1,2,…,N</script><p>**函数间隔$\hat\gamma$的取值并不影响最优化问题的解。将$w,b$按比例变化为$\lambda w,\lambda b$，超平面并未发生改变，函数间隔变为$\lambda\hat\gamma $。所以函数间隔的改变只影响$w,b$的系数，不改变超平面。这样就可以去$\hat\gamma=1$，并带入以上最优化问题。注意到最大化$1\over ||w||$和最小化${1\over 2}||w||^2$是等价地。于是就得到了下面线性可分支持向量机学习的最优化问题：</p>
+<script type="math/tex; mode=display">\min_{w,b}\ \ \ {1\over 2}||w||^2</script><script type="math/tex; mode=display">s.t.\ \ \ y_i(wx_i+b)-1\ge0,\ \ \ i=1,2,…,N</script><p><strong><em>SVM部分暂时弃更，东西差不多都是《统计学习方法上的》，关于自己理解的部分也都标注在了书上，手码实在太多了，这部分先看书把。。</em></strong></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[从二阶泰勒展开（Xgboost）推导GBDT]]>
+    <![CDATA[支持向量机自己的备忘录]]>
     
     </summary>
     
-      <category term="GBDT" scheme="http://yoursite.com/tags/GBDT/"/>
+      <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
     
-      <category term="xgboost" scheme="http://yoursite.com/tags/xgboost/"/>
+      <category term="支持向量机" scheme="http://yoursite.com/tags/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"/>
     
-      <category term="梯度提升树" scheme="http://yoursite.com/tags/%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91/"/>
+      <category term="核函数" scheme="http://yoursite.com/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
+    
+      <category term="拉格朗日" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[最大熵模型]]></title>
+    <link href="http://yoursite.com/2018/02/17/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://yoursite.com/2018/02/17/最大熵模型/</id>
+    <published>2018-02-17T07:41:18.000Z</published>
+    <updated>2018-03-25T04:31:46.942Z</updated>
+    <content type="html"><![CDATA[<p>最大熵模型($The  Maximum Entropy$，从信息论的角度来讲，就是保留了最大的不确定性，也就是让熵达到最大。当我们需要对一个时间的概率分布进行预测是，最大熵原理告诉我们所有的预测应当满足全部已知的条件，而<strong>对未知的情况不要做任何主观假设（不做主观假设这点很重要）</strong>。也就是让概率分布最均匀，预测风险最小。</p>
+<h2 id="数学知识"><a href="#数学知识" class="headerlink" title="数学知识"></a>数学知识</h2><h3 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h3><p>熵（$Entropy$）是热力学中的概念，由香农引入到信息论中。在信息论和概率统计中，熵用来表示随机变量不确定性的度量。</p>
+<p><strong>定义：</strong>设$X\in\{x_1,x_2,x_3…,x_n\}$为一个离散随机变量，其概率分布为$p(X=x_i)=p_i, i=1,2,…,n$，则$X$的熵为</p>
+<script type="math/tex; mode=display">H(X)=-\sum^n_{i=1}p_i\log p_i</script><p>其中，当$p_i=0$时，定义$0\log 0=0.$</p>
+<p>注意：$H(x)$依赖于$X$的分布，而与$X$的具体值无关。$H(x)$越大，表示$X$的不确定性越大。</p>
+<h3 id="条件熵"><a href="#条件熵" class="headerlink" title="条件熵"></a>条件熵</h3><p><strong>定义：</strong>设$X\in\{x_1,x_2,x_3…,x_n\}, Y\in \{y_1,y_2,…,y_m\}$为离散随机变量，在已知$X$的条件下，$Y$的条件熵$(Conditional Entropy)$可定义为</p>
+<script type="math/tex; mode=display">H(Y|X)=\sum^n_{i=1}H(Y|X=x_i)=-\sum^n_{i=1}p(x_i)\sum^m_{j=1}p(y_j|x_i)\log p(y_j|x_i)</script><p>它表示已知$X$的条件下，$Y$的条件概率分布的熵对$X$的数学期望。</p>
+<h2 id="最大熵原理"><a href="#最大熵原理" class="headerlink" title="最大熵原理"></a>最大熵原理</h2><p>最大熵原理是概率模型学习的一个准则，最大熵原理认为，学习概率模型时在所有可能的概率模型（分布）中，熵最大的模型是最好的模型。通常用约束条件来确定概率模型集合，所以，<strong>最大熵原理也可以表述为在满足约束条件的模型集合中选取熵最大的模型</strong>。</p>
+<p>假设离散随机变量$X$的概率分布是$P(X)$，则其熵是</p>
+<script type="math/tex; mode=display">H(P)=-\sum_xP(x)\log P(x)</script><p>熵满足下列不等式：</p>
+<script type="math/tex; mode=display">0\le H(P)\le \log |X|</script><p><strong>式中，$|X|$是$X$的取值个数，当且仅当$X$的分布式均匀分布时右边的等号成立。这就是说，当$X$服从均匀分布时候，熵最大</strong>。</p>
+<p>最大熵原理认为要选择的概率模型首先必须满足已有的事实，即约束条件。在没有更多信息条件下，那些不确定的成分是<strong>‘等可能的’</strong>。最大熵原理通过熵最大化来表示等可能性。‘等可能性’不易操作，而<strong>熵则是可优化的数值指标</strong>。</p>
+<h2 id="最大熵模型定义"><a href="#最大熵模型定义" class="headerlink" title="最大熵模型定义"></a>最大熵模型定义</h2><h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>1.最大熵原理是统计学习的一般原理，将它应用到分类就得到了最大熵模型</p>
+<p>2.假设分类模型是一个条件概率分布$P(Y|X),$$X$表示输入，$Y$表示输出。这个模型表示的是对于给定的输入$X$，一条件概率$P(Y|X)$输出$Y$。</p>
+<p>3.给定一个训练数据集$T$，我们的目标就是利用最大熵原理选择最好的分类模型。</p>
+<script type="math/tex; mode=display">T=\{(x_1,y_1),(x_2,y_2),…(x_N,y_N)\}</script><p>4.<strong>按照最大熵原理，我们应该优先保证模型满足一致的所有约束。那么如何得到这些约束的？</strong></p>
+<p>$     $<strong>思路：从训练数据$T$中抽取若干特征（<em>依靠特征函数</em>），然后<em>要求这些特征在$T$上关于经验分布的期望与他们在模型中关于$p(x,y)$的数学期望相等，这样，一个特征就对应一个约束</em>。</strong></p>
+<h3 id="特征函数"><a href="#特征函数" class="headerlink" title="特征函数"></a>特征函数</h3><h4 id="特征函数的作用"><a href="#特征函数的作用" class="headerlink" title="特征函数的作用"></a>特征函数的作用</h4><p>1.用特征函数$f(x)$描述输入$x$和输出$y$之间的某一个事实。</p>
+<p>2.按照最大熵原理，应该优先保证模型满足一致的所有约束。<strong>通过特征函数来定义、量化以及得到这些约束</strong>。</p>
+<p>3.特征函数的出现，可以让模型有更好的<strong>泛化能力</strong>（特征函数的选取、定义特别随意）。</p>
+<p>特征函数可以类比决策树对于输入$x$的处理，假设输入$x$是一个有着多个属性值的实例，决策树在一个决策点并不是对所有属性都进行考虑，这就有点提取出了特征中更有信息量的属性。</p>
+<p>如何让一个线性模型（例如$LR:h_{\theta}(x)=\sigma (\theta^Tx)$  ）也有类似的功能？答案就是特征函数，让输入$X$先经过一些列特征函数的处理，变成$g(x)$再送给模型分类（如：$h_{\theta}(x)=\sigma (\theta^Tg(x))$）.</p>
+<p>此外，当输入的样本可能不是数值的向量，比如文本或图片时，特征函数的功能更像是特征向量的制作。对于给定输入$X$，使用<strong>一系列定义好的特征函数$\{g(x)\}$</strong>将其转换成需要的向量形式。</p>
+<h4 id="对于特征函数中‘特征’的理解"><a href="#对于特征函数中‘特征’的理解" class="headerlink" title="对于特征函数中‘特征’的理解"></a>对于特征函数中‘特征’的理解</h4><p>一般说的“特征”都是指输入的特征，而最大熵模型中的“特征”指的是输入和输出共同的特征。最大熵模型中的每个特征会有一个权重，你可以把它理解成这个特征所描述的输入和输出有多么倾向于同时出现。</p>
+<p>可以以多类logistic regression为例，来感受一下两种视角的不同。在一般的视角下，每条输入数据会被表示成一个n维向量，可以看成n个特征。而模型中每一类都有n个权重，与n个特征相乘后求和再经过softmax的结果，代表这条输入数据被分到这一类的概率。在最大熵模型的视角下，<strong><em>每条输入</em>的n个“特征”与k个类别共同组成了nk个特征，模型中有nk个权重，与特征一一对应。每个类别会触发nk个特征中的n个，这n个特征中的每个特征都会触发特征函数</strong>。</p>
+<h3 id="经验分布"><a href="#经验分布" class="headerlink" title="经验分布"></a>经验分布</h3><p>经验分布是指通过训练数据$T$进行统计得到的分布。我们需要考察两个经验分布，分别是$x,y$的联合经验分布，以及$x$的经验分布。其定义如下：</p>
+<script type="math/tex; mode=display">\hat p(x,y)={count(x,y)\over N},\ \hat p(x)={count(x)\over N}</script><p>对于任意特征函数$f$,记$E_{\hat p}(f)$表示$f$在训练数据$T$上关于$\hat p(x,y)$的数学期望。$E_p(f)$表示$f$在模型上关于$p(x,y)$的数学期望，由于<strong>模型中$p(x,y)$是未知的，并且我们建模的目标是$p(y|x)$，因此我们利用$Bayes$定理得到$p(x,y)=p(x)p(y|x)$，<em>此时，$p(x)$还是未知的</em>，我们可以使用经验分布$\hat p(x)$对$p(x)$进行近似</strong>。按照期望的定义有：</p>
+<script type="math/tex; mode=display">E_{\hat p}(f)=\sum_{x,y}\hat p(x,y)f(x,y)</script><script type="math/tex; mode=display">E_p(f)=\sum_{x,y}p(x,y)f(x,y)=\sum_{x,y}\hat p(x)p(y|x)f(x,y)</script><p>对于概率分布$p(y|x)$我们希望特征$f$的期望应该和从训练数据中的到的一样的。（<strong>我的理解：特征函数是约束的提取量化，特征函数关于经验分布的期望与关于模型的期望相等就代表一个约束</strong>）因此我们可以提出约束：</p>
+<script type="math/tex; mode=display">E_{\hat p}(f)=E_p(f)</script><script type="math/tex; mode=display">\sum_{x,y}\hat p(x,y)f(x,y)=\sum_{x,y}\hat p(x)p(y|x)f(x,y)</script><p>假设从训练数据中抽取了n个特征，相应的便有n个特征函数以及n各约束条件。</p>
+<script type="math/tex; mode=display">C_i:E_p(f_i)=E_{\hat p}(f_i):=\tau_i,i=1,2,…,n</script><h2 id="最大熵模型"><a href="#最大熵模型" class="headerlink" title="最大熵模型"></a>最大熵模型</h2><p>给定数据集$T$，我们的目标就是根据最大上原理选择一个最优分类器，假设满足所有约束条件的模型集合为：</p>
+<script type="math/tex; mode=display">C=\{P\in\pi|E_p(f_i)=E_{\hat p}(f_i),i=1,2,…,n \}</script><p>定义在条件概率分布$P(Y|X)$上的条件熵为：</p>
+<script type="math/tex; mode=display">H(P)=-\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><p>则模型集合$C$中条件熵$H(P)$最大的模型成为最大熵模型。式中的对数为<strong>自然对数</strong>。</p>
+<h2 id="最大熵模型的学习"><a href="#最大熵模型的学习" class="headerlink" title="最大熵模型的学习"></a>最大熵模型的学习</h2><p>最大熵模型的学习可以形式化为约束最优化问题。对于给定训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_n,y_n)\}$以及特征函数$f_i(x,y), i=1,2,3,…,n$，最大熵模型的学习等价于约束最优化问题(<strong>注意自变量为$P$</strong>)：</p>
+<script type="math/tex; mode=display">\max_{P\in C}\ \ \ H(P)=-\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><script type="math/tex; mode=display">\ \ \ s.t.\ \ \ E_P(f_i)=E_{\hat P}(f_i),\ i=1,2,….,n</script><script type="math/tex; mode=display">\sum_y P(y|x)=1\ \ \ \ \ \ \ \ \ \ \ \</script><p>按照最优化习惯，将求最大值问题改写为等价的求最小值问题：</p>
+<script type="math/tex; mode=display">\min_{P\in C}\ \ \ -H(P)=\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><script type="math/tex; mode=display">\ \ \ s.t.\ \ \ E_P(f_i)-E_{\hat P}(f_i)=0,\ i=1,2,….,n</script><script type="math/tex; mode=display">1-\sum_y P(y|x)=0\ \ \ \ \ \ \ \ \ \ \ \</script><p>引入拉格朗日乘子$w_0,w_1,w_2,…,w_n$,定义拉格朗日函数$L(P,w)$(<strong>这里注意两自变量</strong>)：</p>
+<script type="math/tex; mode=display">L(P,w)=-H(p)+w_0(1-\sum_yP(y|x))+\sum^n_{i=1}w_i(E_{\hat P}(f_i)-E_P(f_i))</script><p>又：</p>
+<script type="math/tex; mode=display">-H(P)=\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><script type="math/tex; mode=display">E_{\hat p}(f)=\sum_{x,y}\hat p(x,y)f(x,y)</script><script type="math/tex; mode=display">E_p(f)=\sum_{x,y}\hat p(x)p(y|x)f(x,y)</script><p>带入得到$L(P,w)$:</p>
+<script type="math/tex; mode=display">L(P,w)=\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)+w_0(1-\sum_yP(y|x)\ )+\sum ^n_{i=1}w_i(\sum_{x,y}\hat p(x,y)f(x,y)-\sum_{x,y}\hat p(x,y)f(x,y)\ )</script><p>对偶最优化的原始问题是（<strong>再次注意$min,max$的自变量是什么</strong>）：</p>
+<script type="math/tex; mode=display">\min_{p\in C}\max_wL(P,w)</script><p>对偶问题是</p>
+<script type="math/tex; mode=display">\max_w\min_{p\in C}L(P,w)</script><p>由于拉格朗日函数$L(P,w)$是$P$的凸函数，原始问题的解与对偶问题的解是等价的。这样，可以通过求解对偶问题来求解原始问题</p>
+<p><em>注：以上的推理解释可在另一篇拉格朗日文章中找到</em></p>
+<p>首先，求解对偶问题内部的极小化问题$\min_{p\in C}L(P,w)$。$\min_{p\in C}L(P,w)$是关于$w$的函数（<em>因为$\min_{p\in C}L(P,w)$代表$P$已经确定了</em>），将其记作：</p>
+<script type="math/tex; mode=display">\Psi(w)=\min_{P\in C}L(P,w)=L(P_w,w),</script><p>注：上式的最后一项$L(P_w,w)$是归于$w$的函数，因为此时$P_w=\arg min_{P\in C}L(P,w)=P_w(y|x)$</p>
+<p>$\Psi(x)$成为对偶函数，其解为$P_w$。</p>
+<p>具体地，求$L(P,w)$对$P(y|x)$的偏导数（这里直接插入图片了手写这一段$mathjax$太累，将图片中$\lambda$换成$w$就行）<strong>注意蓝色字部分</strong></p>
+<p><img src="/2018/02/17/最大熵模型/求偏导.jpg" alt=""></p>
+<p>另偏导数等于0，在$\hat P(x)&gt;0$的情况下，解得：</p>
+<script type="math/tex; mode=display">P(y|x)=exp(\ \sum^n_{i=1}w_if_i(x,y)+w_0-1\ )={exp(\sum^n_{i=1}w_if_i(x,y))\over \exp(1-w_0)}</script><p>由于$\sum_y P(y|x)=1$，得(关于$w$的函数)：</p>
+<script type="math/tex; mode=display">P_w(y|x)={1\over Z_w(x)}exp(\ \sum^n_{i=1}w_if_i(x,y)\ )</script><p>其中，</p>
+<script type="math/tex; mode=display">Z_w(x)=\sum_yexp(\ \sum^n_{i=1}w_if_i(x,y)\ )</script><p>$Z_w(x)$成为规范化因子；$f_i(x,y)$是特征函数；$w_i$是特征的权值。表示的模型$P_w=P_w(y|x)$就是最大熵模型。这里$w$是最大熵模型中的参数向量。</p>
+<p>得到对偶问题内部的极小问题的解$P_w(y|x)$后，需要进一步求解外层的极大值问题。</p>
+<script type="math/tex; mode=display">\max_w\Psi(w)</script><p>将其解记为$w^￥$,即：</p>
+<script type="math/tex; mode=display">w^￥=\arg\ max_w\Psi(w)</script><p>令$\sum_{x,y}\hat P(x,y)f_i(x,y) = \tau_i$</p>
+<p>$    \Psi (x)$</p>
+<p>$=L(P_w,w)       注意这里P_w为定量是之前内部极小问题的解$</p>
+<p>$=\sum_{x,y}\hat P(x)P_w(y|x)\log P_w(y|x)+\sum^n_{i=1}w_i( \tau_i-\sum_{x,y}\hat P(x)P_w(y|x)f_i(x,y) )$</p>
+<p>$=\sum^n_{i=1}w_i\tau_i+\sum_{x,y}\hat P(x)P_w(y|x)( \log p_w(y|x)-\sum^n_{i=1}w_if_i(s,y) )$</p>
+<p>又:$\log P_w(y|x)=\sum^n_{i=1}w_if_i(x,y)-\log Z_w(x)$</p>
+<p>将上式带入到$\Psi$中，可以得到</p>
+<p>$\Psi(w)$</p>
+<p>$=\sum^n_{i=1}w_i\tau_i-\sum_{x,y}\hat P(x)P_w(y|x)\log Z_w(x)$</p>
+<p>$=\sum^n_{i=1}w_i\tau_i-\sum_{x}\hat P(x)\log Z_w(x)\sum_y P_w(y|x)$</p>
+<p>$=\sum^n_{i=1}w_i\tau_i-\sum_{x}\hat P(x)\log Z_w(x)          (这里利用了\sum_yP_w(y|x)=1 )$</p>
+<h3 id="极大似然模型"><a href="#极大似然模型" class="headerlink" title="极大似然模型"></a>极大似然模型</h3><p>下面证明对偶函数的极大化等价于最大熵模型的极大似然估计。</p>
+<p>注：极大似然估计$MLE$的一般形式表示为（<strong>推导下一小节给出</strong>）：</p>
+<script type="math/tex; mode=display">L_{\hat P}=\Pi_xP(x)^{\hat P(x)}</script><p>一直训练数据的经验概率分布$\hat P(x,y)$，条件概率分布$P(Y|X)$的对数似然表示为：</p>
+<script type="math/tex; mode=display">L_{\hat P}(P_w)=\log \Pi_{x,y}P(y|x)^{\hat P(x,y)}=\sum_{x,y}\hat P(x,y)\log P(y|x)</script><p>当条件概率分布$P(y|x)$是最大熵模型的内部极小函数的解释，对数似然函数$L_{\hat P}(P_w)$</p>
+<p>为：</p>
+<p><img src="/2018/02/17/最大熵模型/极大似然.png" alt=""></p>
+<p>注：最后一步由$\sum_{x,y}\hat p(x,y)=\sum_x\hat p(x)\sum_yp(y|x)$且$\sum_yp(y|x)=1$得来</p>
+<h3 id="最大熵模型中对数似然的解释"><a href="#最大熵模型中对数似然的解释" class="headerlink" title="最大熵模型中对数似然的解释"></a>最大熵模型中对数似然的解释</h3><p>转载自<a href="http://blog.csdn.net/wkebj/article/details/77965714" target="_blank" rel="noopener">CSDN</a></p>
+<p>最近在学习最大熵模型，看到极大似然估计这部分，没有看明白条件概率分布$p(y|x)$的对数似然函数。上网查了很多资料都没有一个合理的解释。基本直接给出对数似然函数的一般形式 ($\hat p(x)$为jing’yan’gai’lv): </p>
+<script type="math/tex; mode=display">L\hat p=\Pi_xp(x)^{\hat p(x)}</script><p>其实第一眼之所以不理解，因为这是最大似然函数的另外一种形式。一般书上描述的最大似然函数的一般形式是各个样本集XX中各个样本的联合概率: </p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\Pi^n_{i=1}p(x_i;\theta)</script><p>其实这个公式和上式是等价的。$x_1,x_2,…,x_n$是样本具体观测值。随机变量$X$是离散的，所以它的取值范围是一个集合，假设样本集的大小为$n$，$X$的取值有$k$个，分别是$v_1,v_2,…,v_k$。用$C(X=v_i)$表示在观测值中样本$v_i$出现的频率。所以$L(x_1,x_2,…,x_n;θ)$可以表示为： </p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\Pi^k_{i=1}p(v_i;\theta)^{C(X=v_i)}</script><p>对等式两边同时开$n$次方得：</p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\Pi^k_{i=1}p(v_i;\theta)^{C(X=v_i)\over n}</script><p>因为经验概率$\hat p(x)={C(X=v_i)\over n}$，所以简写可以得到</p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\Pi_xp(x;\theta)^{\hat p(x)}</script><p>很明显对$L(x_1,x_2,…,x_n;θ)$求最大值和对$L(x_1,x_2,…,x_n;θ)^{1\over n}$求最大值的优化的结果是一样的。整理上式所以最终的最大似然函数可以表示为：</p>
+<script type="math/tex; mode=display">L(x;\theta)=\Pi_xp(x;\theta)^{\hat p(x)}</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
+<p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
+<script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
+<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
+<script type="math/tex; mode=display">P(y=1)={\exp (\sum^n_{i=1}w_{1i}x_i)\over \exp (\sum^n_{i=1}w_{1i}x_i)+\exp (\sum^n_{i=1}w_{0i}x_i)}</script><p>分子、分母同时除以分子，则有：</p>
+<script type="math/tex; mode=display">P(y=1)={1\over 1+\exp(-\sum^n_{i=1}w_ix_i)}</script><p>这就变成了$logistic$函数。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[最大熵模型的理解、推导以及与LR的联系]]>
+    
+    </summary>
+    
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
+    
+      <category term="最大熵模型" scheme="http://yoursite.com/tags/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
+    
+      <category term="特征函数" scheme="http://yoursite.com/tags/%E7%89%B9%E5%BE%81%E5%87%BD%E6%95%B0/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Logistic Regression的理解]]></title>
+    <link href="http://yoursite.com/2018/02/16/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    <id>http://yoursite.com/2018/02/16/Logistic-Regression的理解/</id>
+    <published>2018-02-16T12:52:28.000Z</published>
+    <updated>2018-03-25T04:31:52.394Z</updated>
+    <content type="html"><![CDATA[<h2 id="逻辑斯地回归模型"><a href="#逻辑斯地回归模型" class="headerlink" title="逻辑斯地回归模型"></a>逻辑斯地回归模型</h2><h3 id="逻辑斯谛分布"><a href="#逻辑斯谛分布" class="headerlink" title="逻辑斯谛分布"></a>逻辑斯谛分布</h3><p>设$X$是连续随机变量，$X$服从逻辑斯谛分布是指$X$具有下列分布函数和密度函数：</p>
+<script type="math/tex; mode=display">F(x)=P(X\le x)= {1 \over 1+e^{-(x-\mu )/\gamma}}</script><script type="math/tex; mode=display">f(x)=F'(x)={e^{-(x-\mu)/y} \over \gamma(1+e^{-(x-\mu)}/\gamma)^2}</script><p>式中，$\mu$为位置参数，$\gamma\gt0$为形状参数。密度函数与分布函数如下图所示。</p>
+<p><img src="/2018/02/16/Logistic-Regression的理解/分布.jpg" alt=""></p>
+<p><strong>注：逻辑斯谛分布的回归会在从广义线性模型角度理解LR时给出</strong></p>
+<h3 id="二项逻辑斯谛回归模型"><a href="#二项逻辑斯谛回归模型" class="headerlink" title="二项逻辑斯谛回归模型"></a>二项逻辑斯谛回归模型</h3><p>二项逻辑斯谛回归模型是一种<strong>分类模型</strong>，由条件概率分布$P(Y|X)$表示，形式为参数化的逻辑斯谛分布。这里，随机变量取值为实数，随机变量Y，取值为1或0，即Y满足二项分布。</p>
+<p><strong>定义：</strong>二项逻辑斯谛回归模型是如下的条件概率分布：</p>
+<script type="math/tex; mode=display">P(Y=1|x)={exp(wx) \over 1+exp(wx) }={1\over 1+exp(-wx)}</script><script type="math/tex; mode=display">P(Y=0|x)={1 \over 1+exp(wx)}={exp(-wx) \over 1+exp(-wx)}</script><p>一个事件的几率（odds）是指该事件发生的概率与该事件不发生的概率的比值。如果事件发生的概率是$p$,那么该事件的几率是${p\over 1-p}$，该事件的对数几率或者logit函数是：</p>
+<script type="math/tex; mode=display">logit(p)=\log {p \over 1-p}</script><p>这里$logit(p)$就是广义线性模型中的$\eta$。</p>
+<p>对于逻辑斯谛回归而言</p>
+<script type="math/tex; mode=display">\log {P(Y=1|x) \over 1-P(Y=1|x)}=wx\ \ \ 其实就是广义线性模型第三条假设</script><p>从广义线性模型角度，二项分布指数族解出的$\eta = \log{p\over 1-p}=logit(p)$,又由第三条假设，$\eta=wx$即可得到$\log {p\over 1-p}=wx$,求解出$p$来就是$P(Y=1|X)$的概率，又因为二项分布期望为$P$,所以收敛的结果就是$P$.</p>
+<h3 id="模型参数估计"><a href="#模型参数估计" class="headerlink" title="模型参数估计"></a>模型参数估计</h3><p>逻辑斯谛回归模型学习中，对于给定的训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_N,y_n)\}$ ，其中，$x_I\in R^n,y_i\in\{0,1\}$,可以应用<strong>极大似然估计法</strong>估计模型参数，从而得到逻辑斯谛回归模型。设：</p>
+<script type="math/tex; mode=display">P(Y=1|x)=\pi(x),\ \ \ P(Y=0|x)=1-\pi(x)</script><p>似然函数为</p>
+<script type="math/tex; mode=display">\Pi^N_{i=1}[\pi(x_i)^{y_i}][1-\pi(x)]^{1-y_i}</script><p>对数似然函数为</p>
+<script type="math/tex; mode=display">L(w)=\sum^N_{i=1}[y_i\log \pi(x_i)+(1-y_i)\log (1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ \ =\sum^N_{i=1}[y_i\log{\pi(x) \over 1-\pi(x_i)}+\log(1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ =\sum^N_{i=1}[y_i(wx)-\log(1+exp(wx))]\ \ \ \ \ \ \</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
+<p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
+<script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
+<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}​</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
+<script type="math/tex; mode=display">P(y=1)={\exp (\sum^n_{i=1}w_{1i}x_i)\over \exp (\sum^n_{i=1}w_{1i}x_i)+\exp (\sum^n_{i=1}w_{0i}x_i)}</script><p>分子、分母同时除以分子，则有：</p>
+<script type="math/tex; mode=display">P(y=1)={1\over 1+\exp(-\sum^n_{i=1}w_ix_i)}</script><p>这就变成了$logistic$函数。</p>
+<h2 id="从广义线性模型角度理解LR"><a href="#从广义线性模型角度理解LR" class="headerlink" title="从广义线性模型角度理解LR"></a>从广义线性模型角度理解LR</h2><p>线性回归中我们假设：</p>
+<script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
+<script type="math/tex; mode=display">y(x;\theta)服从Bernoulli(\phi)分布</script><p>其实他们只是广义线性模型($GlMs$)的特例。</p>
+<h3 id="自己的理解"><a href="#自己的理解" class="headerlink" title="自己的理解"></a>自己的理解</h3><p><strong>广义线性模型是通过链接函数（$LR$中为$logit$函数），把自变量的线性组合（$\eta$ 自然参数/标准参数）与因变量（$T(y)$)的期望联系起来。</strong></p>
+<p>注：$LR$也可以说与因变量的概率分布结合起来，因为二项伯努利分布$E=P$</p>
+<h3 id="指数分布族（-The-exponential-family-）"><a href="#指数分布族（-The-exponential-family-）" class="headerlink" title="指数分布族（$The exponential family$）"></a>指数分布族（$The exponential family$）</h3><p>首先我们定义一下什么是指数分布族，它有如下形式($\eta$自变量，$y$因变量)：</p>
+<script type="math/tex; mode=display">p(y;\eta)=b(y)\exp(\eta^TT(y)-a(\eta))</script><p>简单介绍一下其中的参数：</p>
+<p>1.$\eta $是自然参数</p>
+<p>2.$T(y)$是充分统计量(一般情况下$T(y)=y$)</p>
+<p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
+<p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
+<p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
+<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
+<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
+<p>3.$\eta=\theta^Tx$</p>
+<h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p><img src="/2018/02/16/Logistic-Regression的理解/伯努利1.jpg" alt=""></p>
+<p><img src="/2018/02/16/Logistic-Regression的理解/伯努利2.jpg" alt=""></p>
+<p><img src="/2018/02/16/Logistic-Regression的理解/伯努利3.jpg" alt=""></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[LR的推导以及从广义线性模型、最大熵模型角度的理解]]>
+    
+    </summary>
+    
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
+    
+      <category term="最大熵模型" scheme="http://yoursite.com/tags/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="广义线性回归" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/"/>
+    
+      <category term="逻辑斯谛回归" scheme="http://yoursite.com/tags/%E9%80%BB%E8%BE%91%E6%96%AF%E8%B0%9B%E5%9B%9E%E5%BD%92/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[广义线性模型]]></title>
+    <link href="http://yoursite.com/2018/02/16/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://yoursite.com/2018/02/16/广义线性模型/</id>
+    <published>2018-02-16T05:02:21.000Z</published>
+    <updated>2018-03-25T04:31:59.388Z</updated>
+    <content type="html"><![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>本文将会说明线性回归和$LR$都是广义线性模型的一种特殊形式，介绍广义线性模型的一般求解步骤。</p>
+<p>线性回归中我们假设：</p>
+<script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
+<script type="math/tex; mode=display">y(x;\theta)服从Bernoulli(\phi)分布</script><p>其实他们只是广义线性模型($GlMs$)的特例。</p>
+<h3 id="自己的理解"><a href="#自己的理解" class="headerlink" title="自己的理解"></a>自己的理解</h3><p><strong>广义线性模型是通过链接函数（$LR$中为$logit$函数），把自变量的线性组合（$\eta$ 自然参数/标准参数）与因变量（$T(y)$)的期望联系起来。</strong></p>
+<p>注：$LR$也可以说与因变量的概率分布结合起来，因为二项伯努利分布$E=P$</p>
+<h2 id="指数分布族（-The-exponential-family-）"><a href="#指数分布族（-The-exponential-family-）" class="headerlink" title="指数分布族（$The exponential family$）"></a>指数分布族（$The exponential family$）</h2><p>首先我们定义一下什么是指数分布族，它有如下形式($\eta$自变量，$y$因变量)：</p>
+<script type="math/tex; mode=display">p(y;\eta)=b(y)\exp(\eta^TT(y)-a(\eta))</script><p>简单介绍一下其中的参数：</p>
+<p>1.$\eta $是自然参数</p>
+<p>2.$T(y)$是充分统计量(一般情况下$T(y)=y$)</p>
+<p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
+<p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
+<p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
+<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
+<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
+<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
+<p>3.$\eta=\theta^Tx$</p>
+<h2 id="高斯分布的另一种看法"><a href="#高斯分布的另一种看法" class="headerlink" title="高斯分布的另一种看法"></a>高斯分布的另一种看法</h2><p><img src="/2018/02/16/广义线性模型/高斯1.jpg" alt=""></p>
+<p><img src="/2018/02/16/广义线性模型/高斯2.jpg" alt=""></p>
+<p><img src="/2018/02/16/广义线性模型/高斯3.jpg" alt=""></p>
+<h2 id="伯努利分布-LR回归的含义"><a href="#伯努利分布-LR回归的含义" class="headerlink" title="伯努利分布-LR回归的含义"></a>伯努利分布-LR回归的含义</h2><p><img src="/2018/02/16/广义线性模型/伯努利1.jpg" alt=""></p>
+<p><img src="/2018/02/16/广义线性模型/伯努利2.jpg" alt=""></p>
+<p><img src="/2018/02/16/广义线性模型/伯努利3.jpg" alt=""></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[广义线性模型简析以及与LR的联系]]>
+    
+    </summary>
+    
+      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
+    
+      <category term="理论" scheme="http://yoursite.com/tags/%E7%90%86%E8%AE%BA/"/>
+    
+      <category term="广义线性模型" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="GLM" scheme="http://yoursite.com/tags/GLM/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -545,10 +868,10 @@
   
   <entry>
     <title><![CDATA[2017-JDD京东金融算法大赛12th解决方案]]></title>
-    <link href="http://yoursite.com/2018/03/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
-    <id>http://yoursite.com/2018/03/15/2017-JDD京东金融算法大赛12th解决方案/</id>
-    <published>2018-03-15T04:08:59.000Z</published>
-    <updated>2018-03-15T08:18:45.489Z</updated>
+    <link href="http://yoursite.com/2018/01/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
+    <id>http://yoursite.com/2018/01/15/2017-JDD京东金融算法大赛12th解决方案/</id>
+    <published>2018-01-15T04:08:59.000Z</published>
+    <updated>2018-03-25T04:32:40.874Z</updated>
     <content type="html"><![CDATA[<h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>训练数据包含2017-04-30日之前270天之内若干店铺的每日订单量、销售额、顾客数、评价数、广告费用等数据，下架时间在2017-04-30之后或者未下架的商品数据，以及这些店铺2016年6月-2017年1月每月末后90天内的销售额。</p>
 <p>通过竞赛数据中店铺过往的销售记录，商品信息，商品评价，以及广告费用等信息来建立预测模型，预测店铺未来90天内的销售额。</p>
 <h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ul>
@@ -658,10 +981,10 @@
   
   <entry>
     <title><![CDATA[2017 CCF 大数据竞赛Top4%]]></title>
-    <link href="http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
-    <id>http://yoursite.com/2018/03/13/2017-CCF-大数据竞赛Top4/</id>
-    <published>2018-03-13T14:58:29.000Z</published>
-    <updated>2018-03-21T14:23:56.884Z</updated>
+    <link href="http://yoursite.com/2018/01/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
+    <id>http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/</id>
+    <published>2018-01-13T14:58:29.000Z</published>
+    <updated>2018-03-25T04:32:13.494Z</updated>
     <content type="html"><![CDATA[<h1 id="2017-CCF-大数据比赛记录（首赛）"><a href="#2017-CCF-大数据比赛记录（首赛）" class="headerlink" title="2017 CCF 大数据比赛记录（首赛）"></a>2017 CCF 大数据比赛记录（首赛）</h1><p>此次是在CCF平台与天池平台联合举办的大数据比赛，题目是：商场中精确定位用户所在店铺，主办方是蚂蚁金服。我和朋友两个人都是第一次参加这种大数据比赛，也算一步一个坑走了过来…线下赛最终经过反作弊筛选后是前100，共有2845支队伍。最后因为我俩临近期末考试，比赛也就就此结束了。</p>
 <h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>给出用户在商场使用手机支付时所采集到的信息，包括用户信息，店铺信息，商场信息等，要求预测给出上述信息后精准预测用户所在店铺。具体给出的数据表可以点击<a href="https://tianchi.aliyun.com/competition/information.htm?spm=5176.100067.5678.2.3bb01226n9sWID&amp;raceId=231620" target="_blank" rel="noopener">这里</a>来看。</p>
 <h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ol>
@@ -734,7 +1057,7 @@
 <p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度，但是精度略有损失，可能因为评价指标是$AUC$所以对样本不均衡不敏感。我们最后还是放弃了采样。</p>
 <p>二分类还会造成一个问题：每次对于一个模型训练的时候，正样本平均只有小几百，负样本可能大几千甚至上万。这样正样本太少可能造成过拟合，因此我们模型部分着重调整了泛化部分的参数。</p>
 <h2 id="模型参数"><a href="#模型参数" class="headerlink" title="模型参数"></a>模型参数</h2><p>xgb的模型参数就常用的那几个：</p>
-<p><img src="/2018/03/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
+<p><img src="/2018/01/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
 <h3 id="1、eta-默认0-3"><a href="#1、eta-默认0-3" class="headerlink" title="1、eta[默认0.3]"></a>1、eta[默认0.3]</h3><p>和GBM中的 learning rate 参数类似。 通过减少每一步的权重，可以提高模型的鲁棒性。 典型值为0.01-0.2。</p>
 <h3 id="2、min-child-weight-默认1"><a href="#2、min-child-weight-默认1" class="headerlink" title="2、min_child_weight[默认1]"></a>2、min_child_weight[默认1]</h3><p>建立每个模型所需要的最小样本数。决定最小叶子节点样本权重和。 和GBM的 min_child_leaf 参数类似，但不完全一样。XGBoost的这个参数是最小<em>样本权重的和</em>，而GBM参数是最小<em>样本总数</em>。 这个参数用于避免过拟合。当它的值较大时，可以避免模型学习到局部的特殊样本。 但是如果这个值过高，会导致欠拟合。这个参数需要使用CV来调整。</p>
 <h3 id="3、max-depth-默认6"><a href="#3、max-depth-默认6" class="headerlink" title="3、max_depth[默认6]"></a>3、max_depth[默认6]</h3><p>和GBM中的参数相同，这个值为树的最大深度。 这个值也是用来避免过拟合的。max_depth越大，模型会学到更具体更局部的样本。 需要使用CV函数来进行调优。 典型值：3-10</p>
@@ -779,451 +1102,156 @@
   </entry>
   
   <entry>
-    <title><![CDATA[线性模型的判断]]></title>
-    <link href="http://yoursite.com/2018/03/10/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%88%A4%E6%96%AD/"/>
-    <id>http://yoursite.com/2018/03/10/线性模型的判断/</id>
-    <published>2018-03-10T07:03:08.000Z</published>
-    <updated>2018-03-10T07:57:05.416Z</updated>
-    <content type="html"><![CDATA[<h2 id="线性模型的判断"><a href="#线性模型的判断" class="headerlink" title="线性模型的判断"></a>线性模型的判断</h2><p>线性模型定义：如果模型是参数的线性函数，并且存在线性分类面就是线性模型，否则不是。</p>
-<p>注意：线性模型可以用曲线拟合样本，但是分类的决策边界一定是直线的，例如$LR$</p>
-<p>例子：</p>
-<p>单层感知机（网络）无法解决异或问题（单层感知机是线性模型）</p>
-<p>存在非线性激活函数的多层感知机（网络）可以解决异或问题（存在非线性激活函数多层感知机是非线性）</p>
-<h2 id="快速判断线性非线性"><a href="#快速判断线性非线性" class="headerlink" title="快速判断线性非线性"></a>快速判断线性非线性</h2><h3 id="线性的情况"><a href="#线性的情况" class="headerlink" title="线性的情况"></a>线性的情况</h3><ol>
-<li>看乘法式子中自变量$x$前的系数$w$，如果$w$只影响一个$x$，那么此模型为线性模型。（等价于对决策边界是否为超平面的判断）</li>
-</ol>
-<p>非线性的情况</p>
+    <title><![CDATA[L1、L2正则化]]></title>
+    <link href="http://yoursite.com/2018/01/01/L1%E3%80%81L2%E6%AD%A3%E5%88%99%E5%8C%96/"/>
+    <id>http://yoursite.com/2018/01/01/L1、L2正则化/</id>
+    <published>2017-12-31T16:30:03.000Z</published>
+    <updated>2018-03-25T04:33:14.712Z</updated>
+    <content type="html"><![CDATA[<h1 id="从概率角度推导"><a href="#从概率角度推导" class="headerlink" title="从概率角度推导"></a>从概率角度推导</h1><hr>
+<p>本部分引<a href="https://www.zhihu.com/question/20447622/answer/25186207" target="_blank" rel="noopener">知乎用户bsdelf</a></p>
+<p>从概率论的角度：</p>
 <ol>
-<li>$(变量)^n$，且$n$不为1为非线性</li>
-<li>$|变量|$有变量在绝对值内为非线性</li>
-<li>$sgn (变量)$有变量在符号函数内为非线性</li>
+<li>$Least Square$的解析解可以用$Gaussian$分布以及最大似然估计求得</li>
+<li>$Ridge$回归可以用$Gaussian$分布和最大后验估计解释</li>
+<li>$Lasso$回归可以用$Laplace$分布和最大后验估计解释</li>
 </ol>
-<h2 id="常见的模型"><a href="#常见的模型" class="headerlink" title="常见的模型"></a>常见的模型</h2><p>常见的线性分类器：$LR$，贝叶斯分类器，单层感知机，线性回归</p>
-<p>常见的非线性分类器：决策树，$RF$，$GBDT$，多层感知机</p>
-<p>$SVM$两种都有（看是线性核还是高斯核）</p>
-<p>线性分类器速度快、编程方便，但是拟合效果可能不好</p>
-<p>非线性分类器编程复杂，但是拟合能力强</p>
-<h2 id="为什么朴素贝叶斯分类器是线性分类器？"><a href="#为什么朴素贝叶斯分类器是线性分类器？" class="headerlink" title="为什么朴素贝叶斯分类器是线性分类器？"></a>为什么朴素贝叶斯分类器是线性分类器？</h2><p><strong>这一部分我感觉我的理解出现了偏差，先写上了</strong></p>
-<h3 id="朴素贝叶斯分类器"><a href="#朴素贝叶斯分类器" class="headerlink" title="朴素贝叶斯分类器"></a>朴素贝叶斯分类器</h3><p>假设了各特征之间相互独立，采用后验概率最大的类别</p>
-<p>贝叶斯公式：</p>
-<script type="math/tex; mode=display">p(C_k|x_1,x_2,…,x_n)={p(C_k)\Pi^n_{i=1}p(x_i|C_k)\over \sum_ip(x|C_i)p(C_i)}</script><p>训练时候只需要统计$p(C_k),p(x_i|C_k)$，可以说是$very  naive$了</p>
-<h3 id="从线性模型角度理解"><a href="#从线性模型角度理解" class="headerlink" title="从线性模型角度理解"></a>从线性模型角度理解</h3><p>这里以二分类举例</p>
-<p>我们将样本表示为$x=(x_1,x_2,…,x_n)$，$y=\{0,1\}$，$p_{ki}$表示$C_k$中$x_i$出现的概率</p>
-<p>$\log p(C_k)p(x|C_k)$</p>
-<p>$=\log p(C_k)+\sum_{i=1}^n\log p_{ki}$</p>
-<p>对于上式，将$\log p_{ki}$看做$w_i$，而$x_i$为样本中$x_i$表示的值的出现，$x_i=1$。上式可以化为：</p>
-<p>$=w^T_kx+b$</p>
+<p>首先假设线性回归模型具有如下形式：</p>
+<script type="math/tex; mode=display">f(x)=\sum^d_{j=1}{x_jw_j}+\epsilon=\mathbf{xw^T}+\epsilon</script><p>其中$\mathbf{x}\in \mathbb{R}^{1\times d}，\mathbf{w}\in \mathbb{R}^{n\times d}$，<strong>误差</strong>$\epsilon\in\mathbb{R}$。</p>
+<p>当前一直$\mathbf{X}=(\mathbf{x_1,x_2,…,x_n})^T\in\mathbb{R}^{n\times d}，\mathbf{y}\in\mathbb{R}^{n\times 1}$，怎样求$\mathbf w$呢？</p>
+<p><strong>策略1</strong>：假设$\epsilon_i\sim N(0,\sigma^2)$，也就是说$\mathbf{y_i}\sim N(\mathbf{x_iw^T,\sigma^2})$，那么用最大似然估计推导：</p>
+<p>$\arg\max_{\mathbf{w}}L(\mathbf{w})$</p>
+<p>$=\ln \prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp (-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over\sigma})^2)$</p>
+<p>$-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf y_i-\mathbf{w_iw^T})^2-n\ln \sigma\sqrt{2\pi}$</p>
+<p>$\arg\min_{\mathbf w}f(\mathbf w)$</p>
+<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2$</p>
+<p>$=||\mathbf y-\mathbf{Xw^T}||^2_2$</p>
+<p>这不就是最小二乘吗？</p>
+<p><strong>策略2</strong>:假设$\epsilon_i\sim N(0,\sigma^2)$，$\mathbf w_i\sim N(0,\tau^2)$，那么最后又最大后验估计推导：</p>
+<p>$\arg\max_\mathbf{w}L(\mathbf w)$</p>
+<p>$=\ln\prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over \sigma})^2)·\prod^d_{j=1}{1\over \tau\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf w_j\over\tau})^2)$</p>
+<p>$=-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf{y}_i-\mathbf{x_iw^T})^2-{1\over 2\tau^2}\sum^d_{j=1}\mathbf w^2_j-n\ln\sigma\sqrt{2\pi}-d\ln\tau\sqrt{2\pi}$</p>
+<p>$\arg\min_\mathbf wf(\mathbf w)$</p>
+<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2+\lambda\sum^d_{j=1}\mathbf w_j^2$</p>
+<p>$=||\mathbf y-\mathbf{Xw^T||^2_2+\lambda||\mathbf w||^2_2}$</p>
+<p>这不就是$Ridge$回归吗？</p>
+<p><strong>策略3</strong>：假设$\epsilon_i\sim N(0,\sigma^2)$，$\mathbf w_i\sim Laplace(0,b)$，那么最后又最大后验估计推导：</p>
+<p>$\arg\max_\mathbf{w}L(\mathbf w)$</p>
+<p>$=\ln\prod^n_{i=1}{1\over \sigma\sqrt{2\pi}}\exp(-{1\over 2}({\mathbf y_i-\mathbf{x_iw^T}\over \sigma})^2)·\prod^d_{j=1}{1\over 2b}\exp(-{|\mathbf w_j|\over b})$</p>
+<p>$=-{1\over 2\sigma^2}\sum^n_{i=1}(\mathbf{y}_i-\mathbf{x_iw^T})^2-{1\over 2\tau^2}\sum^d_{j=1}|\mathbf w_j|-n\ln\sigma\sqrt{2\pi}-d\ln\tau\sqrt{2\pi}$</p>
+<p>$\arg\min_\mathbf wf(\mathbf w)$</p>
+<p>$=\sum^n_{i=1}(\mathbf y_i-\mathbf{x_iw^T})^2+\lambda\sum^d_{j=1}|\mathbf w_j|$</p>
+<p>$=||\mathbf y-\mathbf{Xw^T||^2_2+\lambda||\mathbf w||_1}$</p>
+<p>这不就是$Lasso$吗？</p>
+<h2 id="L1、L2-正则化各自的特点"><a href="#L1、L2-正则化各自的特点" class="headerlink" title="$L1、L2$正则化各自的特点"></a>$L1、L2$正则化各自的特点</h2><hr>
+<h2 id="L1-正则化"><a href="#L1-正则化" class="headerlink" title="$L1$正则化"></a>$L1$正则化</h2><p>$L1$范数是指向量中各个元素绝对值之和，也叫<strong>“稀疏规则算子”</strong>。那么<strong>为什么$L1$范数会使<em>权值稀疏</em>？实际上：任何规则化孙子，如果它在$w_i=0$的地方不可微，并且可以分解为一个”求和”的形式，那么这个规则化算子就可以实现稀疏</strong></p>
+<p><strong>权值稀疏</strong>的好处：</p>
+<p><strong>1）特征选择：</strong></p>
+<p>没有信息的特征权值比较小。</p>
+<p><strong>2）可解释性</strong>：</p>
+<p>我们可以相信权重非0的特征上面提供的信息远大于筛选掉的信息</p>
+<p><strong>$L1$正则化不可导</strong>：</p>
+<p>L1不可导可以使用$Proximal Algorithms$或者$ADMM$来解决。</p>
+<h2 id="L2-正则化"><a href="#L2-正则化" class="headerlink" title="$L2$正则化"></a>$L2$正则化</h2><p>$L2$范数又称“<strong>岭回归</strong>”，也叫“<strong>权值衰减</strong>”。让权值都趋向0，可以修正过拟合，原因可能权值系数小了，模型<strong>“多项式性”</strong>就不明显了？。</p>
+<p><strong>1）学习理论角度：</strong></p>
+<p>$L2$范数可以防止过拟合，提升模型泛化能力</p>
+<p><strong>2）优化计算角度：</strong></p>
+<p>$L2$有助于处理$condition number$不好的情况</p>
+<p>这篇<a href="https://zhuanlan.zhihu.com/p/32488420" target="_blank" rel="noopener">知乎文章</a>对$L2$正则化从四个方面深度剖析。</p>
+<ol>
+<li><p>$mse$损失函数</p>
+<script type="math/tex; mode=display">L(w)={1\over N}(y-\hat y)^T(y-\hat y)={1\over N}(y-Xw)^T(y-Xw)</script><p>为使其达到最小，则关于$w$的偏导为0：</p>
+<script type="math/tex; mode=display">\hat w=(X^TX)^{-1}X^Ty</script><p>然而会存在$X^TX$不可逆的情况。为了避免这个问题，将$X^TX$矩阵的对角元素增大一个量$\lambda$，变成$X^TX+\lambda I$。相当于在矩阵$X^TX$中的对角线上加一个值增高他的山岭。山岭增高后矩阵变成可逆的。带入得：</p>
+<script type="math/tex; mode=display">\hat w_{bridge}=(X^TX+\lambda I)^{-1}X^Ty</script></li>
+<li><p>从贝叶斯的角度，假设$w$服从$N(0,\sigma^2I_p)$分布，在最大似然的基础上加入了$w$的先验知识，相当于极大化后验概率。求解该极大化的后验概率，对应的先验知识就是正则化部分</p>
+</li>
+<li><p>$L2$正则化的解相当于先对数据做了主成分分析，然后对于方差小的主成分方向进行惩罚。主成分分析原样保留大方差方向，去掉小方差方向，相当于一个硬选择。而$ L2$ 正则根据方差的大小施加不同程度的惩罚，相当于软选择。</p>
+</li>
+</ol>
 ]]></content>
     <summary type="html">
-    <![CDATA[线性模型的判断，为什么朴素贝叶斯是线性模型？]]>
+    <![CDATA[L1、L2正则化的贝叶斯解释以及各自的特点]]>
     
     </summary>
     
-      <category term="线性模型" scheme="http://yoursite.com/tags/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+      <category term="L1" scheme="http://yoursite.com/tags/L1/"/>
     
-      <category term="非线性模型" scheme="http://yoursite.com/tags/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+      <category term="L2" scheme="http://yoursite.com/tags/L2/"/>
     
-      <category term="朴素贝叶斯" scheme="http://yoursite.com/tags/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/"/>
+      <category term="正则化" scheme="http://yoursite.com/tags/%E6%AD%A3%E5%88%99%E5%8C%96/"/>
+    
+      <category term="先验概率" scheme="http://yoursite.com/tags/%E5%85%88%E9%AA%8C%E6%A6%82%E7%8E%87/"/>
+    
+      <category term="后验概率" scheme="http://yoursite.com/tags/%E5%90%8E%E9%AA%8C%E6%A6%82%E7%8E%87/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
   <entry>
-    <title><![CDATA[说说生成模型与判别模型]]></title>
-    <link href="http://yoursite.com/2018/03/09/%E8%AF%B4%E8%AF%B4%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://yoursite.com/2018/03/09/说说生成模型与判别模型/</id>
-    <published>2018-03-09T14:16:06.000Z</published>
-    <updated>2018-03-10T05:32:46.367Z</updated>
-    <content type="html"><![CDATA[<p>本文主要是对<a href="https://www.zhihu.com/question/20446337" target="_blank" rel="noopener">知乎相关问题</a>的总结</p>
-<h2 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h2><hr>
-<p>监督学习的任务就是学习一个模型，应用这一个模型，对给定的输入预测相应的输出。这个模型的一般形式为决策函数：$Y=f(X)$或者条件概率分布：$P(Y|X)$</p>
-<p>监督学习方法又可以氛围生成方法和判别方法。所学到的模型分别称为生成模型和判别模型。</p>
-<h3 id="生成模型"><a href="#生成模型" class="headerlink" title="生成模型"></a>生成模型</h3><p>书上的话：生成方法由数据学习<strong>联合概率分布P(X,Y)</strong>，<strong>然后</strong>求出<strong>条件概率分布$P(Y|X)$</strong>作为预测模型，即生成模型：$P(Y|X)={P(X,Y)\over P(X)}$</p>
-<p>这样的方法称为生成方法，是因为<strong>模型表示了$X,Y$的生成关系</strong>。典型的<strong>生成模型</strong>有：<em>朴素贝叶斯法</em>、<em>隐马尔科夫模型、混合高斯模型、AODE、Latent Dirichlet allocation（unsup）、Restricted Boltzmann Machine</em></p>
-<p>生成模型，就是生成（<strong>数据de分布</strong>）的模型，关注的是抓取样本的分布特征，通过建立每个类别的特征分布，最终建立很多类别模型（一般有多少类就有多少个），最后比较结果选择最优。生成模型输入$X$与输出$Y$之间<strong>没有因果关系</strong>。</p>
-<h3 id="判定模型"><a href="#判定模型" class="headerlink" title="判定模型"></a>判定模型</h3><p>书上的话：判别方法由数据直接学习决策函数$f(x)$或者条件概率分布$P(Y|X)$作为预测的模型，即判别模型。判别方法关心的是对给定的输入$X$应该预测什么样的输出$Y$。典型的判别方法包括：<em>kNN，感知机，决策树，逻辑回归，最大熵模型，SVM，提升方法，条件随机场，神经网络等</em>。</p>
-<p>判别模型，就是判别（<strong>数据输出量</strong>）的模型，直接采用<strong>输入特征</strong>去预测输出，或者说条件概率。判定模型只有一个模型，$X$往里面丢，$label$就出来了。判别模型输入$X$与输出$Y$之间<strong>有因果关系</strong></p>
-<h2 id="用起来？"><a href="#用起来？" class="headerlink" title="用起来？"></a>用起来？</h2><hr>
-<h3 id="生成模型-1"><a href="#生成模型-1" class="headerlink" title="生成模型"></a>生成模型</h3><p>优点：</p>
-<p>1.生成模型给出的是<strong>联合分布$P(\hat x,\hat c)$</strong>，不仅能够由联合分布计算条件分布$P(\hat c|\hat x)$（反之不行），还可以给出其他信息，比如可以使用$P(\hat x)=\sum^k_{i=1}P(\hat x|\hat c_i)P(\hat c_i)$来计算边缘分布$P(\hat x)$。如果一个输入样本的边缘分布$P(\hat x)$很小的话，那么可以认为学处的这个模型可能不太适合对这个样本进行分类，分类效果可能会不好，这技术里所谓的$outlier detection$。</p>
-<p>2.生成模型收敛速度比较快，即当样本数量较多时，生成模型能更快地收敛于真实模型。<br>3.生成模型能够应付存在隐变量的情况，比如混合高斯模型就是含有隐变量的生成方法。</p>
-<p>4.生成模型所需计算资源是更少的，大部分情况下只要做统计计数就可以获得模型</p>
-<p>缺点：</p>
-<p>1.实践中多数情况下判别模型效果更好</p>
-<h3 id="判别模型"><a href="#判别模型" class="headerlink" title="判别模型"></a>判别模型</h3><p>优点：</p>
-<p>1.直接面对预测，准确率往往较生成模型高</p>
-<p>2.由于直接学习$P(\hat c|\hat x)$而不需要求解类别条件概率，所以<strong>允许我们对输入进行抽象</strong>（比如降维、构造等），从而能够<strong>简化学习问题</strong>。</p>
-<p>缺点：</p>
-<p>1.判别模型所需资源更多，因为判别模型必须靠误差梯度下降法来获得模型，训练所需时间要多很多。</p>
-<h2 id="过拟合："><a href="#过拟合：" class="headerlink" title="过拟合："></a>过拟合：</h2><hr>
-<h3 id="生成模型-2"><a href="#生成模型-2" class="headerlink" title="生成模型"></a>生成模型</h3><p>‘‘没有考虑正则化很简单，因为他们<strong>很少过拟合</strong>’’。生成模型学习$X,Y$的联合概率分布$P(X,Y)$，直接学习的就是数据的分布，从整个数据的整体着手，<strong>很少会出现过拟合</strong>。</p>
-<p>基本上属于<strong>高偏差/低方差</strong>分类器，<strong>当样本数量小于特征数量或样本数量不足时</strong>，应选用这种模型</p>
-<h3 id="判别模型-1"><a href="#判别模型-1" class="headerlink" title="判别模型"></a>判别模型</h3><p>判别模型应当有<strong>正则化过程</strong>，因为是直接生成$f(x)$或者$p(y|x)$，所以很容易比较$y$跟$f(x)$的关系，按照现有数据照葫芦画瓢来判别，<strong>容易过拟合</strong>，所以正则化便有存在的意义。</p>
-<p>基本上属于<strong>低偏差/高方差</strong>分类器，容易过拟合，需要正则项。<strong>数据量充足时</strong>选用判别模型</p>
-<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>随着训练集的增大，<strong>低偏差/高方差</strong>分类器（判别模型）相对于<strong>高偏差/低方差</strong>分类器（生成模型）准确率高，因为随着数据量的增大，现有训练集数据的分布更接近于真实分布，此时生成模型优势变小，同时生成模型不能提高足够的准确率，此时，判别模型优势更大。</p>
-<p>举个例子：</p>
-<p>当一份分类数据的特征维度大于样本数量时。如果采用判别模型，极端情况下每条样本都有唯一的特征（或特征组合），此时如果正则化不够给力，那么该判别模型将极大限度拟合<strong>当前</strong>数据，训练集AUC可能将近1，那么就可能得到训练数据上准确率100%，测试数据准确率不如XJB猜的模型。</p>
+    <title><![CDATA[几种特征选择的方法]]></title>
+    <link href="http://yoursite.com/2017/12/23/%E5%87%A0%E7%A7%8D%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E6%96%B9%E6%B3%95/"/>
+    <id>http://yoursite.com/2017/12/23/几种特征选择的方法/</id>
+    <published>2017-12-23T07:33:33.000Z</published>
+    <updated>2018-03-25T04:33:01.793Z</updated>
+    <content type="html"><![CDATA[<p>当数据预处理完成后，我们需要选择有意义的特征输入机器学习的算法和模型进行训练。通常来说，从两个方面考虑来选择特征：</p>
+<ul>
+<li>特征是否发散：如果一个特征不发散，例如方差接近于0，也就是说样本在这个特征上基本上没有差异，这个特征对于样本的区分并没有什么用。</li>
+<li>特征与目标的相关性：这点比较显见，与目标相关性高的特征，应当优选选择。除方差法外，本文介绍的其他方法均从相关性考虑。</li>
+</ul>
+<p>根据特征选择的形式又可以将特征选择方法分为3种：</p>
+<ul>
+<li>Filter：过滤法，按照发散性或者相关性对各个特征进行评分，设定阈值或者待选择阈值的个数，选择特征。</li>
+<li>Wrapper：包装法，根据目标函数（通常是预测效果评分），每次选择若干特征，或者排除若干特征。</li>
+<li>Embedded：嵌入法，先使用某些机器学习的算法和模型进行训练，得到各个特征的权值系数，根据系数从大到小选择特征。类似于Filter方法，但是是通过训练来确定特征的优劣。</li>
+</ul>
+<p>　　我们使用sklearn中的feature_selection库来进行特征选择。</p>
+<h1 id="Filter"><a href="#Filter" class="headerlink" title="$Filter$"></a>$Filter$</h1><ul>
+<li>优点：快速，主需要统计知识</li>
+<li>缺点：难以挖局特征之间的组合效应</li>
+</ul>
+<h2 id="方差选择法"><a href="#方差选择法" class="headerlink" title="方差选择法"></a>方差选择法</h2><p>使用方差选择法，先要计算各个特征的方差，然后根据阈值，选择方差大于阈值的特征。</p>
+<h2 id="相关系数法"><a href="#相关系数法" class="headerlink" title="相关系数法"></a>相关系数法</h2><p>使用相关系数法，先要计算各个特征对目标值的相关系数以及相关系数的P值。</p>
+<h2 id="卡方检验"><a href="#卡方检验" class="headerlink" title="卡方检验"></a>卡方检验</h2><p>经典的卡方检验是检验定性自变量对定性因变量的相关性。假设自变量有N种取值，因变量有M种取值，考虑自变量等于i且因变量等于j的样本频数的观察值与期望的差距，构建统计量：</p>
+<script type="math/tex; mode=display">\chi^2=\sum{(A-E)\over E}</script><p>其中$A$为实际值，$E$为理论值。<strong>$\chi^2$用于衡量两个变量实际值与联合分布理论值的差异程度（也就是卡方检验的核心思想）</strong>，包含了一下两个信息：</p>
+<ul>
+<li>实际值与理论值偏差的绝对大小</li>
+<li>差异程度与理论值的相对大小</li>
+</ul>
+<p>这个统计量含义就是<strong>自变量对因变量的相关性</strong>。</p>
+<p>可以这么理解，对于这两个特征的联合分布矩阵，这两个变量不相关，那么通过边缘概率求得的期望值（$E$）就应该越接近于真实值（$A$），$\chi^2$越小；相反，这两个变量越相关，通关边缘概率分布求得的期望值（$E$）跟真实值（$A$）的差距就应该越大，$\chi^2$越大。</p>
+<p>因此$\chi^2$越大，说明自变量与因变量相关性越强</p>
+<h2 id="互信息法"><a href="#互信息法" class="headerlink" title="互信息法"></a>互信息法</h2><p>不多说</p>
+<h1 id="Wrapper"><a href="#Wrapper" class="headerlink" title="$Wrapper$"></a>$Wrapper$</h1><ul>
+<li>优点：直接面向算法优化，不需要太多知识</li>
+<li>缺点：庞大的搜索空间，需要定义启发式策略</li>
+</ul>
+<p>递归消除特征法使用一个基模型来进行多轮训练，每轮训练后，消除若干权值系数的特征，再基于新的特征集进行下一轮训练。</p>
+<h1 id="Embedded"><a href="#Embedded" class="headerlink" title="$Embedded$"></a>$Embedded$</h1><ul>
+<li>优点：快速，并且面向算法</li>
+<li>缺点：需要调整结构和参数配置</li>
+</ul>
+<h2 id="基于惩罚项的特征选择法"><a href="#基于惩罚项的特征选择法" class="headerlink" title="基于惩罚项的特征选择法"></a>基于惩罚项的特征选择法</h2><p>使用带$L1$惩罚项的基模型，除了筛选出特征外，同时也进行了降维。</p>
+<p>$Lasso$的参数$\lambda$越大，参数的解越稀疏，选出的特征越少。</p>
+<p><a href="http://www.zhihu.com/question/28641663/answer/41653367" target="_blank" rel="noopener">L1惩罚项降维的原理在于保留多个对目标值具有同等相关性的特征中的一个</a>，所以没选到的特征不代表不重要。故，可结合L2惩罚项来优化。具体操作为：若一个特征在L1中的权值为1，选择在L2中权值差别不大且在L1中权值为0的特征构成同类集合，将这一集合中的特征平分L1中的权值.</p>
+<h2 id="基于树模型的特征选择法"><a href="#基于树模型的特征选择法" class="headerlink" title="基于树模型的特征选择法"></a><strong>基于树模型的特征选择法</strong></h2><p>各种树模型可以输出特征的重要性</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[说道说道生成模型与判别模型在定义与特点上的不同]]>
+    <![CDATA[简单盘述一下特征工程中的特征选择部分]]>
     
     </summary>
     
-      <category term="生成模型" scheme="http://yoursite.com/tags/%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B/"/>
+      <category term="特征选择" scheme="http://yoursite.com/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/"/>
     
-      <category term="判别模型" scheme="http://yoursite.com/tags/%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="模型" scheme="http://yoursite.com/tags/%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[广义线性模型]]></title>
-    <link href="http://yoursite.com/2018/03/09/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://yoursite.com/2018/03/09/广义线性模型/</id>
-    <published>2018-03-09T05:02:21.000Z</published>
-    <updated>2018-03-09T13:56:58.927Z</updated>
-    <content type="html"><![CDATA[<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>本文将会说明线性回归和$LR$都是广义线性模型的一种特殊形式，介绍广义线性模型的一般求解步骤。</p>
-<p>线性回归中我们假设：</p>
-<script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
-<script type="math/tex; mode=display">y(x;\theta)服从Bernoulli(\phi)分布</script><p>其实他们只是广义线性模型($GlMs$)的特例。</p>
-<h3 id="自己的理解"><a href="#自己的理解" class="headerlink" title="自己的理解"></a>自己的理解</h3><p><strong>广义线性模型是通过链接函数（$LR$中为$logit$函数），把自变量的线性组合（$\eta$ 自然参数/标准参数）与因变量（$T(y)$)的期望联系起来。</strong></p>
-<p>注：$LR$也可以说与因变量的概率分布结合起来，因为二项伯努利分布$E=P$</p>
-<h2 id="指数分布族（-The-exponential-family-）"><a href="#指数分布族（-The-exponential-family-）" class="headerlink" title="指数分布族（$The exponential family$）"></a>指数分布族（$The exponential family$）</h2><p>首先我们定义一下什么是指数分布族，它有如下形式($\eta$自变量，$y$因变量)：</p>
-<script type="math/tex; mode=display">p(y;\eta)=b(y)\exp(\eta^TT(y)-a(\eta))</script><p>简单介绍一下其中的参数：</p>
-<p>1.$\eta $是自然参数</p>
-<p>2.$T(y)$是充分统计量(一般情况下$T(y)=y$)</p>
-<p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
-<p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
-<p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
-<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
-<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
-<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
-<p>3.$\eta=\theta^Tx$</p>
-<h2 id="高斯分布的另一种看法"><a href="#高斯分布的另一种看法" class="headerlink" title="高斯分布的另一种看法"></a>高斯分布的另一种看法</h2><p><img src="/2018/03/09/广义线性模型/高斯1.jpg" alt=""></p>
-<p><img src="/2018/03/09/广义线性模型/高斯2.jpg" alt=""></p>
-<p><img src="/2018/03/09/广义线性模型/高斯3.jpg" alt=""></p>
-<h2 id="伯努利分布-LR回归的含义"><a href="#伯努利分布-LR回归的含义" class="headerlink" title="伯努利分布-LR回归的含义"></a>伯努利分布-LR回归的含义</h2><p><img src="/2018/03/09/广义线性模型/伯努利1.jpg" alt=""></p>
-<p><img src="/2018/03/09/广义线性模型/伯努利2.jpg" alt=""></p>
-<p><img src="/2018/03/09/广义线性模型/伯努利3.jpg" alt=""></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[广义线性模型简析以及与LR的联系]]>
-    
-    </summary>
-    
-      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
-    
-      <category term="理论" scheme="http://yoursite.com/tags/%E7%90%86%E8%AE%BA/"/>
-    
-      <category term="广义线性模型" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-      <category term="GLM" scheme="http://yoursite.com/tags/GLM/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[最大熵模型]]></title>
-    <link href="http://yoursite.com/2018/03/07/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://yoursite.com/2018/03/07/最大熵模型/</id>
-    <published>2018-03-07T07:41:18.000Z</published>
-    <updated>2018-03-08T15:34:18.630Z</updated>
-    <content type="html"><![CDATA[<p>最大熵模型($The  Maximum Entropy$，从信息论的角度来讲，就是保留了最大的不确定性，也就是让熵达到最大。当我们需要对一个时间的概率分布进行预测是，最大熵原理告诉我们所有的预测应当满足全部已知的条件，而<strong>对未知的情况不要做任何主观假设（不做主观假设这点很重要）</strong>。也就是让概率分布最均匀，预测风险最小。</p>
-<h2 id="数学知识"><a href="#数学知识" class="headerlink" title="数学知识"></a>数学知识</h2><h3 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h3><p>熵（$Entropy$）是热力学中的概念，由香农引入到信息论中。在信息论和概率统计中，熵用来表示随机变量不确定性的度量。</p>
-<p><strong>定义：</strong>设$X\in\{x_1,x_2,x_3…,x_n\}$为一个离散随机变量，其概率分布为$p(X=x_i)=p_i, i=1,2,…,n$，则$X$的熵为</p>
-<script type="math/tex; mode=display">H(X)=-\sum^n_{i=1}p_i\log p_i</script><p>其中，当$p_i=0$时，定义$0\log 0=0.$</p>
-<p>注意：$H(x)$依赖于$X$的分布，而与$X$的具体值无关。$H(x)$越大，表示$X$的不确定性越大。</p>
-<h3 id="条件熵"><a href="#条件熵" class="headerlink" title="条件熵"></a>条件熵</h3><p><strong>定义：</strong>设$X\in\{x_1,x_2,x_3…,x_n\}, Y\in \{y_1,y_2,…,y_m\}$为离散随机变量，在已知$X$的条件下，$Y$的条件熵$(Conditional Entropy)$可定义为</p>
-<script type="math/tex; mode=display">H(Y|X)=\sum^n_{i=1}H(Y|X=x_i)=-\sum^n_{i=1}p(x_i)\sum^m_{j=1}p(y_j|x_i)\log p(y_j|x_i)</script><p>它表示已知$X$的条件下，$Y$的条件概率分布的熵对$X$的数学期望。</p>
-<h2 id="最大熵原理"><a href="#最大熵原理" class="headerlink" title="最大熵原理"></a>最大熵原理</h2><p>最大熵原理是概率模型学习的一个准则，最大熵原理认为，学习概率模型时在所有可能的概率模型（分布）中，熵最大的模型是最好的模型。通常用约束条件来确定概率模型集合，所以，<strong>最大熵原理也可以表述为在满足约束条件的模型集合中选取熵最大的模型</strong>。</p>
-<p>假设离散随机变量$X$的概率分布是$P(X)$，则其熵是</p>
-<script type="math/tex; mode=display">H(P)=-\sum_xP(x)\log P(x)</script><p>熵满足下列不等式：</p>
-<script type="math/tex; mode=display">0\le H(P)\le \log |X|</script><p><strong>式中，$|X|$是$X$的取值个数，当且仅当$X$的分布式均匀分布时右边的等号成立。这就是说，当$X$服从均匀分布时候，熵最大</strong>。</p>
-<p>最大熵原理认为要选择的概率模型首先必须满足已有的事实，即约束条件。在没有更多信息条件下，那些不确定的成分是<strong>‘等可能的’</strong>。最大熵原理通过熵最大化来表示等可能性。‘等可能性’不易操作，而<strong>熵则是可优化的数值指标</strong>。</p>
-<h2 id="最大熵模型定义"><a href="#最大熵模型定义" class="headerlink" title="最大熵模型定义"></a>最大熵模型定义</h2><h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>1.最大熵原理是统计学习的一般原理，将它应用到分类就得到了最大熵模型</p>
-<p>2.假设分类模型是一个条件概率分布$P(Y|X),$$X$表示输入，$Y$表示输出。这个模型表示的是对于给定的输入$X$，一条件概率$P(Y|X)$输出$Y$。</p>
-<p>3.给定一个训练数据集$T$，我们的目标就是利用最大熵原理选择最好的分类模型。</p>
-<script type="math/tex; mode=display">T=\{(x_1,y_1),(x_2,y_2),…(x_N,y_N)\}</script><p>4.<strong>按照最大熵原理，我们应该优先保证模型满足一致的所有约束。那么如何得到这些约束的？</strong></p>
-<p>$     $<strong>思路：从训练数据$T$中抽取若干特征（<em>依靠特征函数</em>），然后<em>要求这些特征在$T$上关于经验分布的期望与他们在模型中关于$p(x,y)$的数学期望相等，这样，一个特征就对应一个约束</em>。</strong></p>
-<h3 id="特征函数"><a href="#特征函数" class="headerlink" title="特征函数"></a>特征函数</h3><h4 id="特征函数的作用"><a href="#特征函数的作用" class="headerlink" title="特征函数的作用"></a>特征函数的作用</h4><p>1.用特征函数$f(x)$描述输入$x$和输出$y$之间的某一个事实。</p>
-<p>2.按照最大熵原理，应该优先保证模型满足一致的所有约束。<strong>通过特征函数来定义、量化以及得到这些约束</strong>。</p>
-<p>3.特征函数的出现，可以让模型有更好的<strong>泛化能力</strong>（特征函数的选取、定义特别随意）。</p>
-<p>特征函数可以类比决策树对于输入$x$的处理，假设输入$x$是一个有着多个属性值的实例，决策树在一个决策点并不是对所有属性都进行考虑，这就有点提取出了特征中更有信息量的属性。</p>
-<p>如何让一个线性模型（例如$LR:h_{\theta}(x)=\sigma (\theta^Tx)$  ）也有类似的功能？答案就是特征函数，让输入$X$先经过一些列特征函数的处理，变成$g(x)$再送给模型分类（如：$h_{\theta}(x)=\sigma (\theta^Tg(x))$）.</p>
-<p>此外，当输入的样本可能不是数值的向量，比如文本或图片时，特征函数的功能更像是特征向量的制作。对于给定输入$X$，使用<strong>一系列定义好的特征函数$\{g(x)\}$</strong>将其转换成需要的向量形式。</p>
-<h4 id="对于特征函数中‘特征’的理解"><a href="#对于特征函数中‘特征’的理解" class="headerlink" title="对于特征函数中‘特征’的理解"></a>对于特征函数中‘特征’的理解</h4><p>一般说的“特征”都是指输入的特征，而最大熵模型中的“特征”指的是输入和输出共同的特征。最大熵模型中的每个特征会有一个权重，你可以把它理解成这个特征所描述的输入和输出有多么倾向于同时出现。</p>
-<p>可以以多类logistic regression为例，来感受一下两种视角的不同。在一般的视角下，每条输入数据会被表示成一个n维向量，可以看成n个特征。而模型中每一类都有n个权重，与n个特征相乘后求和再经过softmax的结果，代表这条输入数据被分到这一类的概率。在最大熵模型的视角下，<strong><em>每条输入</em>的n个“特征”与k个类别共同组成了nk个特征，模型中有nk个权重，与特征一一对应。每个类别会触发nk个特征中的n个，这n个特征中的每个特征都会触发特征函数</strong>。</p>
-<h3 id="经验分布"><a href="#经验分布" class="headerlink" title="经验分布"></a>经验分布</h3><p>经验分布是指通过训练数据$T$进行统计得到的分布。我们需要考察两个经验分布，分别是$x,y$的联合经验分布，以及$x$的经验分布。其定义如下：</p>
-<script type="math/tex; mode=display">\hat p(x,y)={count(x,y)\over N},\ \hat p(x)={count(x)\over N}</script><p>对于任意特征函数$f$,记$E_{\hat p}(f)$表示$f$在训练数据$T$上关于$\hat p(x,y)$的数学期望。$E_p(f)$表示$f$在模型上关于$p(x,y)$的数学期望，由于<strong>模型中$p(x,y)$是未知的，并且我们建模的目标是$p(y|x)$，因此我们利用$Bayes$定理得到$p(x,y)=p(x)p(y|x)$，<em>此时，$p(x)$还是未知的</em>，我们可以使用经验分布$\hat p(x)$对$p(x)$进行近似</strong>。按照期望的定义有：</p>
-<script type="math/tex; mode=display">E_{\hat p}(f)=\sum_{x,y}\hat p(x,y)f(x,y)</script><script type="math/tex; mode=display">E_p(f)=\sum_{x,y}p(x,y)f(x,y)=\sum_{x,y}\hat p(x)p(y|x)f(x,y)</script><p>对于概率分布$p(y|x)$我们希望特征$f$的期望应该和从训练数据中的到的一样的。（<strong>我的理解：特征函数是约束的提取量化，特征函数关于经验分布的期望与关于模型的期望相等就代表一个约束</strong>）因此我们可以提出约束：</p>
-<script type="math/tex; mode=display">E_{\hat p}(f)=E_p(f)</script><script type="math/tex; mode=display">\sum_{x,y}\hat p(x,y)f(x,y)=\sum_{x,y}\hat p(x)p(y|x)f(x,y)</script><p>假设从训练数据中抽取了n个特征，相应的便有n个特征函数以及n各约束条件。</p>
-<script type="math/tex; mode=display">C_i:E_p(f_i)=E_{\hat p}(f_i):=\tau_i,i=1,2,…,n</script><h2 id="最大熵模型"><a href="#最大熵模型" class="headerlink" title="最大熵模型"></a>最大熵模型</h2><p>给定数据集$T$，我们的目标就是根据最大上原理选择一个最优分类器，假设满足所有约束条件的模型集合为：</p>
-<script type="math/tex; mode=display">C=\{P\in\pi|E_p(f_i)=E_{\hat p}(f_i),i=1,2,…,n \}</script><p>定义在条件概率分布$P(Y|X)$上的条件熵为：</p>
-<script type="math/tex; mode=display">H(P)=-\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><p>则模型集合$C$中条件熵$H(P)$最大的模型成为最大熵模型。式中的对数为<strong>自然对数</strong>。</p>
-<h2 id="最大熵模型的学习"><a href="#最大熵模型的学习" class="headerlink" title="最大熵模型的学习"></a>最大熵模型的学习</h2><p>最大熵模型的学习可以形式化为约束最优化问题。对于给定训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_n,y_n)\}$以及特征函数$f_i(x,y), i=1,2,3,…,n$，最大熵模型的学习等价于约束最优化问题(<strong>注意自变量为$P$</strong>)：</p>
-<script type="math/tex; mode=display">\max_{P\in C}\ \ \ H(P)=-\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><script type="math/tex; mode=display">\ \ \ s.t.\ \ \ E_P(f_i)=E_{\hat P}(f_i),\ i=1,2,….,n</script><script type="math/tex; mode=display">\sum_y P(y|x)=1\ \ \ \ \ \ \ \ \ \ \ \</script><p>按照最优化习惯，将求最大值问题改写为等价的求最小值问题：</p>
-<script type="math/tex; mode=display">\min_{P\in C}\ \ \ -H(P)=\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><script type="math/tex; mode=display">\ \ \ s.t.\ \ \ E_P(f_i)-E_{\hat P}(f_i)=0,\ i=1,2,….,n</script><script type="math/tex; mode=display">1-\sum_y P(y|x)=0\ \ \ \ \ \ \ \ \ \ \ \</script><p>引入拉格朗日乘子$w_0,w_1,w_2,…,w_n$,定义拉格朗日函数$L(P,w)$(<strong>这里注意两自变量</strong>)：</p>
-<script type="math/tex; mode=display">L(P,w)=-H(p)+w_0(1-\sum_yP(y|x))+\sum^n_{i=1}w_i(E_{\hat P}(f_i)-E_P(f_i))</script><p>又：</p>
-<script type="math/tex; mode=display">-H(P)=\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)</script><script type="math/tex; mode=display">E_{\hat p}(f)=\sum_{x,y}\hat p(x,y)f(x,y)</script><script type="math/tex; mode=display">E_p(f)=\sum_{x,y}\hat p(x)p(y|x)f(x,y)</script><p>带入得到$L(P,w)$:</p>
-<script type="math/tex; mode=display">L(P,w)=\sum_{x,y}\hat P(x)P(y|x)\log P(y|x)+w_0(1-\sum_yP(y|x)\ )+\sum ^n_{i=1}w_i(\sum_{x,y}\hat p(x,y)f(x,y)-\sum_{x,y}\hat p(x,y)f(x,y)\ )</script><p>对偶最优化的原始问题是（<strong>再次注意$min,max$的自变量是什么</strong>）：</p>
-<script type="math/tex; mode=display">\min_{p\in C}\max_wL(P,w)</script><p>对偶问题是</p>
-<script type="math/tex; mode=display">\max_w\min_{p\in C}L(P,w)</script><p>由于拉格朗日函数$L(P,w)$是$P$的凸函数，原始问题的解与对偶问题的解是等价的。这样，可以通过求解对偶问题来求解原始问题</p>
-<p><em>注：以上的推理解释可在另一篇拉格朗日文章中找到</em></p>
-<p>首先，求解对偶问题内部的极小化问题$\min_{p\in C}L(P,w)$。$\min_{p\in C}L(P,w)$是关于$w$的函数（<em>因为$\min_{p\in C}L(P,w)$代表$P$已经确定了</em>），将其记作：</p>
-<script type="math/tex; mode=display">\Psi(w)=\min_{P\in C}L(P,w)=L(P_w,w),</script><p>注：上式的最后一项$L(P_w,w)$是归于$w$的函数，因为此时$P_w=\arg min_{P\in C}L(P,w)=P_w(y|x)$</p>
-<p>$\Psi(x)$成为对偶函数，其解为$P_w$。</p>
-<p>具体地，求$L(P,w)$对$P(y|x)$的偏导数（这里直接插入图片了手写这一段$mathjax$太累，将图片中$\lambda$换成$w$就行）<strong>注意蓝色字部分</strong></p>
-<p><img src="/2018/03/07/最大熵模型/求偏导.jpg" alt=""></p>
-<p>另偏导数等于0，在$\hat P(x)&gt;0$的情况下，解得：</p>
-<script type="math/tex; mode=display">P(y|x)=exp(\ \sum^n_{i=1}w_if_i(x,y)+w_0-1\ )={exp(\sum^n_{i=1}w_if_i(x,y))\over \exp(1-w_0)}</script><p>由于$\sum_y P(y|x)=1$，得(关于$w$的函数)：</p>
-<script type="math/tex; mode=display">P_w(y|x)={1\over Z_w(x)}exp(\ \sum^n_{i=1}w_if_i(x,y)\ )</script><p>其中，</p>
-<script type="math/tex; mode=display">Z_w(x)=\sum_yexp(\ \sum^n_{i=1}w_if_i(x,y)\ )</script><p>$Z_w(x)$成为规范化因子；$f_i(x,y)$是特征函数；$w_i$是特征的权值。表示的模型$P_w=P_w(y|x)$就是最大熵模型。这里$w$是最大熵模型中的参数向量。</p>
-<p>得到对偶问题内部的极小问题的解$P_w(y|x)$后，需要进一步求解外层的极大值问题。</p>
-<script type="math/tex; mode=display">\max_w\Psi(w)</script><p>将其解记为$w^￥$,即：</p>
-<script type="math/tex; mode=display">w^￥=\arg\ max_w\Psi(w)</script><p>令$\sum_{x,y}\hat P(x,y)f_i(x,y) = \tau_i$</p>
-<p>$    \Psi (x)$</p>
-<p>$=L(P_w,w)       注意这里P_w为定量是之前内部极小问题的解$</p>
-<p>$=\sum_{x,y}\hat P(x)P_w(y|x)\log P_w(y|x)+\sum^n_{i=1}w_i( \tau_i-\sum_{x,y}\hat P(x)P_w(y|x)f_i(x,y) )$</p>
-<p>$=\sum^n_{i=1}w_i\tau_i+\sum_{x,y}\hat P(x)P_w(y|x)( \log p_w(y|x)-\sum^n_{i=1}w_if_i(s,y) )$</p>
-<p>又:$\log P_w(y|x)=\sum^n_{i=1}w_if_i(x,y)-\log Z_w(x)$</p>
-<p>将上式带入到$\Psi$中，可以得到</p>
-<p>$\Psi(w)$</p>
-<p>$=\sum^n_{i=1}w_i\tau_i-\sum_{x,y}\hat P(x)P_w(y|x)\log Z_w(x)$</p>
-<p>$=\sum^n_{i=1}w_i\tau_i-\sum_{x}\hat P(x)\log Z_w(x)\sum_y P_w(y|x)$</p>
-<p>$=\sum^n_{i=1}w_i\tau_i-\sum_{x}\hat P(x)\log Z_w(x)          (这里利用了\sum_yP_w(y|x)=1 )$</p>
-<h3 id="极大似然模型"><a href="#极大似然模型" class="headerlink" title="极大似然模型"></a>极大似然模型</h3><p>下面证明对偶函数的极大化等价于最大熵模型的极大似然估计。</p>
-<p>注：极大似然估计$MLE$的一般形式表示为（<strong>推导下一小节给出</strong>）：</p>
-<script type="math/tex; mode=display">L_{\hat P}=\Pi_xP(x)^{\hat P(x)}</script><p>一直训练数据的经验概率分布$\hat P(x,y)$，条件概率分布$P(Y|X)$的对数似然表示为：</p>
-<script type="math/tex; mode=display">L_{\hat P}(P_w)=\log \Pi_{x,y}P(y|x)^{\hat P(x,y)}=\sum_{x,y}\hat P(x,y)\log P(y|x)</script><p>当条件概率分布$P(y|x)$是最大熵模型的内部极小函数的解释，对数似然函数$L_{\hat P}(P_w)$</p>
-<p>为：</p>
-<p><img src="/2018/03/07/最大熵模型/极大似然.png" alt=""></p>
-<p>注：最后一步由$\sum_{x,y}\hat p(x,y)=\sum_x\hat p(x)\sum_yp(y|x)$且$\sum_yp(y|x)=1$得来</p>
-<h3 id="最大熵模型中对数似然的解释"><a href="#最大熵模型中对数似然的解释" class="headerlink" title="最大熵模型中对数似然的解释"></a>最大熵模型中对数似然的解释</h3><p>转载自<a href="http://blog.csdn.net/wkebj/article/details/77965714" target="_blank" rel="noopener">CSDN</a></p>
-<p>最近在学习最大熵模型，看到极大似然估计这部分，没有看明白条件概率分布$p(y|x)$的对数似然函数。上网查了很多资料都没有一个合理的解释。基本直接给出对数似然函数的一般形式 ($\hat p(x)$为jing’yan’gai’lv): </p>
-<script type="math/tex; mode=display">L\hat p=\Pi_xp(x)^{\hat p(x)}</script><p>其实第一眼之所以不理解，因为这是最大似然函数的另外一种形式。一般书上描述的最大似然函数的一般形式是各个样本集XX中各个样本的联合概率: </p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\Pi^n_{i=1}p(x_i;\theta)</script><p>其实这个公式和上式是等价的。$x_1,x_2,…,x_n$是样本具体观测值。随机变量$X$是离散的，所以它的取值范围是一个集合，假设样本集的大小为$n$，$X$的取值有$k$个，分别是$v_1,v_2,…,v_k$。用$C(X=v_i)$表示在观测值中样本$v_i$出现的频率。所以$L(x_1,x_2,…,x_n;θ)$可以表示为： </p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\Pi^k_{i=1}p(v_i;\theta)^{C(X=v_i)}</script><p>对等式两边同时开$n$次方得：</p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\Pi^k_{i=1}p(v_i;\theta)^{C(X=v_i)\over n}</script><p>因为经验概率$\hat p(x)={C(X=v_i)\over n}$，所以简写可以得到</p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\Pi_xp(x;\theta)^{\hat p(x)}</script><p>很明显对$L(x_1,x_2,…,x_n;θ)$求最大值和对$L(x_1,x_2,…,x_n;θ)^{1\over n}$求最大值的优化的结果是一样的。整理上式所以最终的最大似然函数可以表示为：</p>
-<script type="math/tex; mode=display">L(x;\theta)=\Pi_xp(x;\theta)^{\hat p(x)}</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
-<p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
-<script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
-<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
-<script type="math/tex; mode=display">P(y=1)={\exp (\sum^n_{i=1}w_{1i}x_i)\over \exp (\sum^n_{i=1}w_{1i}x_i)+\exp (\sum^n_{i=1}w_{0i}x_i)}</script><p>分子、分母同时除以分子，则有：</p>
-<script type="math/tex; mode=display">P(y=1)={1\over 1+\exp(-\sum^n_{i=1}w_ix_i)}</script><p>这就变成了$logistic$函数。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[最大熵模型的理解、推导以及与LR的联系]]>
-    
-    </summary>
-    
-      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
-    
-      <category term="最大熵模型" scheme="http://yoursite.com/tags/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
-    
-      <category term="特征函数" scheme="http://yoursite.com/tags/%E7%89%B9%E5%BE%81%E5%87%BD%E6%95%B0/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Logistic Regression的理解]]></title>
-    <link href="http://yoursite.com/2018/03/06/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/"/>
-    <id>http://yoursite.com/2018/03/06/Logistic-Regression的理解/</id>
-    <published>2018-03-06T12:52:28.000Z</published>
-    <updated>2018-03-14T08:06:16.810Z</updated>
-    <content type="html"><![CDATA[<h2 id="逻辑斯地回归模型"><a href="#逻辑斯地回归模型" class="headerlink" title="逻辑斯地回归模型"></a>逻辑斯地回归模型</h2><h3 id="逻辑斯谛分布"><a href="#逻辑斯谛分布" class="headerlink" title="逻辑斯谛分布"></a>逻辑斯谛分布</h3><p>设$X$是连续随机变量，$X$服从逻辑斯谛分布是指$X$具有下列分布函数和密度函数：</p>
-<script type="math/tex; mode=display">F(x)=P(X\le x)= {1 \over 1+e^{-(x-\mu )/\gamma}}</script><script type="math/tex; mode=display">f(x)=F'(x)={e^{-(x-\mu)/y} \over \gamma(1+e^{-(x-\mu)}/\gamma)^2}</script><p>式中，$\mu$为位置参数，$\gamma\gt0$为形状参数。密度函数与分布函数如下图所示。</p>
-<p><img src="/2018/03/06/Logistic-Regression的理解/分布.jpg" alt=""></p>
-<p><strong>注：逻辑斯谛分布的回归会在从广义线性模型角度理解LR时给出</strong></p>
-<h3 id="二项逻辑斯谛回归模型"><a href="#二项逻辑斯谛回归模型" class="headerlink" title="二项逻辑斯谛回归模型"></a>二项逻辑斯谛回归模型</h3><p>二项逻辑斯谛回归模型是一种<strong>分类模型</strong>，由条件概率分布$P(Y|X)$表示，形式为参数化的逻辑斯谛分布。这里，随机变量取值为实数，随机变量Y，取值为1或0，即Y满足二项分布。</p>
-<p><strong>定义：</strong>二项逻辑斯谛回归模型是如下的条件概率分布：</p>
-<script type="math/tex; mode=display">P(Y=1|x)={exp(wx) \over 1+exp(wx) }={1\over 1+exp(-wx)}</script><script type="math/tex; mode=display">P(Y=0|x)={1 \over 1+exp(wx)}={exp(-wx) \over 1+exp(-wx)}</script><p>一个事件的几率（odds）是指该事件发生的概率与该事件不发生的概率的比值。如果事件发生的概率是$p$,那么该事件的几率是${p\over 1-p}$，该事件的对数几率或者logit函数是：</p>
-<script type="math/tex; mode=display">logit(p)=\log {p \over 1-p}</script><p>这里$logit(p)$就是广义线性模型中的$\eta$。</p>
-<p>对于逻辑斯谛回归而言</p>
-<script type="math/tex; mode=display">\log {P(Y=1|x) \over 1-P(Y=1|x)}=wx\ \ \ 其实就是广义线性模型第三条假设</script><p>从广义线性模型角度，二项分布指数族解出的$\eta = \log{p\over 1-p}=logit(p)$,又由第三条假设，$\eta=wx$即可得到$\log {p\over 1-p}=wx$,求解出$p$来就是$P(Y=1|X)$的概率，又因为二项分布期望为$P$,所以收敛的结果就是$P$.</p>
-<h3 id="模型参数估计"><a href="#模型参数估计" class="headerlink" title="模型参数估计"></a>模型参数估计</h3><p>逻辑斯谛回归模型学习中，对于给定的训练数据集$T=\{(x_1,y_1),(x_2,y_2),…,(x_N,y_n)\}$ ，其中，$x_I\in R^n,y_i\in\{0,1\}$,可以应用<strong>极大似然估计法</strong>估计模型参数，从而得到逻辑斯谛回归模型。设：</p>
-<script type="math/tex; mode=display">P(Y=1|x)=\pi(x),\ \ \ P(Y=0|x)=1-\pi(x)</script><p>似然函数为</p>
-<script type="math/tex; mode=display">\Pi^N_{i=1}[\pi(x_i)^{y_i}][1-\pi(x)]^{1-y_i}</script><p>对数似然函数为</p>
-<script type="math/tex; mode=display">L(w)=\sum^N_{i=1}[y_i\log \pi(x_i)+(1-y_i)\log (1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ \ =\sum^N_{i=1}[y_i\log{\pi(x) \over 1-\pi(x_i)}+\log(1-\pi(x_i))]</script><script type="math/tex; mode=display">\ \ =\sum^N_{i=1}[y_i(wx)-\log(1+exp(wx))]\ \ \ \ \ \ \</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
-<p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
-<script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
-<script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}​</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
-<script type="math/tex; mode=display">P(y=1)={\exp (\sum^n_{i=1}w_{1i}x_i)\over \exp (\sum^n_{i=1}w_{1i}x_i)+\exp (\sum^n_{i=1}w_{0i}x_i)}</script><p>分子、分母同时除以分子，则有：</p>
-<script type="math/tex; mode=display">P(y=1)={1\over 1+\exp(-\sum^n_{i=1}w_ix_i)}</script><p>这就变成了$logistic$函数。</p>
-<h2 id="从广义线性模型角度理解LR"><a href="#从广义线性模型角度理解LR" class="headerlink" title="从广义线性模型角度理解LR"></a>从广义线性模型角度理解LR</h2><p>线性回归中我们假设：</p>
-<script type="math/tex; mode=display">y(x;\theta) 服从N(\mu,\sigma^2)分布</script><p>$LR$中我们假设：</p>
-<script type="math/tex; mode=display">y(x;\theta)服从Bernoulli(\phi)分布</script><p>其实他们只是广义线性模型($GlMs$)的特例。</p>
-<h3 id="自己的理解"><a href="#自己的理解" class="headerlink" title="自己的理解"></a>自己的理解</h3><p><strong>广义线性模型是通过链接函数（$LR$中为$logit$函数），把自变量的线性组合（$\eta$ 自然参数/标准参数）与因变量（$T(y)$)的期望联系起来。</strong></p>
-<p>注：$LR$也可以说与因变量的概率分布结合起来，因为二项伯努利分布$E=P$</p>
-<h3 id="指数分布族（-The-exponential-family-）"><a href="#指数分布族（-The-exponential-family-）" class="headerlink" title="指数分布族（$The exponential family$）"></a>指数分布族（$The exponential family$）</h3><p>首先我们定义一下什么是指数分布族，它有如下形式($\eta$自变量，$y$因变量)：</p>
-<script type="math/tex; mode=display">p(y;\eta)=b(y)\exp(\eta^TT(y)-a(\eta))</script><p>简单介绍一下其中的参数：</p>
-<p>1.$\eta $是自然参数</p>
-<p>2.$T(y)$是充分统计量(一般情况下$T(y)=y$)</p>
-<p>3.$a(\eta)$是$\log partition function$( $ exp(-a(\eta))$充当正规化常量的角色，保证$\sum p(y;\eta)=1 $)</p>
-<p>也就是说$T,a,b$确定了一种分布，$\eta$是该分布的参数。</p>
-<p>选择合适的$T,a,b$我们可以得到高斯分布和$Bernouli$分布</p>
-<h2 id="广义线性模型的形式化定义"><a href="#广义线性模型的形式化定义" class="headerlink" title="广义线性模型的形式化定义"></a>广义线性模型的形式化定义</h2><p>GLM有三个假设：</p>
-<p>1.$y|x;\theta$~$ExpFamily(\eta)$（某指数分布族）；给定样本$x$与参数$\theta$，样本分类$y$服从指数分布族中的某个分布；</p>
-<p>2.给定一个$x$，我们需要的目标函数为$h_{\theta}(x)=E[T(y)|x]$</p>
-<p>3.$\eta=\theta^Tx$</p>
-<h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p><img src="/2018/03/06/Logistic-Regression的理解/伯努利1.jpg" alt=""></p>
-<p><img src="/2018/03/06/Logistic-Regression的理解/伯努利2.jpg" alt=""></p>
-<p><img src="/2018/03/06/Logistic-Regression的理解/伯努利3.jpg" alt=""></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[LR的推导以及从广义线性模型、最大熵模型角度的理解]]>
-    
-    </summary>
-    
-      <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
-    
-      <category term="最大熵模型" scheme="http://yoursite.com/tags/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="广义线性回归" scheme="http://yoursite.com/tags/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/"/>
-    
-      <category term="逻辑斯谛回归" scheme="http://yoursite.com/tags/%E9%80%BB%E8%BE%91%E6%96%AF%E8%B0%9B%E5%9B%9E%E5%BD%92/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[最优化问题及KKT条件的几何理解]]></title>
-    <link href="http://yoursite.com/2018/03/04/%E6%9C%80%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E5%8F%8AKKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E5%87%A0%E4%BD%95%E7%90%86%E8%A7%A3/"/>
-    <id>http://yoursite.com/2018/03/04/最优化问题及KKT条件的几何理解/</id>
-    <published>2018-03-04T07:31:31.000Z</published>
-    <updated>2018-03-08T02:40:53.234Z</updated>
-    <content type="html"><![CDATA[<p>以二维空间$R^2$举例，从简单的无约束优化（0梯度条件），到等式约束优化（拉格朗日条件），再到不等式约束优化（KKT条件）解析优化问题解法的几何意义。</p>
-<h2 id="无约束优化问题"><a href="#无约束优化问题" class="headerlink" title="无约束优化问题"></a>无约束优化问题</h2><p>$\min f(x)$，其中，<strong>$x=(x_1,x_2)$</strong></p>
-<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/无约束优化.jpg" alt=""></p>
-<p>此时，对于$f(x)$的局部极小值点（红点）处梯度必然为0.因此优化问题可以转化为求解梯度为0的点。</p>
-<h2 id="带等式约束的优化问题"><a href="#带等式约束的优化问题" class="headerlink" title="带等式约束的优化问题"></a>带等式约束的优化问题</h2><p>$\min f(x)$，其中，<strong>$x=(x_1,x_2)$</strong></p>
-<p>$s.t. h(x)=0$</p>
-<p>与无约束问题不同，此时极小值点被限制在曲线$h(x)=0$上，我们因此将$\{x|h(x)=0\}$成为<strong>可行域</strong>，解只能在这个可行域里面取。如下图所示，曲线$h(x)=0$（黑色实线）便是可行域，现在要求在可行域上面的极小点。可以想象从无约束问题的极小点（黑点）靠等高线向外扩展，当扩展等高线第一次接触可行域时候（相切，<strong>梯度方向相反</strong>）的交点便是可行域的极小点。所以，相切，梯度方向相反，是取得极小值点的必要条件。</p>
-<p>补充：能够碰到极大极小值点的必要条件是：梯度场与切空间垂直，也就是梯度场不能够有任何流形切空间上的分量，否则在切空间方向有分量，在流形上沿分量方向走，函数值会增加，沿反方向走，函数值会减少，不可能为局部极小或者极大值点。</p>
-<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/等式约束优化.jpg" alt=""></p>
-<p>两条曲线相切，梯度方向相反，即梯度差一个任意的常数乘子（取为$-\lambda$）：$\nabla f(x)=-\lambda \nabla h(x)$，调整后即可得到拉格朗日条件$\nabla (f(x)+\lambda h(x))=0$.</p>
-<p>如此，带等式约束的优化问题转化为了无约束的优化问题，只需要对拉格朗日条件解方程组即可。这里$\lambda$便是拉格朗日乘子，有多少个等式约束就有多少个拉格朗日乘子。</p>
-<h2 id="带不等式约束的优化问题"><a href="#带不等式约束的优化问题" class="headerlink" title="带不等式约束的优化问题"></a>带不等式约束的优化问题</h2><h3 id="只有一个不等式起作用时"><a href="#只有一个不等式起作用时" class="headerlink" title="只有一个不等式起作用时"></a>只有一个不等式起作用时</h3><p>$\min f(x)$</p>
-<p>$s.t.  h(x)\le0$</p>
-<p>当只有一个不等式起作用时，如下图所示，可行域变成了阴影部分，最小值点还是切点，跟等式约束条件完全一样，只需要把不等号当做等号去求解即可。</p>
-<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化1.jpg" alt=""></p>
-<h3 id="两个及以上不等式起作用时"><a href="#两个及以上不等式起作用时" class="headerlink" title="两个及以上不等式起作用时"></a>两个及以上不等式起作用时</h3><p>$\min f(x)$</p>
-<p>$s.t.$</p>
-<p>$g_1(x)\le0$</p>
-<p>$g_2(x)\le0$</p>
-<p>如下图，当$f(x)$等高线慢慢扩大时，等高线与可行域（阴影部分）第一次相遇的点是个顶点，2个不等式同时起作用。满足最小值点从原来黑点的位置（切点）移动到了红点的位置，现在跟哪条约束函数都不相切了。这时候就需要用到KKt条件了。这里的条件是指：某一个点它如果是最小值点的话，就必须满足这个条件（在含不等式约束的优化问题里）。这是个<strong>必要条件</strong>，前面说的也全部是<strong>必要条件</strong>。</p>
-<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化2.jpg" alt=""></p>
-<p>这个问题的解$x^*$应满足的KKT（卡罗需-库恩-塔克）条件为：</p>
-<p>$1. \mu_1\ge0, \mu_2\ge0;$</p>
-<p>$2. \nabla f(x^￥)+\mu_1\nabla g_1(x^￥)+\mu_2\nabla g_2(x^￥)=0;$</p>
-<p>$3. \mu_1g_1(x^￥)+\mu_2g_2(x^￥)=0$</p>
-<p>其中，$\mu$叫做KKT乘子，有多少个不等式约束就有多少个KKT乘子。加上本问题中的约束不封，就是完整版的KKT条件。<strong>对于有等式的情况：把其中一个不等式约束换成等式，可行域变成了半条曲线，最小值还是小红点，情况是一样的。</strong></p>
-<p>接下来看看KKT条件的几何意义。上图中<strong>绿色箭头</strong>为两条曲线的<strong>负梯度</strong>方向，<strong>红色箭头</strong>为等高线的<strong>梯度</strong>方向。如果这个顶点为满足约束的最小值点，那么该点处等高线梯度（红色箭头）一定在两个绿色箭头之间（$-\nabla g(x)$方向（绿色箭头）一定指向$g(x)$减小方向，即$g(x)\lt0$一边）</p>
-<p>$\mu_1\ge0,\mu_2\ge0$(红色箭头一定在绿色箭头之间)的解释：若三个向量的位置如下图所示，即$-\nabla f(x)$落在$\nabla g_1,\nabla g_2$所形成的锥形区域外侧。此时，作等高线（等值线）在点$x^k$处的切平面，可以发现：<strong>沿着与扶梯度$-\nabla f(x)$成锐角方向移动</strong>，只要能在红色阴影（阴影左界为当前等高线）取值，$f(x)$总能减小，而红色阴影区域为可行域，因此既可以建系哦啊目标函数值，又不破坏约束条件，所以当前$x^k$不是最优点。</p>
-<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/箭头中间.jpg" alt=""></p>
-<h2 id="有些不等式约束不起作用时"><a href="#有些不等式约束不起作用时" class="headerlink" title="有些不等式约束不起作用时"></a>有些不等式约束不起作用时</h2><p>如下面这个优化问题：</p>
-<p>$\min f(x)$</p>
-<p>$s.t.$</p>
-<p>$g_1(x)\le0$</p>
-<p>$g_2(x)\le0$</p>
-<p>$g_3(x)\le0$</p>
-<p>如下图$g_3(x)\le0$是不起作用的</p>
-<p><img src="/2018/03/04/最优化问题及KKT条件的几何理解/不等式约束优化3.jpg" alt=""></p>
-<p>对于最小值点$x^*$，三个不等式约束的不同在于：</p>
-<p>$g_1(x^￥)=0$（起作用）</p>
-<p>$g_2(x^￥)=0$（起作用）</p>
-<p>$g_3(x^￥)\lt0$（不起作用，最小值点不在$g_3(x)=0$上）</p>
-<p>此时KKT条件1，2变为：</p>
-<p>$1. \mu_1\ge0, \mu_2\ge0, \mu_3\ge0, $</p>
-<p>$2. \nabla f(x^￥)+\mu_1\nabla g_1(x^￥)+\mu_2\nabla g_2(x^￥)+\mu_3\nabla g_3(x^￥)=0$</p>
-<p>条件2中的$\mu_3\nabla g_3(x^￥)$让我们很苦恼，$g_3(x￥)$约束根本不起作用，要是能令$\mu_3=0$就好了。加上条件3：</p>
-<p>$3. \mu_1g_1(x^￥)+\mu_2g_2(x^￥)+\mu_3g_3(x^￥)=0$</p>
-<p>恰好能使$\mu_3=0​$。由于$g_1(x^￥)=0, g_2(x^￥)=0​$，所以前两项等于0，第三项$g_3(x^￥)\lt0​$,在条件3的作用下使得$\mu_3=0​$。正好满足哟啊求。如果再多几项不起作用的不等式约束，条件2都能在条件3的作用下实现：目标函数$f(x)​$的梯度$\nabla f(x)​$被起作用的不等式约束函数$g(x)​$的负梯度$-\nabla g(x)​$线性标出且系数$\mu​$全部非负（红色箭头被绿色箭头夹在中间）。这样，优化问题的求解就变成了对所有KKT条件解方程组。</p>
-<p>如果再定义一个拉格朗日函数：</p>
-<p>$L(x,\mu)=f(x)+\mu_1g_1(x)+\mu_2g_2(x)+…$</p>
-<p>令它对<strong>$x$</strong>的偏导为0，就是KKT条件中的条件2了。</p>
-<p>注意：以上所有都是局部极小值的点<strong>必要条件</strong>。据此求得的解不一定是局部极小值点（更别提全局），原因是上图中所画的等高线也许根本就不闭合，也急速实说我们一直想靠近的等高线和中间的黑点可能压根就是个鞍点或者近似鞍点。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[从无约束最优化到等式约束优化，再到不等式优化，以及对拉格朗日对偶中KKT条件的几何理解]]>
-    
-    </summary>
-    
-      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
-    
-      <category term="KKT" scheme="http://yoursite.com/tags/KKT/"/>
-    
-      <category term="最优化" scheme="http://yoursite.com/tags/%E6%9C%80%E4%BC%98%E5%8C%96/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[拉格朗日对偶性]]></title>
-    <link href="http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/"/>
-    <id>http://yoursite.com/2018/03/03/拉格朗日对偶性/</id>
-    <published>2018-03-03T14:49:03.000Z</published>
-    <updated>2018-03-04T08:04:05.776Z</updated>
-    <content type="html"><![CDATA[<h2 id="原始问题"><a href="#原始问题" class="headerlink" title="原始问题"></a>原始问题</h2><p>​    假设$f(x), c_i(x), h_j(x)$是定义在<strong>$R^n$</strong>上面的连续可微函数，考虑约束最优化问题</p>
-<script type="math/tex; mode=display">\min_{x\in R^n}f(x)</script><script type="math/tex; mode=display">s.t.\ c_i(x)\le0,\ i=1,2,…,k</script><script type="math/tex; mode=display">h_j(x)=0,\ j=1,2,…,l ​</script><p>​    称此约束最优化问题为原始最优化问题或原始问题。</p>
-<p>​    首先，引进广义拉格朗日函数</p>
-<script type="math/tex; mode=display">L(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)</script><p>​    这里，$\alpha_i,\beta_j$是拉格朗日乘子，$\alpha_i\ge0$.</p>
-<p>​    考虑函数(<strong><em>注意：此时$L(x,\alpha,\beta)$的变量是$\alpha_i\beta_j$</em></strong>)：</p>
-<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)</script><p>​    这里下标$P(Primal)$表示原始问题.对于此函数（关于$\alpha,\beta$的函数，$x$是常量），经过我们优化（不管什么方法），确定$\alpha,\beta$的值，就可以得到$L(x,\alpha,\beta)$的最大值，因为此时$\alpha,\beta$已经确定，显然最大值<script type="math/tex">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)</script>就是<strong><em>只和$x$有关的函数</em></strong></p>
-<p>​    下面通过$x$是否绵竹约束条件两方面来分析这个函数：</p>
-<p>​        1.考虑某个$x$违反了原始的约束，即$c_i\gt0$或者$h_j\neq0$，那么：</p>
-<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)]=\infty</script><p>​        2.考虑$x$满足原始的约束，则：</p>
-<script type="math/tex; mode=display">\Theta_P(x)=\max_{\alpha,\beta:\alpha_i\ge0}[f(x)]=f(x)</script><p>​    注意最大化确定$\alpha,\beta$的过程，$f(x)$就是个常量，常量的最大值显然是本身</p>
-<p>​    通过上面两条分析可以得出：</p>
-<script type="math/tex; mode=display">\Theta_P(x)=\begin{cases}f(x),\ {x满足原始问题约束}\\+\infty,\ {其他}\\\end{cases}</script><p>​    那么<strong>在满足约束的条件下：</strong></p>
-<script type="math/tex; mode=display">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script><p>​    即$\min_x\Theta_P(x)$与原始优化问题等价，所以常用$\min_x\Theta_P(x)$来代表原始问题，定义原始问题的最优值：</p>
-<script type="math/tex; mode=display">p^*=\min_x\Theta_P(x)</script><p>​    原始问题讨论到这里，总结：重新定义一个无约束问题，这个无约束问题等价于原来的约束优化问题。</p>
-<h2 id="对偶问题"><a href="#对偶问题" class="headerlink" title="对偶问题"></a>对偶问题</h2><p>​    定义<strong>关于$\alpha,\beta$的函数</strong>：</p>
-<script type="math/tex; mode=display">\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)</script><p>​    注意上面等式<strong>右边是关于$x$的函数最小化,$x$确定之后，最小值就只与$\alpha,\beta$有关，所以此时是一个关于$\alpha,\beta$的函数</strong></p>
-<p>​    再考虑极大化$\Theta_D(\alpha,\beta)=\min_xL(x,\alpha,\beta)$，即：</p>
-<script type="math/tex; mode=display">\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)</script><p>​    这就是原始问题的对偶问题，再将原始问题写出来：</p>
-<script type="math/tex; mode=display">\min_x\Theta_P(x)=\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=min_xf(x)</script><p>​    从形式上可以看出堆成，只不过<strong>原始问题先固定$L(x,\alpha,\beta)$中的$x$,优化参数$\alpha,\beta$，再优化$x$；而对偶问题是先固定$\alpha,\beta$，再优化$x$，然后再确定参数$\alpha,\beta$</strong></p>
-<p>​    定义对偶问题的最优值：</p>
-<script type="math/tex; mode=display">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\Theta_D(\alpha,\beta)</script><h2 id="原始问题与对偶问题之间的关系"><a href="#原始问题与对偶问题之间的关系" class="headerlink" title="原始问题与对偶问题之间的关系"></a>原始问题与对偶问题之间的关系</h2><p>​    若原始问题和对偶问题都有最优值，则有$Min-Max$不等式：</p>
-<script type="math/tex; mode=display">d^*=\max_{\alpha,\beta:\alpha_i\ge0}\min_xL(x,\alpha,\beta)\le\min_x\max_{\alpha,\beta:\alpha_i\ge0}L(x,\alpha,\beta)=p^*</script><p>​    当$L(x,\alpha,\beta)$对$x$为凸函数，对$\alpha,\beta$为凹函数，以上等号成立。而$L(x,\alpha,\beta)$对$\alpha,\beta$为天然凹函数，因此只要$L(x,\alpha,\beta)$对$x$为凸函数，等号便成立</p>
-<p>​    证明：一个式子的最大值永远大于等于这个式子的最小值，哪怕是这个式子最小的最大值与最大的最小值相比（瘦死的骆驼比马大）。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[对拉格朗日对偶性的理解]]>
-    
-    </summary>
-    
-      <category term="机器学习" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-      <category term="拉格朗日对偶" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6/"/>
-    
-      <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+      <category term="特征工程" scheme="http://yoursite.com/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[剑指offer]]></title>
-    <link href="http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/"/>
-    <id>http://yoursite.com/2018/02/27/剑指offer/</id>
-    <published>2018-02-27T00:32:16.000Z</published>
-    <updated>2018-03-16T02:50:30.736Z</updated>
+    <link href="http://yoursite.com/2017/10/27/%E5%89%91%E6%8C%87offer/"/>
+    <id>http://yoursite.com/2017/10/27/剑指offer/</id>
+    <published>2017-10-27T00:32:16.000Z</published>
+    <updated>2018-03-25T04:30:31.478Z</updated>
     <content type="html"><![CDATA[<h1 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h1><h2 id="二维数组中的查找"><a href="#二维数组中的查找" class="headerlink" title="二维数组中的查找"></a>二维数组中的查找</h2><p><strong>Q:</strong>在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
 <p><strong>思路：</strong>思路从右上开始，右上为一行最大，一列最小。target&lt;右上，删一列;  target&gt;右上,删一行</p>
 <p><strong>Code</strong></p>
@@ -1530,10 +1558,10 @@
   
   <entry>
     <title><![CDATA[LeetCode]]></title>
-    <link href="http://yoursite.com/2018/02/26/LeetCode/"/>
-    <id>http://yoursite.com/2018/02/26/LeetCode/</id>
-    <published>2018-02-26T01:13:07.000Z</published>
-    <updated>2018-03-04T08:00:35.842Z</updated>
+    <link href="http://yoursite.com/2017/10/26/LeetCode/"/>
+    <id>http://yoursite.com/2017/10/26/LeetCode/</id>
+    <published>2017-10-26T01:13:07.000Z</published>
+    <updated>2018-03-25T04:30:14.699Z</updated>
     <content type="html"><![CDATA[<h1 id="LeetCode"><a href="#LeetCode" class="headerlink" title="LeetCode"></a>LeetCode</h1><h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1.Two Sum"></a>1.Two Sum</h2><p><strong>Q:</strong>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
 <p>You may assume that each input would have <strong>exactly</strong> one solution, and you may not use the <em>same</em> element twice.</p>
 <p><strong>Example:</strong></p>

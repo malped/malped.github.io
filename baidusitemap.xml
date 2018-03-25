@@ -4,16 +4,16 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/23/%E8%BD%AC-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E7%BB%BC%E8%BF%B0/</loc>
-    <lastmod>2018-03-24T03:10:46.995Z</lastmod>
+    <loc>http://yoursite.com/2018/02/19/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/</loc>
+    <lastmod>2018-03-25T04:33:41.344Z</lastmod>
     <data>
         <display>
-        <title>[转]梯度下降优化算法综述</title>
-        <pubTime>2018-03-23T08:28:34.000Z</pubTime>
+        <title>SVM与LR的异同</title>
+        <pubTime>2018-02-19T08:54:31.000Z</pubTime>
         
-        <tag>梯度下降</tag>
+        <tag>LR</tag>
          
-        <tag>转载</tag>
+        <tag>SVM</tag>
          
          
            
@@ -26,31 +26,38 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/23/%E5%87%A0%E7%A7%8D%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E6%96%B9%E6%B3%95/</loc>
-    <lastmod>2018-03-23T08:20:40.813Z</lastmod>
+    <loc>http://yoursite.com/2018/02/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/</loc>
+    <lastmod>2018-03-25T04:33:29.488Z</lastmod>
     <data>
         <display>
-        <title>几种特征选择的方法</title>
-        <pubTime>2018-03-23T07:33:33.000Z</pubTime>
+        <title>支持向量机SVM</title>
+        <pubTime>2018-02-18T13:34:16.000Z</pubTime>
         
-        <tag>特征选择</tag>
+        <tag>SVM</tag>
          
-        <tag>特征工程</tag>
+        <tag>支持向量机</tag>
+         
+        <tag>核函数</tag>
+         
+        <tag>拉格朗日</tag>
          
          
            
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
         </display>
     </data>
     </url>
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/20/L1%E3%80%81L2%E6%AD%A3%E5%88%99%E5%8C%96/</loc>
-    <lastmod>2018-03-22T06:47:31.988Z</lastmod>
+    <loc>http://yoursite.com/2018/01/01/L1%E3%80%81L2%E6%AD%A3%E5%88%99%E5%8C%96/</loc>
+    <lastmod>2018-03-25T04:33:14.712Z</lastmod>
     <data>
         <display>
         <title>L1、L2正则化</title>
-        <pubTime>2018-03-19T16:30:03.000Z</pubTime>
+        <pubTime>2017-12-31T16:30:03.000Z</pubTime>
         
         <tag>L1</tag>
          
@@ -73,132 +80,31 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/</loc>
-    <lastmod>2018-03-21T14:23:56.884Z</lastmod>
+    <loc>http://yoursite.com/2017/12/23/%E5%87%A0%E7%A7%8D%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E6%96%B9%E6%B3%95/</loc>
+    <lastmod>2018-03-25T04:33:01.793Z</lastmod>
     <data>
         <display>
-        <title>2017 CCF 大数据竞赛Top4%</title>
-        <pubTime>2018-03-13T14:58:29.000Z</pubTime>
+        <title>几种特征选择的方法</title>
+        <pubTime>2017-12-23T07:33:33.000Z</pubTime>
         
-        <tag>大数据竞赛</tag>
+        <tag>特征选择</tag>
          
-        <tag>天池</tag>
-         
-        <tag>CCF</tag>
-         
-        <tag>wifi定位</tag>
+        <tag>特征工程</tag>
          
          
            
-             
-              <breadCrumb title="比赛" url="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
-          
         </display>
     </data>
     </url>
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/</loc>
-    <lastmod>2018-03-18T16:34:41.074Z</lastmod>
-    <data>
-        <display>
-        <title>支持向量机SVM</title>
-        <pubTime>2018-03-18T13:34:16.000Z</pubTime>
-        
-        <tag>SVM</tag>
-         
-        <tag>支持向量机</tag>
-         
-        <tag>核函数</tag>
-         
-        <tag>拉格朗日</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/18/SVM%E4%B8%8ELR%E7%9A%84%E5%BC%82%E5%90%8C/</loc>
-    <lastmod>2018-03-18T10:36:34.424Z</lastmod>
-    <data>
-        <display>
-        <title>SVM与LR的异同</title>
-        <pubTime>2018-03-18T08:54:31.000Z</pubTime>
-        
-        <tag>LR</tag>
-         
-        <tag>SVM</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/17/GBDT/</loc>
-    <lastmod>2018-03-18T05:12:25.007Z</lastmod>
-    <data>
-        <display>
-        <title>GBDT</title>
-        <pubTime>2018-03-17T14:02:03.000Z</pubTime>
-        
-        <tag>GBDT</tag>
-         
-        <tag>xgboost</tag>
-         
-        <tag>梯度提升树</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/02/27/%E5%89%91%E6%8C%87offer/</loc>
-    <lastmod>2018-03-16T02:50:30.736Z</lastmod>
-    <data>
-        <display>
-        <title>剑指offer</title>
-        <pubTime>2018-02-27T00:32:16.000Z</pubTime>
-        
-        <tag>编程</tag>
-         
-        <tag>代码</tag>
-         
-         
-           
-             
-              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
-    <lastmod>2018-03-15T08:18:45.489Z</lastmod>
+    <loc>http://yoursite.com/2018/01/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
+    <lastmod>2018-03-25T04:32:40.874Z</lastmod>
     <data>
         <display>
         <title>2017-JDD京东金融算法大赛12th解决方案</title>
-        <pubTime>2018-03-15T04:08:59.000Z</pubTime>
+        <pubTime>2018-01-15T04:08:59.000Z</pubTime>
         
         <tag>大数据竞赛</tag>
          
@@ -219,12 +125,66 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/06/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
-    <lastmod>2018-03-14T08:06:16.810Z</lastmod>
+    <loc>http://yoursite.com/2018/01/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/</loc>
+    <lastmod>2018-03-25T04:32:13.494Z</lastmod>
+    <data>
+        <display>
+        <title>2017 CCF 大数据竞赛Top4%</title>
+        <pubTime>2018-01-13T14:58:29.000Z</pubTime>
+        
+        <tag>大数据竞赛</tag>
+         
+        <tag>天池</tag>
+         
+        <tag>CCF</tag>
+         
+        <tag>wifi定位</tag>
+         
+         
+           
+             
+              <breadCrumb title="比赛" url="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/02/16/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/</loc>
+    <lastmod>2018-03-25T04:31:59.388Z</lastmod>
+    <data>
+        <display>
+        <title>广义线性模型</title>
+        <pubTime>2018-02-16T05:02:21.000Z</pubTime>
+        
+        <tag>LR</tag>
+         
+        <tag>理论</tag>
+         
+        <tag>广义线性模型</tag>
+         
+        <tag>机器学习</tag>
+         
+        <tag>GLM</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/02/16/Logistic-Regression%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
+    <lastmod>2018-03-25T04:31:52.394Z</lastmod>
     <data>
         <display>
         <title>Logistic Regression的理解</title>
-        <pubTime>2018-03-06T12:52:28.000Z</pubTime>
+        <pubTime>2018-02-16T12:52:28.000Z</pubTime>
         
         <tag>LR</tag>
          
@@ -233,6 +193,148 @@
         <tag>广义线性回归</tag>
          
         <tag>逻辑斯谛回归</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/02/17/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/</loc>
+    <lastmod>2018-03-25T04:31:46.942Z</lastmod>
+    <data>
+        <display>
+        <title>最大熵模型</title>
+        <pubTime>2018-02-17T07:41:18.000Z</pubTime>
+        
+        <tag>LR</tag>
+         
+        <tag>最大熵模型</tag>
+         
+        <tag>数学</tag>
+         
+        <tag>特征函数</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/19/%E6%9C%80%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E5%8F%8AKKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E5%87%A0%E4%BD%95%E7%90%86%E8%A7%A3/</loc>
+    <lastmod>2018-03-25T04:30:53.527Z</lastmod>
+    <data>
+        <display>
+        <title>最优化问题及KKT条件的几何理解</title>
+        <pubTime>2018-03-19T07:31:31.000Z</pubTime>
+        
+        <tag>机器学习</tag>
+         
+        <tag>数学</tag>
+         
+        <tag>KKT</tag>
+         
+        <tag>最优化</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/10/27/%E5%89%91%E6%8C%87offer/</loc>
+    <lastmod>2018-03-25T04:30:31.478Z</lastmod>
+    <data>
+        <display>
+        <title>剑指offer</title>
+        <pubTime>2017-10-27T00:32:16.000Z</pubTime>
+        
+        <tag>编程</tag>
+         
+        <tag>代码</tag>
+         
+         
+           
+             
+              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/10/26/LeetCode/</loc>
+    <lastmod>2018-03-25T04:30:14.699Z</lastmod>
+    <data>
+        <display>
+        <title>LeetCode</title>
+        <pubTime>2017-10-26T01:13:07.000Z</pubTime>
+        
+        <tag>编程</tag>
+         
+        <tag>代码</tag>
+         
+         
+           
+             
+              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/17/GBDT/</loc>
+    <lastmod>2018-03-25T04:28:42.467Z</lastmod>
+    <data>
+        <display>
+        <title>GBDT&Xgboost</title>
+        <pubTime>2018-03-17T14:02:03.000Z</pubTime>
+        
+        <tag>GBDT</tag>
+         
+        <tag>xgboost</tag>
+         
+        <tag>梯度提升树</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/23/%E8%BD%AC-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E7%BB%BC%E8%BF%B0/</loc>
+    <lastmod>2018-03-24T03:10:46.995Z</lastmod>
+    <data>
+        <display>
+        <title>[转]梯度下降优化算法综述</title>
+        <pubTime>2018-03-23T08:28:34.000Z</pubTime>
+        
+        <tag>梯度下降</tag>
+         
+        <tag>转载</tag>
          
          
            
@@ -293,86 +395,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/09/%E5%B9%BF%E4%B9%89%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/</loc>
-    <lastmod>2018-03-09T13:56:58.927Z</lastmod>
-    <data>
-        <display>
-        <title>广义线性模型</title>
-        <pubTime>2018-03-09T05:02:21.000Z</pubTime>
-        
-        <tag>LR</tag>
-         
-        <tag>理论</tag>
-         
-        <tag>广义线性模型</tag>
-         
-        <tag>机器学习</tag>
-         
-        <tag>GLM</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/07/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/</loc>
-    <lastmod>2018-03-08T15:34:18.630Z</lastmod>
-    <data>
-        <display>
-        <title>最大熵模型</title>
-        <pubTime>2018-03-07T07:41:18.000Z</pubTime>
-        
-        <tag>LR</tag>
-         
-        <tag>最大熵模型</tag>
-         
-        <tag>数学</tag>
-         
-        <tag>特征函数</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/04/%E6%9C%80%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E5%8F%8AKKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E5%87%A0%E4%BD%95%E7%90%86%E8%A7%A3/</loc>
-    <lastmod>2018-03-08T02:40:53.234Z</lastmod>
-    <data>
-        <display>
-        <title>最优化问题及KKT条件的几何理解</title>
-        <pubTime>2018-03-04T07:31:31.000Z</pubTime>
-        
-        <tag>机器学习</tag>
-         
-        <tag>数学</tag>
-         
-        <tag>KKT</tag>
-         
-        <tag>最优化</tag>
-         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/</loc>
     <lastmod>2018-03-04T08:04:05.776Z</lastmod>
     <data>
@@ -390,28 +412,6 @@
            
              
               <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/02/26/LeetCode/</loc>
-    <lastmod>2018-03-04T08:00:35.842Z</lastmod>
-    <data>
-        <display>
-        <title>LeetCode</title>
-        <pubTime>2018-02-26T01:13:07.000Z</pubTime>
-        
-        <tag>编程</tag>
-         
-        <tag>代码</tag>
-         
-         
-           
-             
-              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
           
         </display>
     </data>
