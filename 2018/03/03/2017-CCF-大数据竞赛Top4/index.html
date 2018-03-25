@@ -89,16 +89,16 @@
 <meta name="keywords" content="大数据竞赛,天池,CCF,wifi定位">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2017 CCF 大数据竞赛Top4%">
-<meta property="og:url" content="http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/03/03/2017-CCF-大数据竞赛Top4/index.html">
 <meta property="og:site_name" content="Malped">
 <meta property="og:description" content="比赛的详细记录">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg">
-<meta property="og:updated_time" content="2018-03-25T04:32:13.494Z">
+<meta property="og:image" content="http://yoursite.com/2018/03/03/2017-CCF-大数据竞赛Top4/xgb参数.jpg">
+<meta property="og:updated_time" content="2018-03-25T04:41:07.536Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2017 CCF 大数据竞赛Top4%">
 <meta name="twitter:description" content="比赛的详细记录">
-<meta name="twitter:image" content="http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/03/2017-CCF-大数据竞赛Top4/xgb参数.jpg">
 
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/03/2017-CCF-大数据竞赛Top4/"/>
 
 
 
@@ -305,7 +305,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/03/2017-CCF-大数据竞赛Top4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Malped">
@@ -334,8 +334,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-13T22:58:29+08:00">
-                2018-01-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-03T22:58:29+08:00">
+                2018-03-03
               </time>
             
 
@@ -375,8 +375,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/13/2017-CCF-大数据竞赛Top4/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/13/2017-CCF-大数据竞赛Top4/" itemprop="commentCount"></span>
+                <a href="/2018/03/03/2017-CCF-大数据竞赛Top4/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/03/2017-CCF-大数据竞赛Top4/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -499,7 +499,7 @@
 <p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度，但是精度略有损失，可能因为评价指标是$AUC$所以对样本不均衡不敏感。我们最后还是放弃了采样。</p>
 <p>二分类还会造成一个问题：每次对于一个模型训练的时候，正样本平均只有小几百，负样本可能大几千甚至上万。这样正样本太少可能造成过拟合，因此我们模型部分着重调整了泛化部分的参数。</p>
 <h2 id="模型参数"><a href="#模型参数" class="headerlink" title="模型参数"></a>模型参数</h2><p>xgb的模型参数就常用的那几个：</p>
-<p><img src="/2018/01/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
+<p><img src="/2018/03/03/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
 <h3 id="1、eta-默认0-3"><a href="#1、eta-默认0-3" class="headerlink" title="1、eta[默认0.3]"></a>1、eta[默认0.3]</h3><p>和GBM中的 learning rate 参数类似。 通过减少每一步的权重，可以提高模型的鲁棒性。 典型值为0.01-0.2。</p>
 <h3 id="2、min-child-weight-默认1"><a href="#2、min-child-weight-默认1" class="headerlink" title="2、min_child_weight[默认1]"></a>2、min_child_weight[默认1]</h3><p>建立每个模型所需要的最小样本数。决定最小叶子节点样本权重和。 和GBM的 min_child_leaf 参数类似，但不完全一样。XGBoost的这个参数是最小<em>样本权重的和</em>，而GBM参数是最小<em>样本总数</em>。 这个参数用于避免过拟合。当它的值较大时，可以避免模型学习到局部的特殊样本。 但是如果这个值过高，会导致欠拟合。这个参数需要使用CV来调整。</p>
 <h3 id="3、max-depth-默认6"><a href="#3、max-depth-默认6" class="headerlink" title="3、max_depth[默认6]"></a>3、max_depth[默认6]</h3><p>和GBM中的参数相同，这个值为树的最大深度。 这个值也是用来避免过拟合的。max_depth越大，模型会学到更具体更局部的样本。 需要使用CV函数来进行调优。 典型值：3-10</p>
@@ -561,8 +561,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/10/线性模型的判断/" rel="next" title="线性模型的判断">
-                <i class="fa fa-chevron-left"></i> 线性模型的判断
+              <a href="/2018/03/03/拉格朗日对偶性/" rel="next" title="拉格朗日对偶性">
+                <i class="fa fa-chevron-left"></i> 拉格朗日对偶性
               </a>
             
           </div>
@@ -571,8 +571,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/01/15/2017-JDD京东金融算法大赛12th解决方案/" rel="prev" title="2017-JDD京东金融算法大赛12th解决方案">
-                2017-JDD京东金融算法大赛12th解决方案 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/09/说说生成模型与判别模型/" rel="prev" title="说说生成模型与判别模型">
+                说说生成模型与判别模型 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

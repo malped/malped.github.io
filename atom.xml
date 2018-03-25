@@ -433,6 +433,128 @@
   </entry>
   
   <entry>
+    <title><![CDATA[2017 CCF 大数据竞赛Top4%]]></title>
+    <link href="http://yoursite.com/2018/03/03/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
+    <id>http://yoursite.com/2018/03/03/2017-CCF-大数据竞赛Top4/</id>
+    <published>2018-03-03T14:58:29.000Z</published>
+    <updated>2018-03-25T04:41:07.536Z</updated>
+    <content type="html"><![CDATA[<h1 id="2017-CCF-大数据比赛记录（首赛）"><a href="#2017-CCF-大数据比赛记录（首赛）" class="headerlink" title="2017 CCF 大数据比赛记录（首赛）"></a>2017 CCF 大数据比赛记录（首赛）</h1><p>此次是在CCF平台与天池平台联合举办的大数据比赛，题目是：商场中精确定位用户所在店铺，主办方是蚂蚁金服。我和朋友两个人都是第一次参加这种大数据比赛，也算一步一个坑走了过来…线下赛最终经过反作弊筛选后是前100，共有2845支队伍。最后因为我俩临近期末考试，比赛也就就此结束了。</p>
+<h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>给出用户在商场使用手机支付时所采集到的信息，包括用户信息，店铺信息，商场信息等，要求预测给出上述信息后精准预测用户所在店铺。具体给出的数据表可以点击<a href="https://tianchi.aliyun.com/competition/information.htm?spm=5176.100067.5678.2.3bb01226n9sWID&amp;raceId=231620" target="_blank" rel="noopener">这里</a>来看。</p>
+<h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ol>
+<li>问题初看是多分类问题，但是如果直接处理的话$label$上千个。仔细观察题目可以发现， 不同商场里面的商店相互独立，所以这里考虑为每一个商场建立一个独立的预测模型。</li>
+<li>WiFi信息信息量最大，为主要信息。但是所给WiFi信息繁杂不规范，给WiFi信息找到合理的处理模式至关重要（WiFi指纹）。</li>
+<li>如何挖掘WiFi隐含信息，并建立其与$label$之间的关联（具体WiFi id、信号强度、连接与否）至关重要。</li>
+<li>WiFi信息中有比较稳定的WiFi（商店自己的WiFi），有用户的个人热点，还有各种公共WiFi（CMCC之类的）。这里讲后两者当做是不稳定WiFi，或者说是噪音WiFi，预测时过滤掉</li>
+<li>许多记录WiFi信息缺失，将此作为异常值直接删除（因为总数据量大，单条数据影响不大，WiFi信息又为最重要的信息）</li>
+<li>不同商铺的经纬、WiFi信息有大量重合，说明商场存在多楼层问题，并且单单依靠原始WiFi信息无法全面对楼层进行区分。</li>
+<li>按照商场划分模型后，每个商场还是有几十上百个$label$，可以多分类，或者二分类构造多分类。（因为$label$多，二分类构造多分类会遇到$label$不均衡的问题，需依靠采样来解决）</li>
+<li>百万数据，训练时间成本太高，需要在特征工程、反复验证时减小时间成本。（前期用$LR$模型试错）</li>
+<li>也算带有时间序列，如何构造可靠的线下验证集</li>
+<li>顾客数据训练集与预测集交集仅为三分之一，顾客特征是否为噪音（我们尝试过顾客特征空值填充、保留，取顾客有交集的单独训练，效果均不好）</li>
+</ol>
+<h1 id="我们的具体操作"><a href="#我们的具体操作" class="headerlink" title="我们的具体操作"></a>我们的具体操作</h1><h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><ul>
+<li>删除公共WiFi：如果一个WiFi在一个以上商场出现或者在某个商场覆盖率超过一定范围，那么可以断定此WiFi为噪音信息</li>
+<li>删除移动热点或者出现次数较少的WiFi：如果一个wifi出现次数少于某个阈值或者出现时间仅有一天，那么可以断定次WiFi为噪音信息</li>
+<li>训练集和测试集WiFi取交集，因为对于以后要构建的WiFi指纹</li>
+<li>删除WiFi信息为空的记录</li>
+<li>$GPS$离群点的删除</li>
+<li>定义<strong>不同等级</strong>稳定WiFi列表（不同等级原因某些特征防止维度爆炸），WiFi出现总次数超过一定阈值或者频率前200</li>
+<li>字典：shop历史WiFi</li>
+</ul>
+<h2 id="经纬度信息"><a href="#经纬度信息" class="headerlink" title="经纬度信息"></a>经纬度信息</h2><p>该题目给了两种经纬度信息店铺经纬度和购买发生时候的经纬度（预测集只有后者）。两种经纬度理论上差距应该很小，实际差距很大。单独利用经纬度信息训练的结果并不理想，印象中只有70%多一点。</p>
+<ul>
+<li>对经纬度数值做了泛化（精确小数点位数），印象中最后的粒度可能在10米左右</li>
+<li>$L1、L2$距离，在商场中随意选择一个点做基准，经纬度到这个点的距离</li>
+<li>经纬度聚类、以商铺经纬为质心聚类，然后哑编码（没有提升，后来没用）</li>
+</ul>
+<h2 id="时间特征的处理"><a href="#时间特征的处理" class="headerlink" title="时间特征的处理"></a>时间特征的处理</h2><ul>
+<li>饭点指示器（万分位的提升）</li>
+<li>早晨深夜指示器，因为这两种店铺可能比较固定</li>
+</ul>
+<h2 id="用户特征"><a href="#用户特征" class="headerlink" title="用户特征"></a>用户特征</h2><p>构造的所有的用户特征在我们这都是坑，一是因为训练集、预测集用户交集只有$1/3$左右，我们尝试过空值填充、空值保留、只保留交集部分用户特征、对交集部分用户单独训练预测…均是强力的反向上分特征。另一个原因可能是，每个用户在数据统计量均不足，没有统计意义，所以这就类似于$ID$类特征，妥妥没有现实意义的过拟合特征。</p>
+<ul>
+<li><del>用户购买力</del></li>
+<li><del>用户常去商店</del></li>
+<li><del>用户与WiFi相关特征</del></li>
+</ul>
+<h2 id="WiFi特征"><a href="#WiFi特征" class="headerlink" title="WiFi特征"></a>WiFi特征</h2><p>WiFi特征是最为重要的特征，我们构建的如下的WiFi特征</p>
+<h3 id="当前记录连接到的最强WiFi"><a href="#当前记录连接到的最强WiFi" class="headerlink" title="当前记录连接到的最强WiFi"></a>当前记录连接到的最强WiFi</h3><p>仅用这一个特征采取规则预测准确率也可达到80%，是个强特。哑编码。</p>
+<h3 id="记录中稳定WiFi的数量"><a href="#记录中稳定WiFi的数量" class="headerlink" title="记录中稳定WiFi的数量"></a>记录中稳定WiFi的数量</h3><h3 id="商场WiFi原点"><a href="#商场WiFi原点" class="headerlink" title="商场WiFi原点"></a>商场WiFi原点</h3><p>根据商场稳定WiFi（等级频率前50）建立一个基准点，计算每条数据到基准点的距离（离散化之后），没有的稳定WiFi按照强度为-99处理。</p>
+<h3 id="WiFi指纹"><a href="#WiFi指纹" class="headerlink" title="WiFi指纹"></a>WiFi指纹</h3><p>根据商场稳定WiFi（等级频数大于20），训练集、预测集上下$concat$将所有WiFi id展开为特征，值为当前记录对应WiFi的强度，将强度离散化（粒度为10）.</p>
+<h3 id="WiFi评分（最后仅用于规则）"><a href="#WiFi评分（最后仅用于规则）" class="headerlink" title="WiFi评分（最后仅用于规则）"></a>WiFi评分（最后仅用于规则）</h3><p>遍历数据建立嵌套字典$WiFi_score$，一层$key$为WiFi id，二层$key$为一层WiFi出现过的店铺，二层$val$为历史上该WiFi在该店铺强度的中位数。打分，对于每条数据的稳定WiFi信息，遍历嵌套字典$WiFi_score$，用打分函数对每条WiFi出现过的店铺打分。分数结果最高的直接作为结果。打分函数如下：</p>
+<script type="math/tex; mode=display">f=1-tanh({|power_{now}-power_{middle}|\over k})</script><p>其中：</p>
+<p>$tanh={e^x-e^{-x}\over e^x+e^{-x}}$</p>
+<p>$power_{now}$表示当前记录中当前WiFi强度</p>
+<p>$power_{middle}$表示嵌套字典中当前WiFi对各商店的强度中位数</p>
+<p>$k$为参数，最后确定值为2</p>
+<p>仅仅用该种规则，不用机器学习模型，精度就可以达到87%+（还是89%+来着）。但是当时将所得结果转化为特征加入模型训练，分数强力掉了一波。不用说，<strong>这里用了训练集构造的规则结果当特征继续加入训练集训练当然会造成$label leak$，也就是强力过拟合。</strong></p>
+<p>遗憾的是，当时没考虑采用滑动窗口，更没有使用候选集，这个特征就放弃了…如果采用滑动窗口，在特征采取区间构造嵌套字典$WiFi_score$，打分结果加在训练区间的特征，结果应该不会差。</p>
+<p>如果在滑动窗口的基础上，采用候选集（甚至可以用这个打分函数构造候选集），并把分数当做该条记录对候选商店的特征，绝对会是个强力特征（这里其实可以理解为类条件概率）</p>
+<h3 id="WiFi-id组合的最长公共子串"><a href="#WiFi-id组合的最长公共子串" class="headerlink" title="WiFi id组合的最长公共子串"></a>WiFi id组合的最长公共子串</h3><p>典型看起来巧妙没有卵用系列</p>
+<h2 id="xgb构造特征组合"><a href="#xgb构造特征组合" class="headerlink" title="xgb构造特征组合"></a>xgb构造特征组合</h2><p>用$model.apply()$返回叶子节点$index$构造特征。注意此部分一定要划分数据集，即一部分数据用于生成特征，另一部分数据集用于加入该部分生成特征并训练。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是比赛用到的、或者有代表性值得拿出来说的特征。这里发现其实我们的特征并不多，其实我们比赛时候尝试构造过远远比这多得多的特征，只是因为效果或者训练时间的原因，最后筛选剩这些。挖空心思构造各种想法复杂、实现困难、强力掉分的反向特征实在是能锤炼人强大的灵魂 ：）。</p>
+<h3 id="滑窗的欠缺"><a href="#滑窗的欠缺" class="headerlink" title="滑窗的欠缺"></a>滑窗的欠缺</h3><ul>
+<li>无法构造统计类特征，构造了会造成过拟合</li>
+<li>训练集过大时间成本过高</li>
+<li>既然也是时间序列，信息或多或少有时效性（比如WiFi）</li>
+</ul>
+<h3 id="候选集的欠缺"><a href="#候选集的欠缺" class="headerlink" title="候选集的欠缺"></a>候选集的欠缺</h3><ul>
+<li>无法构造联合特征，商店-WiFi，商店-经纬度等等</li>
+<li>完全丢弃了任何商店特征，包括特别重要的统计特征</li>
+</ul>
+<p>总之，这两种的欠缺也早早为我们的特征工程确定了天花板，也大大限制了我们特征的提取，少了这两项能够造的有效特征数量至少少了70%</p>
+<h1 id="数据集的划分"><a href="#数据集的划分" class="headerlink" title="数据集的划分"></a>数据集的划分</h1><p>这里说一下我们实际的数据集划分，在最后给出可能的改进。</p>
+<p>这是个时间相关的问题，而且数据量比较大，就放弃了分层$k$折交叉，我们选取一个周作为本地验证集</p>
+<h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h2><p>最开始我们用的是$xgboost$的多分类模型，分商场进行预测，效果一般。然后转向使用二分类实现多分类，提升显著。具体为每次将一个$label$作为正例，其他作为反例，每次输出每条记录是该正例的概率，最后以最大概率的$label$作为预测结果</p>
+<h2 id="二分类-amp-样本不均衡"><a href="#二分类-amp-样本不均衡" class="headerlink" title="二分类&amp;样本不均衡"></a>二分类&amp;样本不均衡</h2><p>每次有将近100个$label$每次只将一个当做正例，正负样本比会非常小，会导致时间成本过长，精度下降，需要靠采样解决。</p>
+<p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度，但是精度略有损失，可能因为评价指标是$AUC$所以对样本不均衡不敏感。我们最后还是放弃了采样。</p>
+<p>二分类还会造成一个问题：每次对于一个模型训练的时候，正样本平均只有小几百，负样本可能大几千甚至上万。这样正样本太少可能造成过拟合，因此我们模型部分着重调整了泛化部分的参数。</p>
+<h2 id="模型参数"><a href="#模型参数" class="headerlink" title="模型参数"></a>模型参数</h2><p>xgb的模型参数就常用的那几个：</p>
+<p><img src="/2018/03/03/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
+<h3 id="1、eta-默认0-3"><a href="#1、eta-默认0-3" class="headerlink" title="1、eta[默认0.3]"></a>1、eta[默认0.3]</h3><p>和GBM中的 learning rate 参数类似。 通过减少每一步的权重，可以提高模型的鲁棒性。 典型值为0.01-0.2。</p>
+<h3 id="2、min-child-weight-默认1"><a href="#2、min-child-weight-默认1" class="headerlink" title="2、min_child_weight[默认1]"></a>2、min_child_weight[默认1]</h3><p>建立每个模型所需要的最小样本数。决定最小叶子节点样本权重和。 和GBM的 min_child_leaf 参数类似，但不完全一样。XGBoost的这个参数是最小<em>样本权重的和</em>，而GBM参数是最小<em>样本总数</em>。 这个参数用于避免过拟合。当它的值较大时，可以避免模型学习到局部的特殊样本。 但是如果这个值过高，会导致欠拟合。这个参数需要使用CV来调整。</p>
+<h3 id="3、max-depth-默认6"><a href="#3、max-depth-默认6" class="headerlink" title="3、max_depth[默认6]"></a>3、max_depth[默认6]</h3><p>和GBM中的参数相同，这个值为树的最大深度。 这个值也是用来避免过拟合的。max_depth越大，模型会学到更具体更局部的样本。 需要使用CV函数来进行调优。 典型值：3-10</p>
+<h3 id="4、max-leaf-nodes"><a href="#4、max-leaf-nodes" class="headerlink" title="4、max_leaf_nodes"></a>4、max_leaf_nodes</h3><p>树上最大的节点或叶子的数量。 可以替代max_depth的作用。因为如果生成的是二叉树，一个深度为n的树最多生成n2个叶子。 如果定义了这个参数，GBM会忽略max_depth参数。</p>
+<h3 id="5、gamma-默认0"><a href="#5、gamma-默认0" class="headerlink" title="5、gamma[默认0]"></a>5、gamma[默认0]</h3><p>在节点分裂时，只有分裂后损失函数的值下降了，才会分裂这个节点。Gamma指定了节点分裂所需的最小损失函数下降值。 这个参数的值越大，算法越保守。这个参数的值和损失函数息息相关，所以是需要调整的。</p>
+<h3 id="6、max-delta-step-默认0"><a href="#6、max-delta-step-默认0" class="headerlink" title="6、max_delta_step[默认0]"></a>6、max_delta_step[默认0]</h3><p>这参数限制每棵树权重改变的最大步长。如果这个参数的值为0，那就意味着没有约束。如果它被赋予了某个正值，那么它会让这个算法更加保守。 通常，这个参数不需要设置。但是当各类别的样本十分不平衡时，它对逻辑回归是很有帮助的。 这个参数一般用不到，但是你可以挖掘出来它更多的用处。</p>
+<h3 id="7、subsample-默认1"><a href="#7、subsample-默认1" class="headerlink" title="7、subsample[默认1]"></a>7、subsample[默认1]</h3><p>和GBM中的subsample参数一模一样。这个参数控制对于每棵树，随机采样的比例。 减小这个参数的值，算法会更加保守，避免过拟合。但是，如果这个值设置得过小，它可能会导致欠拟合。 典型值：0.5-1</p>
+<h3 id="8、colsample-bytree-默认1"><a href="#8、colsample-bytree-默认1" class="headerlink" title="8、colsample_bytree[默认1]"></a>8、colsample_bytree[默认1]</h3><p>和GBM里面的max_features参数类似。用来控制每棵随机采样的列数的占比(每一列是一个特征)。 典型值：0.5-1</p>
+<h3 id="9、colsample-bylevel-默认1"><a href="#9、colsample-bylevel-默认1" class="headerlink" title="9、colsample_bylevel[默认1]"></a>9、colsample_bylevel[默认1]</h3><p>用来控制树的每一级的每一次分裂，对列数的采样的占比。 我个人一般不太用这个参数，因为subsample参数和colsample_bytree参数可以起到相同的作用。但是如果感兴趣，可以挖掘这个参数更多的用处。</p>
+<h3 id="10、lambda-默认1"><a href="#10、lambda-默认1" class="headerlink" title="10、lambda[默认1]"></a>10、lambda[默认1]</h3><p>权重的L2正则化项。(和Ridge regression类似)。 这个参数是用来控制XGBoost的正则化部分的。虽然大部分数据科学家很少用到这个参数，但是这个参数在减少过拟合上还是可以挖掘出更多用处的。</p>
+<h3 id="11、alpha-默认1"><a href="#11、alpha-默认1" class="headerlink" title="11、alpha[默认1]"></a>11、alpha[默认1]</h3><p>权重的L1正则化项。(和Lasso regression类似)。 可以应用在很高维度的情况下，使得算法的速度更快。</p>
+<h3 id="12、scale-pos-weight-默认1"><a href="#12、scale-pos-weight-默认1" class="headerlink" title="12、scale_pos_weight[默认1]"></a>12、scale_pos_weight[默认1]</h3><p>在各类别样本十分不平衡时，把这个参数设定为一个正值，可以使算法更快收敛。</p>
+<h3 id="真正调参方法"><a href="#真正调参方法" class="headerlink" title="真正调参方法"></a>真正调参方法</h3><ul>
+<li>选择较高的<strong>学习速率(learning rate)</strong>。一般情况下，学习速率的值为0.1。但是，对于不同的问题，理想的学习速率有时候会在0.05到0.3之间波动。选择<strong>对应于此学习速率的理想决策树数量</strong>。</li>
+<li>对于给定的学习速率和决策树数量，进行<strong>决策树特定参数调优</strong>(max_depth, min_child_weight, gamma, subsample, colsample_bytree)。</li>
+<li>xgboost的<strong>正则化参数</strong>的调优。(lambda, alpha)。这些参数可以降低模型的复杂度，从而提高模型的表现。</li>
+<li>降低学习速率，确定理想参数。</li>
+</ul>
+<h3 id="实际上比赛的调参"><a href="#实际上比赛的调参" class="headerlink" title="实际上比赛的调参"></a>实际上比赛的调参</h3><p>因为数据量巨大，样本充足，所以实际上参数不是太差的话对结果影响不是很大。况且大的数据量调参时间成本太高，而且这个比赛自始至终不是一个分类器，90+的商场每个商场有多少个$label$就有多少个分类器，总共上千个不同分类器，也不可能找出每个分类器最适合的参数。因此本次比赛只是在刚开始时调整了一下树的深度，最后的时候调整了一下过拟合的参数。</p>
+<h2 id="模型融合"><a href="#模型融合" class="headerlink" title="模型融合"></a>模型融合</h2><p>最后我们取了$0.65xgb+0.35lgb$简单的加权融合，融合方法是直接把二分类生成的概率加权相加，选出概率最大的当做$label$。</p>
+<p>其实可以再融合上多分类，提高模型融合的多样性，但是因为我们没分滑窗，训练时间巨长，就没再添加。</p>
+<p>本次比赛不可能$stacking$，就像不可能$CV$一样，训练一次时间都受不了，更别说反复多次。</p>
+<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这次比赛成绩不算好，但第一次正式参赛，通过比赛收获了很多，一整套流程熟悉了一遍，对模型、特征的理解也深了好多。我跟朋友两个一步一个坑，摸着石头过河，心情大起大落也是锻炼了心态…最后初赛要截止时候，我们还在复赛线边缘徘徊，眼看着自己慢慢掉出复赛线，反复讨论着各种可能，尝试构造各种复杂但看起来有意义的特征，每次连夜实现，怀着希望入睡，第二天都会被反向上分现实打脸。记得第一次掉出前100时候，我俩彻夜讨论到凌晨五点出了一套方案，从绝望到满怀希望，实际上上第二天还是究极反向上分，又坐了一次过山车：）（其实现在想想那套方案是明显的$label leak$）。</p>
+<p>现在想想，这次比赛主要差在了套路经验上，没能构造滑窗和候选集严重限制了特征的构造，几乎所有统计特征、交叉特征、先验后延特征都无法构造，有效特征数量至少少了70%。特别是候选集，之前闻所未闻，各种地方也了解不到，后来才知道，这种方法可能从之前摩拜比赛大佬们一路传承了下来…</p>
+<p>对样本特征的理解差也导致我们踩了好多坑。在一开始对数据分布、统计特征的构造不清楚导致我们训练时间成本巨大。现在想想当时构造的好多看起来有效的特征其实都是明显的$label leak$（先从当前数据提取特征，再用当前数据训练模型），这次比赛过后对标签泄露、过拟合是印象深刻了。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[比赛的详细记录]]>
+    
+    </summary>
+    
+      <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
+    
+      <category term="天池" scheme="http://yoursite.com/tags/%E5%A4%A9%E6%B1%A0/"/>
+    
+      <category term="CCF" scheme="http://yoursite.com/tags/CCF/"/>
+    
+      <category term="wifi定位" scheme="http://yoursite.com/tags/wifi%E5%AE%9A%E4%BD%8D/"/>
+    
+      <category term="比赛" scheme="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[拉格朗日对偶性]]></title>
     <link href="http://yoursite.com/2018/03/03/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%AF%B9%E5%81%B6%E6%80%A7/"/>
     <id>http://yoursite.com/2018/03/03/拉格朗日对偶性/</id>
@@ -474,6 +596,119 @@
       <category term="数学" scheme="http://yoursite.com/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[2017-JDD京东金融算法大赛12th解决方案]]></title>
+    <link href="http://yoursite.com/2018/03/03/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
+    <id>http://yoursite.com/2018/03/03/2017-JDD京东金融算法大赛12th解决方案/</id>
+    <published>2018-03-03T04:08:59.000Z</published>
+    <updated>2018-03-25T04:41:32.103Z</updated>
+    <content type="html"><![CDATA[<h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>训练数据包含2017-04-30日之前270天之内若干店铺的每日订单量、销售额、顾客数、评价数、广告费用等数据，下架时间在2017-04-30之后或者未下架的商品数据，以及这些店铺2016年6月-2017年1月每月末后90天内的销售额。</p>
+<p>通过竞赛数据中店铺过往的销售记录，商品信息，商品评价，以及广告费用等信息来建立预测模型，预测店铺未来90天内的销售额。</p>
+<h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ul>
+<li>这是个时间序列问题，时间滑窗的选择是关键点。</li>
+<li>数据是真实数据，难免会存在刷单、特殊节日、店铺停业等等特殊情况</li>
+<li>不同店铺销量波动水平可能不同</li>
+<li>特征的选择按照商品特征、订单特征、评价特征、交叉特征、销售额和下架分别构造特征</li>
+</ul>
+<h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h2 id="刷单行为"><a href="#刷单行为" class="headerlink" title="刷单行为"></a>刷单行为</h2><p>通过DEA发现存在刷单行为，通过’&gt;本月销售中位数*10（根据线上选出的阈值）’判断删除该日订单</p>
+<h2 id="活动促销"><a href="#活动促销" class="headerlink" title="活动促销"></a>活动促销</h2><p>双十一和618（因为双11不存在最终训练集里面，所以不用考虑训练集的影响。但是6.18在预测集里面，这里考虑用双11修正618的销量。具体挑出11月份销量波动大的店铺，计算修正系数，预测完相应店铺称该修正系数）</p>
+<h2 id="特殊月份"><a href="#特殊月份" class="headerlink" title="特殊月份"></a>特殊月份</h2><p>过年、情人节等，EDA发现影响不大，故不作考虑</p>
+<h2 id="下架商品"><a href="#下架商品" class="headerlink" title="下架商品"></a>下架商品</h2><p>某些店铺会在短时间内下架大量的商品</p>
+<h1 id="特征部分"><a href="#特征部分" class="headerlink" title="特征部分"></a>特征部分</h1><p>商品、订单、评价（取平均的时候是按照有效评论日期取平均）、交叉特征、销售以及下架特征。（主要以本月为主部分特征加入前几个月的相关统计特征）</p>
+<p>后来发现销售额有关特征重要性很强，于是又添加了额外的钱有关的本月统计有关特征（本月后三、二、一周）</p>
+<p>特征部分实在是无法回忆清楚了，这个比赛来来回回构建了许多类似特征，特征的增减也是根据线上表现大刀阔斧地一群一群增删。下面写一下大致思路，不是所有特征都构建三个月的统计特征，印象中总销售、总订单量之类的总量特征会添加上月、上上月、上上上月的总量统计特征以及三月平均特征。平均数特征方面几乎没有构造统计特征。</p>
+<h3 id="商品特征"><a href="#商品特征" class="headerlink" title="商品特征"></a>商品特征</h3><ul>
+<li>在售总商品数</li>
+<li>平均每个商品的订单量</li>
+<li>平均每个商品的实际销量</li>
+<li>平均每个商品的退货订单数</li>
+<li>未售商品占总商品的比例</li>
+</ul>
+<h3 id="订单特征"><a href="#订单特征" class="headerlink" title="订单特征"></a>订单特征</h3><ul>
+<li>总销售金额</li>
+<li>平均每个订单销售金额</li>
+<li>总优惠金额</li>
+<li>平均每笔订单优惠金额</li>
+<li>总优惠金额占总销售金额比</li>
+<li>总订单量</li>
+<li>总退货订单量</li>
+<li>总实际订单量</li>
+<li>总退货订单金额</li>
+<li>退货金额占总销售额金额的比</li>
+<li>总实际销售金额</li>
+<li>平均每笔订单实际销售金额</li>
+<li>总顾客数</li>
+<li>平均每个顾客的订单量</li>
+<li>平均每个顾客的购买金额</li>
+<li>平均每个顾客的退货订单数</li>
+<li>平均每个顾客的退货金额</li>
+<li>总优惠笔数</li>
+<li>总优惠金额占总退货金额比例</li>
+<li>平均每笔订单总优惠金额占总退货金额比例</li>
+<li>平均每笔优惠金额</li>
+<li>平均销售金额增长率（每个月和前一个月算增长率，所有增长率取平均）</li>
+<li>平均订单量增长率</li>
+<li>平均退货订单增长率</li>
+<li>平均退货金额增长率</li>
+</ul>
+<h3 id="评价特征（取平均的时候是按照有效评论日期取平均）"><a href="#评价特征（取平均的时候是按照有效评论日期取平均）" class="headerlink" title="评价特征（取平均的时候是按照有效评论日期取平均）"></a>评价特征（取平均的时候是按照有效评论日期取平均）</h3><ul>
+<li>总好评数</li>
+<li>总中评数</li>
+<li>总差评数</li>
+<li>总评论数</li>
+<li>平均好评数</li>
+<li>平均中评数</li>
+<li>平均差评数</li>
+<li>好评率</li>
+<li>差评率</li>
+<li>中评率</li>
+<li>平均好评率增长率</li>
+</ul>
+<h3 id="交叉特征"><a href="#交叉特征" class="headerlink" title="交叉特征"></a>交叉特征</h3><ul>
+<li>平均每个月的充值广告费用占总销售金额比</li>
+<li>平均每个月的充值广告费用占实际销售金额比</li>
+<li>平均每个订单的好评率</li>
+<li>平均每个订单的差评率</li>
+<li>平均每个订单的好评数</li>
+<li>平均每个订单的差评数</li>
+</ul>
+<h3 id="销售额和下架特征"><a href="#销售额和下架特征" class="headerlink" title="销售额和下架特征"></a>销售额和下架特征</h3><ul>
+<li>总销售额</li>
+<li>当月销售额</li>
+<li>前一个月总销售金额</li>
+<li>前两个月总销售金额</li>
+<li>前三个月总销售金额</li>
+<li>前一个周总销售金额</li>
+<li>前两个周总销售金额</li>
+<li>前三个周总销售金额</li>
+<li>前一个月下架商品数</li>
+<li>前两个月下架商品数</li>
+<li>前三个月下架商品数</li>
+<li>最近一周下架商品数</li>
+</ul>
+<p>一开始加的特征比较多，因为效果还不错吧，所以也没有根据线上去判断一下哪些特征是否有用，而且这个比赛想构建一个比较稳定的线下验证是非常困难的，因为销量波动还是比较大的，所以到最后我还没构建出合理的线下验证集，更多的时候是以线上来验证我的一些想法。根据特征的重要性来看，跟销售金额有关的特征比较强一些，某些特征重要性非常低但是我也没删除。</p>
+<h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><p>这部分没什么可说的，就是这次比赛数据量较少，只有3000条，相对而言特征维度较高，模型着重调整了正则化部分，防止过拟合</p>
+<h1 id="后处理"><a href="#后处理" class="headerlink" title="后处理"></a>后处理</h1><p>某些店铺销量变化巨大，所以想到通过方差筛选出波动比较大的店铺，该店铺在预测完成之后单独处理，规则是，把最后一个９０天，除以每家店铺上个月的销量，再将这个值取平均，结果是２.7左右，所以这个规则就是每个店最后一个月销量×２.7，这是规则基础版，同时可以根据每个月不同销量修改参数，例如（３月×0.2+4月×０.８）*2.7。</p>
+<p>另外这次比赛不同模型预测结果差异很大，模型融合效果显著稳定上分。</p>
+<p>$0.2lgb+0.8xgb$</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[比赛的记录]]>
+    
+    </summary>
+    
+      <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
+    
+      <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
+    
+      <category term="销量预测" scheme="http://yoursite.com/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
+    
+      <category term="时间序列" scheme="http://yoursite.com/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
+    
+      <category term="比赛" scheme="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
     
   </entry>
   
@@ -549,49 +784,6 @@
       <category term="LR" scheme="http://yoursite.com/tags/LR/"/>
     
       <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
-    
-      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[支持向量机SVM]]></title>
-    <link href="http://yoursite.com/2018/02/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/"/>
-    <id>http://yoursite.com/2018/02/18/支持向量机SVM/</id>
-    <published>2018-02-18T13:34:16.000Z</published>
-    <updated>2018-03-25T04:33:29.488Z</updated>
-    <content type="html"><![CDATA[<h1 id="线性可分支持向量机与硬间隔最大化"><a href="#线性可分支持向量机与硬间隔最大化" class="headerlink" title="线性可分支持向量机与硬间隔最大化"></a>线性可分支持向量机与硬间隔最大化</h1><hr>
-<h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><p>考虑一个二分类问题，假设输入空间和特征空间为两个不同的空间。<strong>输入空间为欧式空间或离散集合，特征空间为欧式空间或希尔伯特空间。</strong>线性可分支持向量机、线性支持向量机假设这两个空间的元素一一对应，并将输入空间中的输入映射为特征空间中的特征向量。非线性支持向量机利用一个从输入空间到特征空间的非线性映射将输入映射为特征向量。所以<strong>输入都有输入空间转换到特征空间，支持向量机的学习是在特征空间进行的。</strong></p>
-<p><strong>定义   线性可分支持向量机：</strong>给定线性可分训练数据集，通过间隔最大化或等价地求解相应的凸二次规划问题学习得到的分离超平面为：</p>
-<script type="math/tex; mode=display">w^￥x+b^￥=0</script><p>以及相应的分类决策函数：</p>
-<script type="math/tex; mode=display">f(x)=sign(w^￥x+b^￥)</script><h2 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h2><p>一般来说，一个点距离分离超平面的远近可以表示分类预测的确信程度。在超平面$wx+b=0$确定的情况下，$|wx+b|$能够<strong>相对的</strong>表示点$x$距离超平面的远近。而$wx+b$的符号与类标记$y$的符号是否一致能够表示分类是否正确。所以可用量$y(wx+b)$来表示分类的正确性以及确信度，这就是<strong>函数间隔</strong>的概念。</p>
-<p><strong><em>为什么$|wx+b|$是相对的表示距离：首先这指的是函数距离，同一个函数内有比较价值。其次因为$b$的影响，真正距离并不是这个，但是距离的比较都有这个$b$，所以这里就不再考虑</em></strong></p>
-<p><strong>定义  函数间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的函数间隔为</p>
-<script type="math/tex; mode=display">\hat\gamma_i=y_i(wx_i+b)</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的函数间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
-<script type="math/tex; mode=display">\hat\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>选择分离超平面时，只有函数间隔还不够，因为<strong><em>只要成比例的改变$w$和$b$，例如将它们改写为$2w$和$2b$，超平面并没有改变，但函数间隔却成为原来的$2$倍。所以可以对分离超平面的法向量$w$加某些约束，如规范化，$||w||=1$，使得间隔是确定的。</em></strong>这时函数间隔成为几何间隔。</p>
-<p><strong>定义  几何间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的几何间隔为：</p>
-<script type="math/tex; mode=display">\gamma_i=y_i({w\over ||w||}x_i+{b\over||w||})</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的几何间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
-<script type="math/tex; mode=display">\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>函数间隔和几何间隔的关系：</p>
-<script type="math/tex; mode=display">\gamma={\hat\gamma\over||w||}\ \ \ \ \ (1)</script><p>如果$||w||=1$，那么函数间隔和几何间隔相等。如果超平面参数$w$和$b$成比例的改变（超平面没有改变），函数间隔也按此比例改变，而几何间隔不变。</p>
-<h2 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h2><p>间隔最大化的直观解释是：对训练数据集找到几何间隔最大的超平面意味着一充分大的确信度对训练数据进行分类。也就是说，不仅将正负实例点分开，而且对最难分的实例点（离超平面最近的点）也有足够大的确信度将它们分开。这样的超平面应该对未知的新实例有很好的分类预测能力。</p>
-<h3 id="最大间隔分离超平面"><a href="#最大间隔分离超平面" class="headerlink" title="最大间隔分离超平面"></a>最大间隔分离超平面</h3><p>求一个几何间隔最大的分离超平面可以表示为下面问题的最优化：</p>
-<script type="math/tex; mode=display">\max_{w,b}\ \ \ \gamma</script><script type="math/tex; mode=display">s.t.\ \ y_i({w\over||w||}x_i+{b\over||w||})\ge\gamma,\ \ i=1,2,…,N</script><p>我们希望最大化几何间隔$\gamma$（<strong>$\gamma$为所有点的中几何距离最短的点的几何距离，就是支持向量的几何距离</strong>），约束条件表示的是超平面关于每个训练样本点的几何间隔至少是$\gamma$。</p>
-<p>考虑几何间隔与函数间隔的关系式$(1)$，可以将这个问题改写为(这里为了构造出$||w||$):</p>
-<script type="math/tex; mode=display">\max_{w,b}\ \ \ {\hat\gamma\over||w||}</script><script type="math/tex; mode=display">s.t.\ \ y_i(wx_i+b)\ge\hat\gamma,\ \ i=1,2,…,N</script><p>**函数间隔$\hat\gamma$的取值并不影响最优化问题的解。将$w,b$按比例变化为$\lambda w,\lambda b$，超平面并未发生改变，函数间隔变为$\lambda\hat\gamma $。所以函数间隔的改变只影响$w,b$的系数，不改变超平面。这样就可以去$\hat\gamma=1$，并带入以上最优化问题。注意到最大化$1\over ||w||$和最小化${1\over 2}||w||^2$是等价地。于是就得到了下面线性可分支持向量机学习的最优化问题：</p>
-<script type="math/tex; mode=display">\min_{w,b}\ \ \ {1\over 2}||w||^2</script><script type="math/tex; mode=display">s.t.\ \ \ y_i(wx_i+b)-1\ge0,\ \ \ i=1,2,…,N</script><p><strong><em>SVM部分暂时弃更，东西差不多都是《统计学习方法上的》，关于自己理解的部分也都标注在了书上，手码实在太多了，这部分先看书把。。</em></strong></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[支持向量机自己的备忘录]]>
-    
-    </summary>
-    
-      <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
-    
-      <category term="支持向量机" scheme="http://yoursite.com/tags/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"/>
-    
-      <category term="核函数" scheme="http://yoursite.com/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
-    
-      <category term="拉格朗日" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5/"/>
     
       <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
@@ -816,237 +1008,45 @@
   </entry>
   
   <entry>
-    <title><![CDATA[2017-JDD京东金融算法大赛12th解决方案]]></title>
-    <link href="http://yoursite.com/2018/01/15/2017-JDD%E4%BA%AC%E4%B8%9C%E9%87%91%E8%9E%8D%E7%AE%97%E6%B3%95%E5%A4%A7%E8%B5%9B12th%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
-    <id>http://yoursite.com/2018/01/15/2017-JDD京东金融算法大赛12th解决方案/</id>
-    <published>2018-01-15T04:08:59.000Z</published>
-    <updated>2018-03-25T04:32:40.874Z</updated>
-    <content type="html"><![CDATA[<h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>训练数据包含2017-04-30日之前270天之内若干店铺的每日订单量、销售额、顾客数、评价数、广告费用等数据，下架时间在2017-04-30之后或者未下架的商品数据，以及这些店铺2016年6月-2017年1月每月末后90天内的销售额。</p>
-<p>通过竞赛数据中店铺过往的销售记录，商品信息，商品评价，以及广告费用等信息来建立预测模型，预测店铺未来90天内的销售额。</p>
-<h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ul>
-<li>这是个时间序列问题，时间滑窗的选择是关键点。</li>
-<li>数据是真实数据，难免会存在刷单、特殊节日、店铺停业等等特殊情况</li>
-<li>不同店铺销量波动水平可能不同</li>
-<li>特征的选择按照商品特征、订单特征、评价特征、交叉特征、销售额和下架分别构造特征</li>
-</ul>
-<h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h2 id="刷单行为"><a href="#刷单行为" class="headerlink" title="刷单行为"></a>刷单行为</h2><p>通过DEA发现存在刷单行为，通过’&gt;本月销售中位数*10（根据线上选出的阈值）’判断删除该日订单</p>
-<h2 id="活动促销"><a href="#活动促销" class="headerlink" title="活动促销"></a>活动促销</h2><p>双十一和618（因为双11不存在最终训练集里面，所以不用考虑训练集的影响。但是6.18在预测集里面，这里考虑用双11修正618的销量。具体挑出11月份销量波动大的店铺，计算修正系数，预测完相应店铺称该修正系数）</p>
-<h2 id="特殊月份"><a href="#特殊月份" class="headerlink" title="特殊月份"></a>特殊月份</h2><p>过年、情人节等，EDA发现影响不大，故不作考虑</p>
-<h2 id="下架商品"><a href="#下架商品" class="headerlink" title="下架商品"></a>下架商品</h2><p>某些店铺会在短时间内下架大量的商品</p>
-<h1 id="特征部分"><a href="#特征部分" class="headerlink" title="特征部分"></a>特征部分</h1><p>商品、订单、评价（取平均的时候是按照有效评论日期取平均）、交叉特征、销售以及下架特征。（主要以本月为主部分特征加入前几个月的相关统计特征）</p>
-<p>后来发现销售额有关特征重要性很强，于是又添加了额外的钱有关的本月统计有关特征（本月后三、二、一周）</p>
-<p>特征部分实在是无法回忆清楚了，这个比赛来来回回构建了许多类似特征，特征的增减也是根据线上表现大刀阔斧地一群一群增删。下面写一下大致思路，不是所有特征都构建三个月的统计特征，印象中总销售、总订单量之类的总量特征会添加上月、上上月、上上上月的总量统计特征以及三月平均特征。平均数特征方面几乎没有构造统计特征。</p>
-<h3 id="商品特征"><a href="#商品特征" class="headerlink" title="商品特征"></a>商品特征</h3><ul>
-<li>在售总商品数</li>
-<li>平均每个商品的订单量</li>
-<li>平均每个商品的实际销量</li>
-<li>平均每个商品的退货订单数</li>
-<li>未售商品占总商品的比例</li>
-</ul>
-<h3 id="订单特征"><a href="#订单特征" class="headerlink" title="订单特征"></a>订单特征</h3><ul>
-<li>总销售金额</li>
-<li>平均每个订单销售金额</li>
-<li>总优惠金额</li>
-<li>平均每笔订单优惠金额</li>
-<li>总优惠金额占总销售金额比</li>
-<li>总订单量</li>
-<li>总退货订单量</li>
-<li>总实际订单量</li>
-<li>总退货订单金额</li>
-<li>退货金额占总销售额金额的比</li>
-<li>总实际销售金额</li>
-<li>平均每笔订单实际销售金额</li>
-<li>总顾客数</li>
-<li>平均每个顾客的订单量</li>
-<li>平均每个顾客的购买金额</li>
-<li>平均每个顾客的退货订单数</li>
-<li>平均每个顾客的退货金额</li>
-<li>总优惠笔数</li>
-<li>总优惠金额占总退货金额比例</li>
-<li>平均每笔订单总优惠金额占总退货金额比例</li>
-<li>平均每笔优惠金额</li>
-<li>平均销售金额增长率（每个月和前一个月算增长率，所有增长率取平均）</li>
-<li>平均订单量增长率</li>
-<li>平均退货订单增长率</li>
-<li>平均退货金额增长率</li>
-</ul>
-<h3 id="评价特征（取平均的时候是按照有效评论日期取平均）"><a href="#评价特征（取平均的时候是按照有效评论日期取平均）" class="headerlink" title="评价特征（取平均的时候是按照有效评论日期取平均）"></a>评价特征（取平均的时候是按照有效评论日期取平均）</h3><ul>
-<li>总好评数</li>
-<li>总中评数</li>
-<li>总差评数</li>
-<li>总评论数</li>
-<li>平均好评数</li>
-<li>平均中评数</li>
-<li>平均差评数</li>
-<li>好评率</li>
-<li>差评率</li>
-<li>中评率</li>
-<li>平均好评率增长率</li>
-</ul>
-<h3 id="交叉特征"><a href="#交叉特征" class="headerlink" title="交叉特征"></a>交叉特征</h3><ul>
-<li>平均每个月的充值广告费用占总销售金额比</li>
-<li>平均每个月的充值广告费用占实际销售金额比</li>
-<li>平均每个订单的好评率</li>
-<li>平均每个订单的差评率</li>
-<li>平均每个订单的好评数</li>
-<li>平均每个订单的差评数</li>
-</ul>
-<h3 id="销售额和下架特征"><a href="#销售额和下架特征" class="headerlink" title="销售额和下架特征"></a>销售额和下架特征</h3><ul>
-<li>总销售额</li>
-<li>当月销售额</li>
-<li>前一个月总销售金额</li>
-<li>前两个月总销售金额</li>
-<li>前三个月总销售金额</li>
-<li>前一个周总销售金额</li>
-<li>前两个周总销售金额</li>
-<li>前三个周总销售金额</li>
-<li>前一个月下架商品数</li>
-<li>前两个月下架商品数</li>
-<li>前三个月下架商品数</li>
-<li>最近一周下架商品数</li>
-</ul>
-<p>一开始加的特征比较多，因为效果还不错吧，所以也没有根据线上去判断一下哪些特征是否有用，而且这个比赛想构建一个比较稳定的线下验证是非常困难的，因为销量波动还是比较大的，所以到最后我还没构建出合理的线下验证集，更多的时候是以线上来验证我的一些想法。根据特征的重要性来看，跟销售金额有关的特征比较强一些，某些特征重要性非常低但是我也没删除。</p>
-<h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><p>这部分没什么可说的，就是这次比赛数据量较少，只有3000条，相对而言特征维度较高，模型着重调整了正则化部分，防止过拟合</p>
-<h1 id="后处理"><a href="#后处理" class="headerlink" title="后处理"></a>后处理</h1><p>某些店铺销量变化巨大，所以想到通过方差筛选出波动比较大的店铺，该店铺在预测完成之后单独处理，规则是，把最后一个９０天，除以每家店铺上个月的销量，再将这个值取平均，结果是２.7左右，所以这个规则就是每个店最后一个月销量×２.7，这是规则基础版，同时可以根据每个月不同销量修改参数，例如（３月×0.2+4月×０.８）*2.7。</p>
-<p>另外这次比赛不同模型预测结果差异很大，模型融合效果显著稳定上分。</p>
-<p>$0.2lgb+0.8xgb$</p>
+    <title><![CDATA[支持向量机SVM]]></title>
+    <link href="http://yoursite.com/2018/01/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/"/>
+    <id>http://yoursite.com/2018/01/18/支持向量机SVM/</id>
+    <published>2018-01-18T13:34:16.000Z</published>
+    <updated>2018-03-25T04:41:56.627Z</updated>
+    <content type="html"><![CDATA[<h1 id="线性可分支持向量机与硬间隔最大化"><a href="#线性可分支持向量机与硬间隔最大化" class="headerlink" title="线性可分支持向量机与硬间隔最大化"></a>线性可分支持向量机与硬间隔最大化</h1><hr>
+<h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><p>考虑一个二分类问题，假设输入空间和特征空间为两个不同的空间。<strong>输入空间为欧式空间或离散集合，特征空间为欧式空间或希尔伯特空间。</strong>线性可分支持向量机、线性支持向量机假设这两个空间的元素一一对应，并将输入空间中的输入映射为特征空间中的特征向量。非线性支持向量机利用一个从输入空间到特征空间的非线性映射将输入映射为特征向量。所以<strong>输入都有输入空间转换到特征空间，支持向量机的学习是在特征空间进行的。</strong></p>
+<p><strong>定义   线性可分支持向量机：</strong>给定线性可分训练数据集，通过间隔最大化或等价地求解相应的凸二次规划问题学习得到的分离超平面为：</p>
+<script type="math/tex; mode=display">w^￥x+b^￥=0</script><p>以及相应的分类决策函数：</p>
+<script type="math/tex; mode=display">f(x)=sign(w^￥x+b^￥)</script><h2 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h2><p>一般来说，一个点距离分离超平面的远近可以表示分类预测的确信程度。在超平面$wx+b=0$确定的情况下，$|wx+b|$能够<strong>相对的</strong>表示点$x$距离超平面的远近。而$wx+b$的符号与类标记$y$的符号是否一致能够表示分类是否正确。所以可用量$y(wx+b)$来表示分类的正确性以及确信度，这就是<strong>函数间隔</strong>的概念。</p>
+<p><strong><em>为什么$|wx+b|$是相对的表示距离：首先这指的是函数距离，同一个函数内有比较价值。其次因为$b$的影响，真正距离并不是这个，但是距离的比较都有这个$b$，所以这里就不再考虑</em></strong></p>
+<p><strong>定义  函数间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的函数间隔为</p>
+<script type="math/tex; mode=display">\hat\gamma_i=y_i(wx_i+b)</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的函数间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
+<script type="math/tex; mode=display">\hat\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>选择分离超平面时，只有函数间隔还不够，因为<strong><em>只要成比例的改变$w$和$b$，例如将它们改写为$2w$和$2b$，超平面并没有改变，但函数间隔却成为原来的$2$倍。所以可以对分离超平面的法向量$w$加某些约束，如规范化，$||w||=1$，使得间隔是确定的。</em></strong>这时函数间隔成为几何间隔。</p>
+<p><strong>定义  几何间隔：</strong>对于给定的训练数据集$T$和超平面$(w,b)$，定义超平面$(w,b)$关于样本点$(x_i,y_i)$的几何间隔为：</p>
+<script type="math/tex; mode=display">\gamma_i=y_i({w\over ||w||}x_i+{b\over||w||})</script><p>定义超平面$(w,b)$关于训练数据集$T$的函数间隔为超平面$(w,b)$关于$T$中所有样本点$(x_i,y_i)$的几何间隔之最小值（<strong>注意这里是指到平面最小距离的点的距离，其实就是支持向量到分离超平面的距离</strong>），即：</p>
+<script type="math/tex; mode=display">\gamma=\min_{i=1,…,N}\hat\gamma_i</script><p>函数间隔和几何间隔的关系：</p>
+<script type="math/tex; mode=display">\gamma={\hat\gamma\over||w||}\ \ \ \ \ (1)</script><p>如果$||w||=1$，那么函数间隔和几何间隔相等。如果超平面参数$w$和$b$成比例的改变（超平面没有改变），函数间隔也按此比例改变，而几何间隔不变。</p>
+<h2 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h2><p>间隔最大化的直观解释是：对训练数据集找到几何间隔最大的超平面意味着一充分大的确信度对训练数据进行分类。也就是说，不仅将正负实例点分开，而且对最难分的实例点（离超平面最近的点）也有足够大的确信度将它们分开。这样的超平面应该对未知的新实例有很好的分类预测能力。</p>
+<h3 id="最大间隔分离超平面"><a href="#最大间隔分离超平面" class="headerlink" title="最大间隔分离超平面"></a>最大间隔分离超平面</h3><p>求一个几何间隔最大的分离超平面可以表示为下面问题的最优化：</p>
+<script type="math/tex; mode=display">\max_{w,b}\ \ \ \gamma</script><script type="math/tex; mode=display">s.t.\ \ y_i({w\over||w||}x_i+{b\over||w||})\ge\gamma,\ \ i=1,2,…,N</script><p>我们希望最大化几何间隔$\gamma$（<strong>$\gamma$为所有点的中几何距离最短的点的几何距离，就是支持向量的几何距离</strong>），约束条件表示的是超平面关于每个训练样本点的几何间隔至少是$\gamma$。</p>
+<p>考虑几何间隔与函数间隔的关系式$(1)$，可以将这个问题改写为(这里为了构造出$||w||$):</p>
+<script type="math/tex; mode=display">\max_{w,b}\ \ \ {\hat\gamma\over||w||}</script><script type="math/tex; mode=display">s.t.\ \ y_i(wx_i+b)\ge\hat\gamma,\ \ i=1,2,…,N</script><p>**函数间隔$\hat\gamma$的取值并不影响最优化问题的解。将$w,b$按比例变化为$\lambda w,\lambda b$，超平面并未发生改变，函数间隔变为$\lambda\hat\gamma $。所以函数间隔的改变只影响$w,b$的系数，不改变超平面。这样就可以去$\hat\gamma=1$，并带入以上最优化问题。注意到最大化$1\over ||w||$和最小化${1\over 2}||w||^2$是等价地。于是就得到了下面线性可分支持向量机学习的最优化问题：</p>
+<script type="math/tex; mode=display">\min_{w,b}\ \ \ {1\over 2}||w||^2</script><script type="math/tex; mode=display">s.t.\ \ \ y_i(wx_i+b)-1\ge0,\ \ \ i=1,2,…,N</script><p><strong><em>SVM部分暂时弃更，东西差不多都是《统计学习方法上的》，关于自己理解的部分也都标注在了书上，手码实在太多了，这部分先看书把。。</em></strong></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[比赛的记录]]>
+    <![CDATA[支持向量机自己的备忘录]]>
     
     </summary>
     
-      <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
+      <category term="SVM" scheme="http://yoursite.com/tags/SVM/"/>
     
-      <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
+      <category term="支持向量机" scheme="http://yoursite.com/tags/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"/>
     
-      <category term="销量预测" scheme="http://yoursite.com/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
+      <category term="核函数" scheme="http://yoursite.com/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
     
-      <category term="时间序列" scheme="http://yoursite.com/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
+      <category term="拉格朗日" scheme="http://yoursite.com/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5/"/>
     
-      <category term="比赛" scheme="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[2017 CCF 大数据竞赛Top4%]]></title>
-    <link href="http://yoursite.com/2018/01/13/2017-CCF-%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9BTop4/"/>
-    <id>http://yoursite.com/2018/01/13/2017-CCF-大数据竞赛Top4/</id>
-    <published>2018-01-13T14:58:29.000Z</published>
-    <updated>2018-03-25T04:32:13.494Z</updated>
-    <content type="html"><![CDATA[<h1 id="2017-CCF-大数据比赛记录（首赛）"><a href="#2017-CCF-大数据比赛记录（首赛）" class="headerlink" title="2017 CCF 大数据比赛记录（首赛）"></a>2017 CCF 大数据比赛记录（首赛）</h1><p>此次是在CCF平台与天池平台联合举办的大数据比赛，题目是：商场中精确定位用户所在店铺，主办方是蚂蚁金服。我和朋友两个人都是第一次参加这种大数据比赛，也算一步一个坑走了过来…线下赛最终经过反作弊筛选后是前100，共有2845支队伍。最后因为我俩临近期末考试，比赛也就就此结束了。</p>
-<h1 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h1><p>给出用户在商场使用手机支付时所采集到的信息，包括用户信息，店铺信息，商场信息等，要求预测给出上述信息后精准预测用户所在店铺。具体给出的数据表可以点击<a href="https://tianchi.aliyun.com/competition/information.htm?spm=5176.100067.5678.2.3bb01226n9sWID&amp;raceId=231620" target="_blank" rel="noopener">这里</a>来看。</p>
-<h1 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h1><ol>
-<li>问题初看是多分类问题，但是如果直接处理的话$label$上千个。仔细观察题目可以发现， 不同商场里面的商店相互独立，所以这里考虑为每一个商场建立一个独立的预测模型。</li>
-<li>WiFi信息信息量最大，为主要信息。但是所给WiFi信息繁杂不规范，给WiFi信息找到合理的处理模式至关重要（WiFi指纹）。</li>
-<li>如何挖掘WiFi隐含信息，并建立其与$label$之间的关联（具体WiFi id、信号强度、连接与否）至关重要。</li>
-<li>WiFi信息中有比较稳定的WiFi（商店自己的WiFi），有用户的个人热点，还有各种公共WiFi（CMCC之类的）。这里讲后两者当做是不稳定WiFi，或者说是噪音WiFi，预测时过滤掉</li>
-<li>许多记录WiFi信息缺失，将此作为异常值直接删除（因为总数据量大，单条数据影响不大，WiFi信息又为最重要的信息）</li>
-<li>不同商铺的经纬、WiFi信息有大量重合，说明商场存在多楼层问题，并且单单依靠原始WiFi信息无法全面对楼层进行区分。</li>
-<li>按照商场划分模型后，每个商场还是有几十上百个$label$，可以多分类，或者二分类构造多分类。（因为$label$多，二分类构造多分类会遇到$label$不均衡的问题，需依靠采样来解决）</li>
-<li>百万数据，训练时间成本太高，需要在特征工程、反复验证时减小时间成本。（前期用$LR$模型试错）</li>
-<li>也算带有时间序列，如何构造可靠的线下验证集</li>
-<li>顾客数据训练集与预测集交集仅为三分之一，顾客特征是否为噪音（我们尝试过顾客特征空值填充、保留，取顾客有交集的单独训练，效果均不好）</li>
-</ol>
-<h1 id="我们的具体操作"><a href="#我们的具体操作" class="headerlink" title="我们的具体操作"></a>我们的具体操作</h1><h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><ul>
-<li>删除公共WiFi：如果一个WiFi在一个以上商场出现或者在某个商场覆盖率超过一定范围，那么可以断定此WiFi为噪音信息</li>
-<li>删除移动热点或者出现次数较少的WiFi：如果一个wifi出现次数少于某个阈值或者出现时间仅有一天，那么可以断定次WiFi为噪音信息</li>
-<li>训练集和测试集WiFi取交集，因为对于以后要构建的WiFi指纹</li>
-<li>删除WiFi信息为空的记录</li>
-<li>$GPS$离群点的删除</li>
-<li>定义<strong>不同等级</strong>稳定WiFi列表（不同等级原因某些特征防止维度爆炸），WiFi出现总次数超过一定阈值或者频率前200</li>
-<li>字典：shop历史WiFi</li>
-</ul>
-<h2 id="经纬度信息"><a href="#经纬度信息" class="headerlink" title="经纬度信息"></a>经纬度信息</h2><p>该题目给了两种经纬度信息店铺经纬度和购买发生时候的经纬度（预测集只有后者）。两种经纬度理论上差距应该很小，实际差距很大。单独利用经纬度信息训练的结果并不理想，印象中只有70%多一点。</p>
-<ul>
-<li>对经纬度数值做了泛化（精确小数点位数），印象中最后的粒度可能在10米左右</li>
-<li>$L1、L2$距离，在商场中随意选择一个点做基准，经纬度到这个点的距离</li>
-<li>经纬度聚类、以商铺经纬为质心聚类，然后哑编码（没有提升，后来没用）</li>
-</ul>
-<h2 id="时间特征的处理"><a href="#时间特征的处理" class="headerlink" title="时间特征的处理"></a>时间特征的处理</h2><ul>
-<li>饭点指示器（万分位的提升）</li>
-<li>早晨深夜指示器，因为这两种店铺可能比较固定</li>
-</ul>
-<h2 id="用户特征"><a href="#用户特征" class="headerlink" title="用户特征"></a>用户特征</h2><p>构造的所有的用户特征在我们这都是坑，一是因为训练集、预测集用户交集只有$1/3$左右，我们尝试过空值填充、空值保留、只保留交集部分用户特征、对交集部分用户单独训练预测…均是强力的反向上分特征。另一个原因可能是，每个用户在数据统计量均不足，没有统计意义，所以这就类似于$ID$类特征，妥妥没有现实意义的过拟合特征。</p>
-<ul>
-<li><del>用户购买力</del></li>
-<li><del>用户常去商店</del></li>
-<li><del>用户与WiFi相关特征</del></li>
-</ul>
-<h2 id="WiFi特征"><a href="#WiFi特征" class="headerlink" title="WiFi特征"></a>WiFi特征</h2><p>WiFi特征是最为重要的特征，我们构建的如下的WiFi特征</p>
-<h3 id="当前记录连接到的最强WiFi"><a href="#当前记录连接到的最强WiFi" class="headerlink" title="当前记录连接到的最强WiFi"></a>当前记录连接到的最强WiFi</h3><p>仅用这一个特征采取规则预测准确率也可达到80%，是个强特。哑编码。</p>
-<h3 id="记录中稳定WiFi的数量"><a href="#记录中稳定WiFi的数量" class="headerlink" title="记录中稳定WiFi的数量"></a>记录中稳定WiFi的数量</h3><h3 id="商场WiFi原点"><a href="#商场WiFi原点" class="headerlink" title="商场WiFi原点"></a>商场WiFi原点</h3><p>根据商场稳定WiFi（等级频率前50）建立一个基准点，计算每条数据到基准点的距离（离散化之后），没有的稳定WiFi按照强度为-99处理。</p>
-<h3 id="WiFi指纹"><a href="#WiFi指纹" class="headerlink" title="WiFi指纹"></a>WiFi指纹</h3><p>根据商场稳定WiFi（等级频数大于20），训练集、预测集上下$concat$将所有WiFi id展开为特征，值为当前记录对应WiFi的强度，将强度离散化（粒度为10）.</p>
-<h3 id="WiFi评分（最后仅用于规则）"><a href="#WiFi评分（最后仅用于规则）" class="headerlink" title="WiFi评分（最后仅用于规则）"></a>WiFi评分（最后仅用于规则）</h3><p>遍历数据建立嵌套字典$WiFi_score$，一层$key$为WiFi id，二层$key$为一层WiFi出现过的店铺，二层$val$为历史上该WiFi在该店铺强度的中位数。打分，对于每条数据的稳定WiFi信息，遍历嵌套字典$WiFi_score$，用打分函数对每条WiFi出现过的店铺打分。分数结果最高的直接作为结果。打分函数如下：</p>
-<script type="math/tex; mode=display">f=1-tanh({|power_{now}-power_{middle}|\over k})</script><p>其中：</p>
-<p>$tanh={e^x-e^{-x}\over e^x+e^{-x}}$</p>
-<p>$power_{now}$表示当前记录中当前WiFi强度</p>
-<p>$power_{middle}$表示嵌套字典中当前WiFi对各商店的强度中位数</p>
-<p>$k$为参数，最后确定值为2</p>
-<p>仅仅用该种规则，不用机器学习模型，精度就可以达到87%+（还是89%+来着）。但是当时将所得结果转化为特征加入模型训练，分数强力掉了一波。不用说，<strong>这里用了训练集构造的规则结果当特征继续加入训练集训练当然会造成$label leak$，也就是强力过拟合。</strong></p>
-<p>遗憾的是，当时没考虑采用滑动窗口，更没有使用候选集，这个特征就放弃了…如果采用滑动窗口，在特征采取区间构造嵌套字典$WiFi_score$，打分结果加在训练区间的特征，结果应该不会差。</p>
-<p>如果在滑动窗口的基础上，采用候选集（甚至可以用这个打分函数构造候选集），并把分数当做该条记录对候选商店的特征，绝对会是个强力特征（这里其实可以理解为类条件概率）</p>
-<h3 id="WiFi-id组合的最长公共子串"><a href="#WiFi-id组合的最长公共子串" class="headerlink" title="WiFi id组合的最长公共子串"></a>WiFi id组合的最长公共子串</h3><p>典型看起来巧妙没有卵用系列</p>
-<h2 id="xgb构造特征组合"><a href="#xgb构造特征组合" class="headerlink" title="xgb构造特征组合"></a>xgb构造特征组合</h2><p>用$model.apply()$返回叶子节点$index$构造特征。注意此部分一定要划分数据集，即一部分数据用于生成特征，另一部分数据集用于加入该部分生成特征并训练。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是比赛用到的、或者有代表性值得拿出来说的特征。这里发现其实我们的特征并不多，其实我们比赛时候尝试构造过远远比这多得多的特征，只是因为效果或者训练时间的原因，最后筛选剩这些。挖空心思构造各种想法复杂、实现困难、强力掉分的反向特征实在是能锤炼人强大的灵魂 ：）。</p>
-<h3 id="滑窗的欠缺"><a href="#滑窗的欠缺" class="headerlink" title="滑窗的欠缺"></a>滑窗的欠缺</h3><ul>
-<li>无法构造统计类特征，构造了会造成过拟合</li>
-<li>训练集过大时间成本过高</li>
-<li>既然也是时间序列，信息或多或少有时效性（比如WiFi）</li>
-</ul>
-<h3 id="候选集的欠缺"><a href="#候选集的欠缺" class="headerlink" title="候选集的欠缺"></a>候选集的欠缺</h3><ul>
-<li>无法构造联合特征，商店-WiFi，商店-经纬度等等</li>
-<li>完全丢弃了任何商店特征，包括特别重要的统计特征</li>
-</ul>
-<p>总之，这两种的欠缺也早早为我们的特征工程确定了天花板，也大大限制了我们特征的提取，少了这两项能够造的有效特征数量至少少了70%</p>
-<h1 id="数据集的划分"><a href="#数据集的划分" class="headerlink" title="数据集的划分"></a>数据集的划分</h1><p>这里说一下我们实际的数据集划分，在最后给出可能的改进。</p>
-<p>这是个时间相关的问题，而且数据量比较大，就放弃了分层$k$折交叉，我们选取一个周作为本地验证集</p>
-<h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h2><p>最开始我们用的是$xgboost$的多分类模型，分商场进行预测，效果一般。然后转向使用二分类实现多分类，提升显著。具体为每次将一个$label$作为正例，其他作为反例，每次输出每条记录是该正例的概率，最后以最大概率的$label$作为预测结果</p>
-<h2 id="二分类-amp-样本不均衡"><a href="#二分类-amp-样本不均衡" class="headerlink" title="二分类&amp;样本不均衡"></a>二分类&amp;样本不均衡</h2><p>每次有将近100个$label$每次只将一个当做正例，正负样本比会非常小，会导致时间成本过长，精度下降，需要靠采样解决。</p>
-<p>我们直接放弃了上采样跟随机下采样，前者会加大时间成本后者因为样本比相差悬殊，随机采样可能破坏边界样本的分布。我们直接选用了用规则下采样以保存边界有效信息，具体通过购买经纬度与店铺经纬度的距离与当前样本$top2$强度任一WiFi存在历史列表的shop的并集。这样加快了训练速度，但是精度略有损失，可能因为评价指标是$AUC$所以对样本不均衡不敏感。我们最后还是放弃了采样。</p>
-<p>二分类还会造成一个问题：每次对于一个模型训练的时候，正样本平均只有小几百，负样本可能大几千甚至上万。这样正样本太少可能造成过拟合，因此我们模型部分着重调整了泛化部分的参数。</p>
-<h2 id="模型参数"><a href="#模型参数" class="headerlink" title="模型参数"></a>模型参数</h2><p>xgb的模型参数就常用的那几个：</p>
-<p><img src="/2018/01/13/2017-CCF-大数据竞赛Top4/xgb参数.jpg" alt=""></p>
-<h3 id="1、eta-默认0-3"><a href="#1、eta-默认0-3" class="headerlink" title="1、eta[默认0.3]"></a>1、eta[默认0.3]</h3><p>和GBM中的 learning rate 参数类似。 通过减少每一步的权重，可以提高模型的鲁棒性。 典型值为0.01-0.2。</p>
-<h3 id="2、min-child-weight-默认1"><a href="#2、min-child-weight-默认1" class="headerlink" title="2、min_child_weight[默认1]"></a>2、min_child_weight[默认1]</h3><p>建立每个模型所需要的最小样本数。决定最小叶子节点样本权重和。 和GBM的 min_child_leaf 参数类似，但不完全一样。XGBoost的这个参数是最小<em>样本权重的和</em>，而GBM参数是最小<em>样本总数</em>。 这个参数用于避免过拟合。当它的值较大时，可以避免模型学习到局部的特殊样本。 但是如果这个值过高，会导致欠拟合。这个参数需要使用CV来调整。</p>
-<h3 id="3、max-depth-默认6"><a href="#3、max-depth-默认6" class="headerlink" title="3、max_depth[默认6]"></a>3、max_depth[默认6]</h3><p>和GBM中的参数相同，这个值为树的最大深度。 这个值也是用来避免过拟合的。max_depth越大，模型会学到更具体更局部的样本。 需要使用CV函数来进行调优。 典型值：3-10</p>
-<h3 id="4、max-leaf-nodes"><a href="#4、max-leaf-nodes" class="headerlink" title="4、max_leaf_nodes"></a>4、max_leaf_nodes</h3><p>树上最大的节点或叶子的数量。 可以替代max_depth的作用。因为如果生成的是二叉树，一个深度为n的树最多生成n2个叶子。 如果定义了这个参数，GBM会忽略max_depth参数。</p>
-<h3 id="5、gamma-默认0"><a href="#5、gamma-默认0" class="headerlink" title="5、gamma[默认0]"></a>5、gamma[默认0]</h3><p>在节点分裂时，只有分裂后损失函数的值下降了，才会分裂这个节点。Gamma指定了节点分裂所需的最小损失函数下降值。 这个参数的值越大，算法越保守。这个参数的值和损失函数息息相关，所以是需要调整的。</p>
-<h3 id="6、max-delta-step-默认0"><a href="#6、max-delta-step-默认0" class="headerlink" title="6、max_delta_step[默认0]"></a>6、max_delta_step[默认0]</h3><p>这参数限制每棵树权重改变的最大步长。如果这个参数的值为0，那就意味着没有约束。如果它被赋予了某个正值，那么它会让这个算法更加保守。 通常，这个参数不需要设置。但是当各类别的样本十分不平衡时，它对逻辑回归是很有帮助的。 这个参数一般用不到，但是你可以挖掘出来它更多的用处。</p>
-<h3 id="7、subsample-默认1"><a href="#7、subsample-默认1" class="headerlink" title="7、subsample[默认1]"></a>7、subsample[默认1]</h3><p>和GBM中的subsample参数一模一样。这个参数控制对于每棵树，随机采样的比例。 减小这个参数的值，算法会更加保守，避免过拟合。但是，如果这个值设置得过小，它可能会导致欠拟合。 典型值：0.5-1</p>
-<h3 id="8、colsample-bytree-默认1"><a href="#8、colsample-bytree-默认1" class="headerlink" title="8、colsample_bytree[默认1]"></a>8、colsample_bytree[默认1]</h3><p>和GBM里面的max_features参数类似。用来控制每棵随机采样的列数的占比(每一列是一个特征)。 典型值：0.5-1</p>
-<h3 id="9、colsample-bylevel-默认1"><a href="#9、colsample-bylevel-默认1" class="headerlink" title="9、colsample_bylevel[默认1]"></a>9、colsample_bylevel[默认1]</h3><p>用来控制树的每一级的每一次分裂，对列数的采样的占比。 我个人一般不太用这个参数，因为subsample参数和colsample_bytree参数可以起到相同的作用。但是如果感兴趣，可以挖掘这个参数更多的用处。</p>
-<h3 id="10、lambda-默认1"><a href="#10、lambda-默认1" class="headerlink" title="10、lambda[默认1]"></a>10、lambda[默认1]</h3><p>权重的L2正则化项。(和Ridge regression类似)。 这个参数是用来控制XGBoost的正则化部分的。虽然大部分数据科学家很少用到这个参数，但是这个参数在减少过拟合上还是可以挖掘出更多用处的。</p>
-<h3 id="11、alpha-默认1"><a href="#11、alpha-默认1" class="headerlink" title="11、alpha[默认1]"></a>11、alpha[默认1]</h3><p>权重的L1正则化项。(和Lasso regression类似)。 可以应用在很高维度的情况下，使得算法的速度更快。</p>
-<h3 id="12、scale-pos-weight-默认1"><a href="#12、scale-pos-weight-默认1" class="headerlink" title="12、scale_pos_weight[默认1]"></a>12、scale_pos_weight[默认1]</h3><p>在各类别样本十分不平衡时，把这个参数设定为一个正值，可以使算法更快收敛。</p>
-<h3 id="真正调参方法"><a href="#真正调参方法" class="headerlink" title="真正调参方法"></a>真正调参方法</h3><ul>
-<li>选择较高的<strong>学习速率(learning rate)</strong>。一般情况下，学习速率的值为0.1。但是，对于不同的问题，理想的学习速率有时候会在0.05到0.3之间波动。选择<strong>对应于此学习速率的理想决策树数量</strong>。</li>
-<li>对于给定的学习速率和决策树数量，进行<strong>决策树特定参数调优</strong>(max_depth, min_child_weight, gamma, subsample, colsample_bytree)。</li>
-<li>xgboost的<strong>正则化参数</strong>的调优。(lambda, alpha)。这些参数可以降低模型的复杂度，从而提高模型的表现。</li>
-<li>降低学习速率，确定理想参数。</li>
-</ul>
-<h3 id="实际上比赛的调参"><a href="#实际上比赛的调参" class="headerlink" title="实际上比赛的调参"></a>实际上比赛的调参</h3><p>因为数据量巨大，样本充足，所以实际上参数不是太差的话对结果影响不是很大。况且大的数据量调参时间成本太高，而且这个比赛自始至终不是一个分类器，90+的商场每个商场有多少个$label$就有多少个分类器，总共上千个不同分类器，也不可能找出每个分类器最适合的参数。因此本次比赛只是在刚开始时调整了一下树的深度，最后的时候调整了一下过拟合的参数。</p>
-<h2 id="模型融合"><a href="#模型融合" class="headerlink" title="模型融合"></a>模型融合</h2><p>最后我们取了$0.65xgb+0.35lgb$简单的加权融合，融合方法是直接把二分类生成的概率加权相加，选出概率最大的当做$label$。</p>
-<p>其实可以再融合上多分类，提高模型融合的多样性，但是因为我们没分滑窗，训练时间巨长，就没再添加。</p>
-<p>本次比赛不可能$stacking$，就像不可能$CV$一样，训练一次时间都受不了，更别说反复多次。</p>
-<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这次比赛成绩不算好，但第一次正式参赛，通过比赛收获了很多，一整套流程熟悉了一遍，对模型、特征的理解也深了好多。我跟朋友两个一步一个坑，摸着石头过河，心情大起大落也是锻炼了心态…最后初赛要截止时候，我们还在复赛线边缘徘徊，眼看着自己慢慢掉出复赛线，反复讨论着各种可能，尝试构造各种复杂但看起来有意义的特征，每次连夜实现，怀着希望入睡，第二天都会被反向上分现实打脸。记得第一次掉出前100时候，我俩彻夜讨论到凌晨五点出了一套方案，从绝望到满怀希望，实际上上第二天还是究极反向上分，又坐了一次过山车：）（其实现在想想那套方案是明显的$label leak$）。</p>
-<p>现在想想，这次比赛主要差在了套路经验上，没能构造滑窗和候选集严重限制了特征的构造，几乎所有统计特征、交叉特征、先验后延特征都无法构造，有效特征数量至少少了70%。特别是候选集，之前闻所未闻，各种地方也了解不到，后来才知道，这种方法可能从之前摩拜比赛大佬们一路传承了下来…</p>
-<p>对样本特征的理解差也导致我们踩了好多坑。在一开始对数据分布、统计特征的构造不清楚导致我们训练时间成本巨大。现在想想当时构造的好多看起来有效的特征其实都是明显的$label leak$（先从当前数据提取特征，再用当前数据训练模型），这次比赛过后对标签泄露、过拟合是印象深刻了。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[比赛的详细记录]]>
-    
-    </summary>
-    
-      <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
-    
-      <category term="天池" scheme="http://yoursite.com/tags/%E5%A4%A9%E6%B1%A0/"/>
-    
-      <category term="CCF" scheme="http://yoursite.com/tags/CCF/"/>
-    
-      <category term="wifi定位" scheme="http://yoursite.com/tags/wifi%E5%AE%9A%E4%BD%8D/"/>
-    
-      <category term="比赛" scheme="http://yoursite.com/categories/%E6%AF%94%E8%B5%9B/"/>
+      <category term="机器学习" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
