@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/10/27/%E5%89%91%E6%8C%87offer/</loc>
+    <lastmod>2018-03-26T13:20:29.931Z</lastmod>
+    <data>
+        <display>
+        <title>剑指offer</title>
+        <pubTime>2017-10-27T00:32:16.000Z</pubTime>
+        
+        <tag>编程</tag>
+         
+        <tag>代码</tag>
+         
+         
+           
+             
+              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/01/18/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM/</loc>
     <lastmod>2018-03-25T04:41:56.627Z</lastmod>
     <data>
@@ -37,9 +59,9 @@
         <title>2017-JDD京东金融算法大赛12th解决方案</title>
         <pubTime>2018-03-03T04:08:59.000Z</pubTime>
         
-        <tag>大数据竞赛</tag>
-         
         <tag>JDD</tag>
+         
+        <tag>大数据竞赛</tag>
          
         <tag>销量预测</tag>
          
@@ -274,28 +296,6 @@
            
              
               <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/10/27/%E5%89%91%E6%8C%87offer/</loc>
-    <lastmod>2018-03-25T04:30:31.478Z</lastmod>
-    <data>
-        <display>
-        <title>剑指offer</title>
-        <pubTime>2017-10-27T00:32:16.000Z</pubTime>
-        
-        <tag>编程</tag>
-         
-        <tag>代码</tag>
-         
-         
-           
-             
-              <breadCrumb title="编程" url="http://yoursite.com/categories/%E7%BC%96%E7%A8%8B/"/>
           
         </display>
     </data>
