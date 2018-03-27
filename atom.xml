@@ -700,9 +700,9 @@
     
     </summary>
     
-      <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
-    
       <category term="大数据竞赛" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%AB%9E%E8%B5%9B/"/>
+    
+      <category term="JDD" scheme="http://yoursite.com/tags/JDD/"/>
     
       <category term="销量预测" scheme="http://yoursite.com/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
     
