@@ -4,6 +4,32 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/10/29/%E8%BD%AC-PCA/</loc>
+    <lastmod>2018-03-29T14:23:20.170Z</lastmod>
+    <data>
+        <display>
+        <title>[转]PCA</title>
+        <pubTime>2017-10-29T14:06:32.000Z</pubTime>
+        
+        <tag>PCA</tag>
+         
+        <tag>线性代数</tag>
+         
+        <tag>降维</tag>
+         
+        <tag>特征值</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/10/27/%E5%89%91%E6%8C%87offer/</loc>
     <lastmod>2018-03-26T13:20:29.931Z</lastmod>
     <data>
@@ -59,9 +85,9 @@
         <title>2017-JDD京东金融算法大赛12th解决方案</title>
         <pubTime>2018-03-03T04:08:59.000Z</pubTime>
         
-        <tag>大数据竞赛</tag>
-         
         <tag>JDD</tag>
+         
+        <tag>大数据竞赛</tag>
          
         <tag>销量预测</tag>
          
