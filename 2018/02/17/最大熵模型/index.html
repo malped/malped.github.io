@@ -95,7 +95,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/02/17/最大熵模型/求偏导.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/17/最大熵模型/极大似然.png">
-<meta property="og:updated_time" content="2018-03-25T04:31:46.942Z">
+<meta property="og:updated_time" content="2018-04-10T15:03:08.425Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="最大熵模型">
 <meta name="twitter:description" content="最大熵模型的理解、推导以及与LR的联系">
@@ -399,7 +399,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3,239
+                  3,263
                 </span>
               
 
@@ -499,13 +499,13 @@
 <p><img src="/2018/02/17/最大熵模型/极大似然.png" alt=""></p>
 <p>注：最后一步由$\sum_{x,y}\hat p(x,y)=\sum_x\hat p(x)\sum_yp(y|x)$且$\sum_yp(y|x)=1$得来</p>
 <h3 id="最大熵模型中对数似然的解释"><a href="#最大熵模型中对数似然的解释" class="headerlink" title="最大熵模型中对数似然的解释"></a>最大熵模型中对数似然的解释</h3><p>转载自<a href="http://blog.csdn.net/wkebj/article/details/77965714" target="_blank" rel="noopener">CSDN</a></p>
-<p>最近在学习最大熵模型，看到极大似然估计这部分，没有看明白条件概率分布$p(y|x)$的对数似然函数。上网查了很多资料都没有一个合理的解释。基本直接给出对数似然函数的一般形式 ($\hat p(x)$为jing’yan’gai’lv): </p>
-<script type="math/tex; mode=display">L\hat p=\Pi_xp(x)^{\hat p(x)}</script><p>其实第一眼之所以不理解，因为这是最大似然函数的另外一种形式。一般书上描述的最大似然函数的一般形式是各个样本集XX中各个样本的联合概率: </p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\Pi^n_{i=1}p(x_i;\theta)</script><p>其实这个公式和上式是等价的。$x_1,x_2,…,x_n$是样本具体观测值。随机变量$X$是离散的，所以它的取值范围是一个集合，假设样本集的大小为$n$，$X$的取值有$k$个，分别是$v_1,v_2,…,v_k$。用$C(X=v_i)$表示在观测值中样本$v_i$出现的频率。所以$L(x_1,x_2,…,x_n;θ)$可以表示为： </p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\Pi^k_{i=1}p(v_i;\theta)^{C(X=v_i)}</script><p>对等式两边同时开$n$次方得：</p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\Pi^k_{i=1}p(v_i;\theta)^{C(X=v_i)\over n}</script><p>因为经验概率$\hat p(x)={C(X=v_i)\over n}$，所以简写可以得到</p>
-<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\Pi_xp(x;\theta)^{\hat p(x)}</script><p>很明显对$L(x_1,x_2,…,x_n;θ)$求最大值和对$L(x_1,x_2,…,x_n;θ)^{1\over n}$求最大值的优化的结果是一样的。整理上式所以最终的最大似然函数可以表示为：</p>
-<script type="math/tex; mode=display">L(x;\theta)=\Pi_xp(x;\theta)^{\hat p(x)}</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
+<p>最近在学习最大熵模型，看到极大似然估计这部分，没有看明白条件概率分布$p(y|x)$的对数似然函数。上网查了很多资料都没有一个合理的解释。基本直接给出对数似然函数的一般形式 (<strong>$\hat p(x)$为经验概率，即：训练样本中x出现的概率，注意：这里$\Pi$下标是$x$的种类</strong>): </p>
+<script type="math/tex; mode=display">L\hat p=\prod_xp(x)^{\hat p(x)}</script><p>其实第一眼之所以不理解，因为这是最大似然函数的另外一种形式。一般书上描述的最大似然函数的一般形式是各个样本集XX中各个样本的联合概率: </p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\prod^n_{i=1}p(x_i;\theta)</script><p>其实这个公式和上式是等价的。$x_1,x_2,…,x_n$是样本具体观测值。随机变量$X$是离散的，所以它的取值范围是一个集合，假设样本集的大小为$n$，$X$的取值有$k$个，分别是$v_1,v_2,…,v_k$。用$C(X=v_i)$表示在观测值中样本$v_i$出现的频率。所以$L(x_1,x_2,…,x_n;θ)$可以表示为： </p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)=\prod^k_{i=1}p(v_i;\theta)^{C(X=v_i)}</script><p>对等式两边同时开$n$次方得：</p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\prod^k_{i=1}p(v_i;\theta)^{C(X=v_i)\over n}</script><p>因为经验概率$\hat p(x)={C(X=v_i)\over n}$，所以简写可以得到</p>
+<script type="math/tex; mode=display">L(x_1,x_2,…,x_n)^{1\over n}=\prod_xp(x;\theta)^{\hat p(x)}</script><p>很明显对$L(x_1,x_2,…,x_n;θ)​$求最大值和对$L(x_1,x_2,…,x_n;θ)^{1\over n}​$求最大值的优化的结果是一样的。整理上式所以最终的最大似然函数可以表示为：</p>
+<script type="math/tex; mode=display">L(x;\theta)=\prod_xp(x;\theta)^{\hat p(x)}</script><h2 id="从最大熵模型角度理解LR"><a href="#从最大熵模型角度理解LR" class="headerlink" title="从最大熵模型角度理解LR"></a>从最大熵模型角度理解LR</h2><p>LR是最大熵模型在类别为2时候的特例</p>
 <p>假设<strong>每条输入</strong>第$i$个特征对第$k$类的贡献是$w_{ki}$，则数据点$(x_1,x_2,…,x_n)$属于第$k$类的概率正比于$exp(w_{k1}x_1+w_{k2}x_2+…+w_{kn}x_n)$。</p>
 <script type="math/tex; mode=display">f(x,y) =\begin{cases}x_i,  & \text{y=1}\ \ \ \ i=1,2,…,n \\0, & \text{y=0}\end{cases}</script><p>根据最大熵模型：</p>
 <script type="math/tex; mode=display">P(y=k)={\exp (\sum^n_{i=1}w_{ki}x_i)\over \sum_y\exp (\sum^n_{i=1}w_{yi}x_i)}</script><p>现在回到两类的情况$\{0,1\}$，此时分母上有两项：</p>
@@ -645,7 +645,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -656,7 +656,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -667,7 +667,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

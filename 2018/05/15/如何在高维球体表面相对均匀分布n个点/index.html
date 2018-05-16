@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+  <link rel="manifest" href="/images/manifest.json">
+
+
+  <meta name="msapplication-config" content="/images/browserconfig.xml" />
+
+
+
+  <meta name="keywords" content="数学,斐波那契网格,密铺," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Malped" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="从二维圆面、三维球面到高维球面的密铺">
+<meta name="keywords" content="数学,斐波那契网格,密铺">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在高维球体表面相对均匀分布n个点">
+<meta property="og:url" content="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/index.html">
+<meta property="og:site_name" content="Malped">
+<meta property="og:description" content="从二维圆面、三维球面到高维球面的密铺">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/二维圆面.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/三维球面.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/偏离.jpg">
+<meta property="og:updated_time" content="2018-05-16T13:04:26.786Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何在高维球体表面相对均匀分布n个点">
+<meta name="twitter:description" content="从二维圆面、三维球面到高维球面的密铺">
+<meta name="twitter:image" content="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/二维圆面.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/"/>
+
+
+
+
+
+  <title>如何在高维球体表面相对均匀分布n个点 | Malped</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Malped</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Make a little progress every day</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/15/如何在高维球体表面相对均匀分布n个点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Malped">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/hmbb.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Malped">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如何在高维球体表面相对均匀分布n个点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-15T16:23:50+08:00">
+                2018-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数学/" itemprop="url" rel="index">
+                    <span itemprop="name">数学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/05/15/如何在高维球体表面相对均匀分布n个点/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/05/15/如何在高维球体表面相对均匀分布n个点/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,360
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  从二维圆面、三维球面到高维球面的密铺
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如何在一个高维球面尽可能均匀的分布$n$个点？</p>
+<p>几天前导师让我思考这么一个问题，我的第一感觉是，寻找球内接正多面体，但是自己没找到数值化的推导，也没找到推广到高维方法；接着我又想：有没有类似’熵’的指标，类比最大熵用来衡量空间中向量分布的均匀程度？很遗憾这个也没找到 : (</p>
+<p>恰好我知乎关注大牛<a href="https://www.zhihu.com/people/maigo/activities" target="_blank" rel="noopener">王赟</a>也思考过这个问题，并且找到了二维圆面、三维球面的解决方案、以及原理解释。这里我参考他文章中对二维圆面、三维球面解决方案，尝试给出高维球面的解决方案。</p>
+<p>如何量化这个问题？可以想到的一种思路是：令点之间最短距离最大化（类似于支持向量机）。这样定义出来的问题叫做<a href="https://en.wikipedia.org/wiki/Tammes_problem" target="_blank" rel="noopener">$Tammes problem$</a>, 是密铺问题的一个特例。不幸的是，密铺问题往往没有很优雅的解。另一种定义方法是：把各个点看成同种电荷，让整个系统的电势能最小。这个问题可以通过模拟电荷的运动来解决，但计算复杂度非常高，而且只能得到数值解。</p>
+<p>王赟在$StackOverflow$上面找到了一种可靠地近似解法:<a href="https://stackoverflow.com/questions/9600801/evenly-distributing-n-points-on-a-sphere/26127012#26127012" target="_blank" rel="noopener">$Evenly distributing n points on a sphere$</a>, 这种生成的点阵被称为<strong>斐波那契网格</strong>（$Fibonacci lattice $或 $Fibonacci grid$）。至于为什么叫菲波那契网格，目前可以简单地用「黄金分割比也出现在菲波那契数列中」来解释，在下文中你还会见到菲波那契数的出现。这篇文章（<a href="https://link.zhihu.com/?target=http%3A//citeseerx.ist.psu.edu/viewdoc/download%3Fdoi%3D10.1.1.742.7550%26rep%3Drep1%26type%3Dpdf" target="_blank" rel="noopener">$Measurement of areas on a sphere using Fibonacci and latitude–longitude lattices$</a>）说明，使用菲波那契网格测量球面上不规则图形的面积，与用经纬网格（并加权）相比，误差可以减小 40%。</p>
+<p>方法中运用<em>黄金分割比</em>的原理分析过程主要依赖连分式（<a href="https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Continued_fraction" target="_blank" rel="noopener">$Continued fraction$</a>）,主要依赖于不同连分式的观察分析，这里具体可以看<a href="https://zhuanlan.zhihu.com/p/25998937" target="_blank" rel="noopener">王赟文章</a></p>
+<h2 id="二维圆面"><a href="#二维圆面" class="headerlink" title="二维圆面"></a>二维圆面</h2><p>二维圆面中给出的公式如下（其中$\phi$为黄金分割比$\sqrt5 + 1\over 2$）:</p>
+<script type="math/tex; mode=display">x_n=\sqrt n \cos(2\pi n \phi)</script><script type="math/tex; mode=display">y_n=\sqrt n \sin(2\pi n \phi)</script><p>先来看看效果：</p>
+<p><img src="/2018/05/15/如何在高维球体表面相对均匀分布n个点/二维圆面.jpg" alt=""></p>
+<p>让我们来分析一下生成公式：</p>
+<p>这两个公式从几何角度很好理解：对于第$n$个点，该点到原点的距离$\sqrt n$，然后该点所在角度为在上一个点（第$n-1$个点）的基础上旋转$2\pi\phi$，如此简单便完成近似均匀分布。</p>
+<p>为什么这种思路会$work$呢？可以这样来看，对于第$k$个点，离原点距离为$\sqrt k$，它位于圆周上，则这个圆面积为$\pi k$，同理对于第$k-1$个点，园面积为$\pi (k-1)$，故第$k$个点所在圆环面积为$\pi$。由此可以看出，每一个点所占圆环面积均为$\pi$，这种情况保证了宏观上的均匀性：每$\pi$面积上就有一个点。但是这样还不够，不能保证环与环之间的点混乱均匀，对此就要用到黄金分割比保证不同环之间点选择的混乱均匀性，这里的原理具体可以看<a href="https://zhuanlan.zhihu.com/p/25998937" target="_blank" rel="noopener">王赟文章</a>。</p>
+<p>这里附上我的$python$实现代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Fibonacci_2D</span><span class="params">(samples, radius)</span>:</span></span><br><span class="line">    n, r = samples, radius</span><br><span class="line">    indices = arange(<span class="number">0</span>, samples, dtype=float) + <span class="number">0.5</span></span><br><span class="line">    r_pts = sqrt(indices * r / n)</span><br><span class="line">    theta = pi *(<span class="number">5</span>**<span class="number">0.5</span> - <span class="number">1</span>) * indices  <span class="comment"># theta为2pi_n_phi</span></span><br><span class="line">    x, y = r_pts*cos(theta), r_pts*sin(theta)</span><br><span class="line">    <span class="keyword">return</span>  [x, y]</span><br></pre></td></tr></table></figure>
+<h2 id="三维球面"><a href="#三维球面" class="headerlink" title="三维球面"></a>三维球面</h2><p>三维球面中点生成公式：</p>
+<script type="math/tex; mode=display">z_n = (2n-1)/N -1</script><script type="math/tex; mode=display">x_n=\sqrt{1-z_n^2}\cos(2\pi n \phi)</script><script type="math/tex; mode=display">y_n=\sqrt{1-z_n^2}\sin(2\pi n \phi)</script><p>先来看看效果：</p>
+<p><img src="/2018/05/15/如何在高维球体表面相对均匀分布n个点/三维球面.jpg" alt=""></p>
+<p>这三条公式对$\phi$值非常敏感。哪怕$\phi$稍微偏离黄金分割一点点，做出图的效果就不好。</p>
+<p><img src="/2018/05/15/如何在高维球体表面相对均匀分布n个点/偏离.jpg" alt=""></p>
+<p>下面解释一下这三条公式：</p>
+<ol>
+<li>$z_n = (2n-1)/N -1$(这里将球心归到原点)，说明各个点<em>竖坐标成等差序列</em>，相当于把球面切成相同厚度的$N$层，并且在<strong>每一层厚度中点处的表面上取一个点</strong>。由于球冠表面积公式$S = 2 \pi Rh$，所以这样子切出来的各层有一个性质：侧面积都相等。这个性质保证了点阵在宏观上的均匀性：每$4\pi/N$面积上就有一个点。</li>
+<li>第二、三条公式用到黄金分割比保证不同环之间点选择的混乱均匀性，这里的原理具体可以看<a href="https://zhuanlan.zhihu.com/p/25998937" target="_blank" rel="noopener">王赟文章</a>。</li>
+</ol>
+<p>下面附上我实现三维球面密铺的$python$代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Fibonacci_3D</span><span class="params">(samples, radius, orign = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>])</span>:</span></span><br><span class="line">    n, r = samples, radius</span><br><span class="line">    <span class="comment"># + 0.5 表示在厚度的中点处取点</span></span><br><span class="line">    indices = arange(<span class="number">0</span>, samples, dtype=float) + <span class="number">0.5</span></span><br><span class="line">    theta = pi *(<span class="number">5</span>**<span class="number">0.5</span> - <span class="number">1</span>) * indices</span><br><span class="line">    z = <span class="number">2</span> * indices * r / n - r</span><br><span class="line">    x, y = sqrt(r ** <span class="number">2</span> - (z ** <span class="number">2</span>))*cos(theta), sqrt(r ** <span class="number">2</span> - (z ** <span class="number">2</span>))*sin(theta)</span><br><span class="line">    x, y, z = x+orign[<span class="number">0</span>], y+orign[<span class="number">1</span>], z +orign[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">return</span> [x, y, z]</span><br></pre></td></tr></table></figure>
+<h2 id="高维球面"><a href="#高维球面" class="headerlink" title="高维球面"></a>高维球面</h2><p>高维球面这部分是自己联想推导，不敢保证正确性。</p>
+<p>看二维圆面、三维球面可以看出，斐波那契网格主要思想就是通过<strong>等分某一维坐标将超球体等分为体积相等n个环，在环厚度中心位置取点，每次取点旋转角度通过黄金分割比来确定</strong>。比如说对于三维球体，选中第三维厚度中点后，剩下的只是一个二维圆周，只需要确定角度就可以了。那么对于四维呢，确定一维坐标后，剩下的三维组成球体，那么如何确定剩下的点？<strong>我的想法是对于高维球体某一维坐标确定后得到子超球体，继续用高维球体密铺的方法处理子超球体，只不过只取相对位的那一个点（比如当前要铺第五个点，那么在子超球体中，只取第五个点）</strong>。具体方法是假设需要密铺$m$维球体，前$m-2$维都用<strong>等分维度的方法确定坐标</strong>，但是要注意<strong>当前维度的超球体半径需要通过总半径减去前几维同一列(同一列即同一个样本)的平方和然后开根号</strong>（$for$循环中的$temp_r$，比如$x^2+y^2+z^2+w^2=$，3确定$z=1,w=1$之后，$x、y$相应变为$x^2+y^2=1$）。<strong>对于矩阵的列代表不同的$n$个样本，每一列（每个样本）均对应不同的相对位置（用$pts_ratio$表示该列（样本）的分位数）。</strong>对于最后两维，用三维的方法确定即可，不过这里半径依然满足上述规则。</p>
+<p>下面附上我实现高维球面密铺的$python$代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Fibonacci_ND</span><span class="params">(dimension, samples, radius )</span>:</span></span><br><span class="line">    r = radius</span><br><span class="line">    res = [[] <span class="keyword">for</span> i <span class="keyword">in</span> range(dimension)]</span><br><span class="line">    <span class="comment"># + 0.5 表示在厚度的中点处取点 pts_ratio记录不同点的相对位置。</span></span><br><span class="line">    pts_ratio = (arange(<span class="number">0</span>, samples, dtype=float) + <span class="number">0.5</span>) / samples</span><br><span class="line">    res[<span class="number">0</span>] = <span class="number">2</span> * pts_ratio * r -r</span><br><span class="line">    <span class="comment"># temp_dim 用于记录当前维度确定的坐标的平方和</span></span><br><span class="line">    temp_dim = (<span class="number">2</span> * pts_ratio * r -r) ** <span class="number">2</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, dimension<span class="number">-2</span>):</span><br><span class="line">        <span class="comment"># temp_r为确定前几维后剩下的超球体半径</span></span><br><span class="line">        temp_r = sqrt(r ** <span class="number">2</span> - temp_dim)</span><br><span class="line">        new = <span class="number">2</span> * temp_r * pts_ratio - temp_r</span><br><span class="line">        res[i] = new</span><br><span class="line">        temp_dim += new ** <span class="number">2</span></span><br><span class="line">    temp_r = sqrt(r ** <span class="number">2</span> - temp_dim)</span><br><span class="line">    <span class="comment"># theta 为 2_pi_n_phi</span></span><br><span class="line">    theta = pi * ( <span class="number">5</span> ** <span class="number">0.5</span> - <span class="number">1</span>) * (arange(<span class="number">0</span>, samples, dtype=float) + <span class="number">0.5</span>)</span><br><span class="line">    temp_x, temp_y = temp_r * cos(theta), temp_r * sin(theta)</span><br><span class="line">    res[dimension - <span class="number">2</span>], res[dimension - <span class="number">1</span>] = temp_x, temp_y</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>因为高维球面的密铺没法通过作图来目测验证，这里我用到自己写的函数（不知科学与否）来大概推测。</p>
+<p>具体方案如下：因为大家的半径相等，所以点乘可以衡量两个点之间的角度差异，具体为差越小两个点越靠近。在这里我每次选取随机点，计算出这个随机点到其他点点乘值的排序$list$，选择最大点和第五大点添加到输出队列，最后$print$输出队列的最大值和最小值（两个最值可能来自不同随机点）看差别，如果差别很小暂可认为，算法较为均匀。</p>
+<p>下面为我的$python$代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 嵌套list转置函数 ##</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mat_trans</span><span class="params">(list)</span>:</span></span><br><span class="line">    list2 = []</span><br><span class="line">    row, col = len(list), len(list[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(col):</span><br><span class="line">        list2.append([y[i] <span class="keyword">for</span> y <span class="keyword">in</span> list])</span><br><span class="line">    <span class="keyword">return</span> list2</span><br><span class="line"><span class="comment">## 验证函数 ##</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">angle_count</span><span class="params">(hh, n_rand, samples)</span>:</span></span><br><span class="line">    res = []</span><br><span class="line">    mat = mat_trans(hh)</span><br><span class="line">    <span class="comment"># n_rand为随机数的个数,随机选择一个点，然后将这个点与其他点的点乘输出为</span></span><br><span class="line">    <span class="comment"># 排序序列temp_list。因为半径都相等，点乘可以估量角度差值（越大差值越小）。</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n_rand):</span><br><span class="line">        temp_list = []</span><br><span class="line">        rand = random.randint(<span class="number">0</span>, samples<span class="number">-1</span>)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(samples):</span><br><span class="line">            <span class="keyword">if</span> j != rand:</span><br><span class="line">                temp_dot = [mat[rand][i] * mat[j][i] <span class="keyword">for</span> i <span class="keyword">in</span> range(len(mat[<span class="number">0</span>]))]</span><br><span class="line">                temp_list.append(sum(temp_dot))</span><br><span class="line">        temp_list.sort()</span><br><span class="line">        <span class="comment"># 将每个随机点第一大跟第五大点乘值加入</span></span><br><span class="line">        res.append(temp_list[<span class="number">-1</span>])</span><br><span class="line">        res.append(temp_list[<span class="number">-5</span>])</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">samp = Fibonacci_ND(<span class="number">4</span>, <span class="number">1000</span>, <span class="number">10</span>)</span><br><span class="line">kankan = angle_count(samp, <span class="number">500</span>, <span class="number">1000</span>)</span><br><span class="line"><span class="comment"># 输出最大和最小（可能来源不同点随机）</span></span><br><span class="line">print(min(kankan), max(kankan))</span><br></pre></td></tr></table></figure>
+<p>简单试验，对于三维球面，样本量为1000，$min$和$max$误差在$0.7\%$；对于四维球面，样本量为1000，$min$和$max$误差在$1.4\%$。这里认为分布较为均匀。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数学/" rel="tag"># 数学</a>
+          
+            <a href="/tags/斐波那契网格/" rel="tag"># 斐波那契网格</a>
+          
+            <a href="/tags/密铺/" rel="tag"># 密铺</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/23/转-梯度下降优化算法综述/" rel="next" title="[转]梯度下降优化算法综述">
+                <i class="fa fa-chevron-left"></i> [转]梯度下降优化算法综述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/hmbb.jpg"
+                alt="Malped" />
+            
+              <p class="site-author-name" itemprop="name">Malped</p>
+              <p class="site-description motion-element" itemprop="description">私は毎日少し進歩を望む</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/malped" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gao767610502@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.google.com" target="_blank" title="Google">
+                    
+                      <i class="fa fa-fw fa-google"></i>Google</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                再来看看
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://yangyiqing.cn/" title="宽肩膀的Blog" target="_blank">宽肩膀的Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#二维圆面"><span class="nav-number">1.</span> <span class="nav-text">二维圆面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三维球面"><span class="nav-number">2.</span> <span class="nav-text">三维球面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高维球面"><span class="nav-number">3.</span> <span class="nav-text">高维球面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证"><span class="nav-number">4.</span> <span class="nav-text">验证</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Malped</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'q9C2WYhBFyPTLdyUypYbS1J6-gzGzoHsz',
+        appKey: 'KSy6diXJfLe19BOwN7c7kj2d',
+        placeholder: 'Just go go',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
