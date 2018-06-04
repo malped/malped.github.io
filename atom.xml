@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Make a little progress every day]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2018-05-17T15:17:12.836Z</updated>
+  <updated>2018-06-04T07:14:29.714Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,109 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Attention is all you need]]></title>
+    <link href="http://yoursite.com/2018/06/04/Attention-is-all-you-need/"/>
+    <id>http://yoursite.com/2018/06/04/Attention-is-all-you-need/</id>
+    <published>2018-06-04T03:00:39.000Z</published>
+    <updated>2018-06-04T07:14:29.714Z</updated>
+    <content type="html"><![CDATA[<h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><ul>
+<li>在$Encoder-Decoder$基础上舍弃$RNN/CNN$结构，从自然语言特性本身出发，实现了完全基于注意力机制的$Transformer$机器翻译网络架构，并行度高。</li>
+<li>提出$self-attention$机制，在$Encoder/Decoder$中，自己和自己做$attention$，所以不管他们中间有多长距离，最大的路径长度指示1.可以捕获长距离依赖关系</li>
+<li>提出multi-head attention，可以看成是attention的ensemble版本，不同head学习不同的子空间语义。</li>
+</ul>
+<h1 id="attention"><a href="#attention" class="headerlink" title="attention"></a>attention</h1><p>以下引自知乎<a href="https://www.zhihu.com/question/68482809/answer/264632289" target="_blank" rel="noopener">张俊林</a></p>
+<p>如果把Attention机制从上文讲述例子中的Encoder-Decoder框架中剥离，并进一步做抽象，可以更容易看懂Attention机制的本质思想。</p>
+<p><img src="/2018/06/04/Attention-is-all-you-need/QKV.jpg" alt=""></p>
+<p>我们可以这样来看待Attention机制：将Source中的构成元素想象成是由一系列的<key,value>数据对构成，此时给定Target中的某个元素Query，通过计算Query和各个Key的相似性或者相关性，得到每个Key对应Value的权重系数，然后对Value进行加权求和，即得到了最终的Attention数值。所以本质上Attention机制是对Source中元素的Value值进行加权求和，而Query和Key用来计算对应Value的权重系数。即可以将其本质思想改写为如下公式：</key,value></p>
+<script type="math/tex; mode=display">Attention(Query,Source)=\sum^{L_x}_{i=1}Similarity(Query,Key_i)*Value_i</script><p>其中，$L_x=||Source||$代表Source的长度，公式含义即如上所述。上文所举的机器翻译的例子里，因为在计算Attention的过程中，Source中的Key和Value合二为一，指向的是同一个东西，也即输入句子中每个单词对应的语义编码，所以可能不容易看出这种能够体现本质思想的结构。</p>
+<p>从上图可以引出另外一种理解，也可以将Attention机制看作一种软寻址（Soft Addressing）:Source可以看作存储器内存储的内容，元素由地址Key和值Value组成，当前有个Key=Query的查询，目的是取出存储器中对应的Value值，即Attention数值。通过Query和存储器内元素Key的地址进行相似性比较来寻址，之所以说是软寻址，指的不像一般寻址只从存储内容里面找出一条内容，而是可能从每个Key地址都会取出内容，取出内容的重要性根据Query和Key的相似性来决定，之后对Value进行加权求和，这样就可以取出最终的Value值，也即Attention值。所以不少研究人员将Attention机制看作软寻址的一种特例，这也是非常有道理的。</p>
+<p>至于Attention机制的具体计算过程，如果对目前大多数方法进行抽象的话，可以将其归纳为两个过程：第一个过程是根据Query和Key计算权重系数，第二个过程根据权重系数对Value进行加权求和。而第一个过程又可以细分为两个阶段：第一个阶段根据Query和Key计算两者的相似性或者相关性；第二个阶段对第一阶段的原始分值进行归一化处理；这样，可以将Attention的计算过程抽象为如下图展示的三个阶段。 </p>
+<p><img src="/2018/06/04/Attention-is-all-you-need/QKV2.jpg" alt=""> </p>
+<p>在第一个阶段，映入不同的函数和计算机制，根据Query和某个Key，计算两者的相似性或者相关性，最常见的方法包括：求两者的向量点积、求两者的向量Cosine相似性或者通过再引入额外的神经网络来求职，即如下方式：</p>
+<p><img src="/2018/06/04/Attention-is-all-you-need/QKV3.jpg" alt=""></p>
+<p>第一阶段产生的分治根据具体生产的方法不同其数值取值范围也不一样，第二阶段引入类似SoftMax的计算方式对第一阶段的得分进行数值转换，一方面可以进行归一化，将原始计算分支整理成所有元素权重之和为1的概率分布；另一方面也可以通过SoftMax的内在机制更加突出重要元素的权重。即一般采用如下公式计算：</p>
+<script type="math/tex; mode=display">a_i=SoftMax(sim_i)={e^{Sim_i}\over \sum^{L_x}_{j=1}e^{Sim_j}}</script><p>第二阶段的计算结果$a_i$即为$value_i$对应的权重系数，然后进行加权求和即可得到Attention数值：</p>
+<script type="math/tex; mode=display">Attention(Query,Source)=\sum^{L_x}_{j=1}a_i*Value_i</script><p>通过如上三个阶段的计算，即可求出针对Query的Attention数值，目前绝大多数具体的注意力机制计算方法都符合上述的三阶段抽象计算过程。</p>
+<h1 id="Encoder-Decoder"><a href="#Encoder-Decoder" class="headerlink" title="Encoder-Decoder"></a>Encoder-Decoder</h1><p><img src="/2018/06/04/Attention-is-all-you-need/ende.png" alt=""></p>
+<h2 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h2><ul>
+<li><p>编码器由相同的6层组成，每层有2子层，都使用残差网络连接。</p>
+</li>
+<li><p>输入：词向量+positional embedding，是n*d矩阵</p>
+</li>
+<li><p>Sub-L1：</p>
+<ul>
+<li><p>输入输出都是n*d矩阵</p>
+</li>
+<li><p>Multi-head self-attention</p>
+</li>
+<li><p>残差网络连接和LN</p>
+</li>
+</ul>
+</li>
+<li><p>Sun-L2：</p>
+<ul>
+<li><p>Posion-wise fc层（跟卷积层很像）(fc+ReLu+fc)</p>
+</li>
+<li><p>对n*d的矩阵的每一行进行操作（相当于把矩阵每一行铺平，接一个FC），同一层的不同行FC层用一样的参数，不同层用不同的参数(对于全连接的节点数目，先从512变大为2048，再缩小为512)：</p>
+<script type="math/tex; mode=display">FFN(x)=max(0,xW_1+b_1)W_2+b_2</script></li>
+</ul>
+</li>
+</ul>
+<h2 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h2><ul>
+<li>解码器由相同的6层组成，每层3子层，都是用残差网络连接</li>
+<li>输入： 假设已经翻译出k个词，向量维度还是d，Sub-L1：output embedding    Sub-L2：Sub-L1输出+编码器输出</li>
+<li>Sub-L1：<ul>
+<li>Self-attention ,同encoder，但要用mask抹掉未来信息，得到k*d矩阵</li>
+</ul>
+</li>
+<li>Sub-L2:<ul>
+<li>和encoder输出做attention，输出k*d矩阵</li>
+</ul>
+</li>
+<li>Sub-L3:<ul>
+<li>全连接层，输出k*d矩阵，用第k行去预测输出y</li>
+</ul>
+</li>
+</ul>
+<h1 id="Scanled-Dot-Product-Attenntionn"><a href="#Scanled-Dot-Product-Attenntionn" class="headerlink" title="Scanled Dot-Product Attenntionn"></a>Scanled Dot-Product Attenntionn</h1><p><img src="/2018/06/04/Attention-is-all-you-need/dot.png" alt=""></p>
+<p>这里使用点乘注意力模型，与一般的加法注意力模型相比，点乘注意力模型不使用全连接层，空间复杂度占优；另外由于乘法可以使用优化的矩阵乘法运算，所以计算上也一般占优。</p>
+<p>论文中attention公式:</p>
+<script type="math/tex; mode=display">Attention(Q,K,V)=SoftMax({QK^T\over \sqrt d_k})V</script><p>权重部分除以一个$\sqrt d_k$做了标准化，原因论文注释中这样解释：假设Q,K中的每个元素服从均值为0方差为1的分布，他们的点乘就是均值为0方差为$d_k$的分布</p>
+<p>论文中指出：当$d_k$比较小的时候，乘法注意力和加法注意力效果差不多；但当d_k比较大的时候，如果不使用scale factor，则加法注意力要好一些，因为乘法结果会比较大，容易进入softmax函数的“饱和区”，梯度较小。(其他解释：点积只是绝对值变大，但是数值有正有负，比如 [0.1, -0.1] 变成 [10, -10]，softmax 算出来结果就很糟糕。)</p>
+<h1 id="Multi-head-attention"><a href="#Multi-head-attention" class="headerlink" title="Multi-head attention"></a>Multi-head attention</h1><p>Multi-head attention 可以看成是一种ensemble方式，获取不同子空间语义</p>
+<p><img src="/2018/06/04/Attention-is-all-you-need/multi.png" alt=""></p>
+<p>论文发现，使用不同的，学习到的线性投影矩阵把Q、K、V投影到上面比直接在Q、K、V上面做效果好。每一个投影版本都可以并行计算的，生成$d_k/d_v$维数据。即将$d_{model}$维的Q、K、V每次通多different,learned,$W_q,W_k,W_v$映射成$d_k,d_k,d_v$维(也可以直接进行分割)，进行h次，这些并行生成$d_v$维的output。这些output  concat起来并再一次project得到final output</p>
+<p>公式如下：</p>
+<script type="math/tex; mode=display">MultiHead(Q,K,V)=Concat(head_1,...,head_h)W^O</script><script type="math/tex; mode=display">head_i=Attention(QW_i^Q,KW_i^K,VW_i^V)</script><p>如果采用线性映射的方式，使得维度降低；或者通过split的方式使得维度降低，那么多个head做attention合并起来的复杂度和原来一个head做attention的复杂度不会差多少，而且多个head之间做attention可以并行。</p>
+<h1 id="Position-wise-Feed-Forward-Networks"><a href="#Position-wise-Feed-Forward-Networks" class="headerlink" title="Position-wise Feed-Forward Networks"></a>Position-wise Feed-Forward Networks</h1><p>在attention 子层后面，encoder和decoder里面都包含了一层全连接神经网络，分别应用于每个位置。这个层包括了两个线性变换和Relu激活函数在中间。</p>
+<script type="math/tex; mode=display">FFN(x)=max(0,xW_1+b_1)W_2+b_2</script><p>虽然<em>线性变化在不同位置是相同的</em>，但是层到层之间使用不同的参数。另一种描述这个的方式是kernel size为1的两个卷积网。输入和输出的维度都是512,中间隐层的维度是2048。</p>
+<h1 id="Embedding-And-Softmax"><a href="#Embedding-And-Softmax" class="headerlink" title="Embedding And Softmax"></a>Embedding And Softmax</h1><p>对于输入嵌入，我们希望网络对同义词放映类似，而在输出嵌入中，我们希望可交换的单吃分数相似。</p>
+<p>本模型中的decoder输出首先经过linear transformation 再softmax为概率</p>
+<p><a href="https://arxiv.org/abs/1608.05859" target="_blank" rel="noopener">Using the Output Embedding to Improve Language Models</a> 文章中指出，decoder最顶层（softmax之前）的权重矩阵（文章中把这个矩阵称为output embedding），可以更高效、准确的word embedding。因此，这里将两个embedding层和pre-softmax层共三个权重矩阵绑定，embedding weights需要乘以$\sqrt{d_{model}}$(why?)</p>
+<h1 id="Positional-Encoding"><a href="#Positional-Encoding" class="headerlink" title="Positional Encoding"></a>Positional Encoding</h1><p>因为模型没有循环层和卷积层，为了让模型利用位置信息。所以我们必须把tokens绝对和相对位置信息注入模型。在encoder和decoder底部加入positional encoding，位置编码跟embedding有相同纬度，便于组合相加。</p>
+<script type="math/tex; mode=display">PE_{(pos,2i)}=sin(pos/10000^{2i/d_{model}})</script><script type="math/tex; mode=display">PE_{(pos,2i+1)}=cos(pos/10000^{2i/d_{model}})</script><p>Position Embedding 本身是一个绝对位置的信息，但在语言中，相对位置也很重要，Google 选择前述的位置向量公式的一个重要原因如下：由于我们有 $sin(α+β)=sinα cosβ+cosα sinβ$ 以及 $cos(α+β)=cosα cosβ−sinα sinβ$，这表明位置 p+k 的向量可以表明位置 p 的向量的线性变换，这提供了表达相对位置信息的可能性。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="https://arxiv.org/pdf/1706.03762.pdf" target="_blank" rel="noopener">Attention is all you need</a></p>
+<p><a href="https://www.zhihu.com/search?q=attention%20is%20all%20you%20need&amp;type=content" target="_blank" rel="noopener">知乎</a></p>
+<p><a href="https://www.zhihu.com/question/68482809/answer/264632289" target="_blank" rel="noopener">张俊林</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[Google机器翻译paper]]>
+    
+    </summary>
+    
+      <category term="机器翻译" scheme="http://yoursite.com/tags/%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/"/>
+    
+      <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
+    
+      <category term="self attention" scheme="http://yoursite.com/tags/self-attention/"/>
+    
+      <category term="attention" scheme="http://yoursite.com/tags/attention/"/>
+    
+      <category term="机器翻译" scheme="http://yoursite.com/categories/%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[如何在高维球体表面相对均匀分布n个点]]></title>
